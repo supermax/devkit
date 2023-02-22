@@ -1,0 +1,8 @@
+﻿namespace DevKit.Core.Objects
+{
+    public abstract class Singleton<TInterface, TImplementation> 
+        where TImplementation : TInterface, new()
+    {
+        public static TInterface Default { get; } = new TImplementation();
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "name": "DevKit.Core.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:189092fc0a61b4360931e9f8819b9ac2"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
