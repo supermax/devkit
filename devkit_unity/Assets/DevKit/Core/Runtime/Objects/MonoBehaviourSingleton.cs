@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace DevKit.Core.Objects
 {
-    public class MonoBehaviourSingleton<TInterface, TImplementation> : MonoBehaviour
+    public class MonoBehaviourSingleton<TInterface, TImplementation> : BaseMonoBehaviour
         where TImplementation : MonoBehaviour, TInterface
     {
         private static TInterface _default;
@@ -17,8 +17,9 @@ namespace DevKit.Core.Objects
             }
         }
 
-        private void Awake()
+        protected override void OnAwake()
         {
+            base.OnAwake();
             InvalidateInstance();
         }
 
@@ -41,12 +42,12 @@ namespace DevKit.Core.Objects
                     }
                 }
             }
-            
+
             if (!Equals(_default, default(TImplementation)))
             {
                 return _default;
             }
-            
+
             var typeImplementation = typeof(TImplementation);
             var go = new GameObject($"[{typeImplementation.Name}]");
             var root = MonoBehaviourRoot.GetRoot();
