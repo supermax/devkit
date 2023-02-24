@@ -4,14 +4,13 @@ using System;
 using System.Collections;
 using DevKit.Core.Extensions;
 using DevKit.Logging;
-using DevKit.PubSub;
 using DevKit.PubSub.Components;
 using UnityEngine;
 using UnityEngine.UI;
 
 #endregion
 
-namespace DevKit.Demo
+namespace DevKit.PubSub.Demo
 {
     /// <summary>
     /// Chat Controller Class

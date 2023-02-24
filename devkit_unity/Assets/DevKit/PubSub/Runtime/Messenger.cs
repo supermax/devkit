@@ -33,11 +33,11 @@ namespace DevKit.PubSub
         static Messenger()
         {
             // init MainThreadDispatcher and print main thread ID
-            Loggers.Console.LogInfo("Main Thread ID: {0}", UnityMainThreadDispatcher.Default.ThreadId);
+            Loggers.Console.LogInfo("Main Thread ID: {0}", UnityMainThreadDispatcher.Default.ThreadId.ToString());
 
 #if DEBUG
             // init MessengerMonitor
-            Loggers.Console.LogInfo("Messenger Monitor {0}", MessengerMonitor.Default);
+            Loggers.Console.LogInfo("Messenger Monitor {0}", MessengerMonitor.Default.ToString());
 #endif
         }
 

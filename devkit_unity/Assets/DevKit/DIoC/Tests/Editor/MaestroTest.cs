@@ -1,10 +1,8 @@
-﻿using DevKit.DIoC;
+﻿using DevKit.DIoC.Tests.Editor.Entities;
 using NUnit.Framework;
-using DevKit.Editor.IOC.Tests.Entities;
-using DevKit.IOC;
 using UnityEngine;
 
-namespace DevKit.Editor.IOC.Tests
+namespace DevKit.DIoC.Tests.Editor
 {
     /* TODO Add tests:
         1) Singleton

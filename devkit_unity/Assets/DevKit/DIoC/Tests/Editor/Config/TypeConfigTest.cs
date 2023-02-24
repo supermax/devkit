@@ -1,10 +1,10 @@
 using DevKit.Core.Extensions;
 using DevKit.DIoC.Config;
+using DevKit.DIoC.Tests.Editor.Entities;
 using NUnit.Framework;
-using DevKit.Editor.IOC.Tests.Entities;
 using UnityEngine;
 
-namespace DevKit.Editor.IOC.Tests.Config
+namespace DevKit.DIoC.Tests.Editor.Config
 {
     [TestFixture]
     public class TypeConfigTest

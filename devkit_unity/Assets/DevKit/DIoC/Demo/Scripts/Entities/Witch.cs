@@ -1,6 +1,6 @@
 using DevKit.DIoC.Attributes;
 
-namespace DevKit.Demo.IOC.Entities
+namespace DevKit.DIoC.Demo.Entities
 {
     [TypeMap]
     public class Witch : IEnemy

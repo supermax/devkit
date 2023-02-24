@@ -1,44 +1,45 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace DevKit.Logging
 {
     public interface ILogger
     {
         ILoggerConfig Config { get; set; }
-        
-        ILogger LogInfo(string message);
-        
-        ILogger LogInfo(string[] messages);
-        
-        ILogger LogInfo(string format, string message);
 
-        ILogger LogInfo(string format, string[] messages);
-        
-        ILogger LogInfo(string format, params object[] messages);
-        
-        ILogger LogWarning(string message);
-        
-        ILogger LogWarning(string[] messages);
-        
-        ILogger LogWarning(string format, string message);
+        ILogger LogInfo(string message, [CallerMemberName] string callerName = "");
 
-        ILogger LogWarning(string format, string[] messages);
-        
-        ILogger LogWarning(string format, params object[] messages);
-        
-        ILogger LogError(string error);
-        
-        ILogger LogError(Exception error);
-        
-        ILogger LogError(string[] errors);
-        
-        ILogger LogError(string format, Exception error);
-        
-        ILogger LogError(IEnumerable<Exception> errors);
-        
-        ILogger LogError(string format, IEnumerable<Exception> errors);
-        
-        ILogger LogError(string format, params object[] errors);
+        ILogger LogInfo(string[] messages, [CallerMemberName] string callerName = "");
+
+        ILogger LogInfo(string format, string message, [CallerMemberName] string callerName = "");
+
+        ILogger LogInfo(string format, string[] messages, [CallerMemberName] string callerName = "");
+
+        ILogger LogInfo(string format, object[] messages, [CallerMemberName] string callerName = "");
+
+        ILogger LogWarning(string message, [CallerMemberName] string callerName = "");
+
+        ILogger LogWarning(string[] messages, [CallerMemberName] string callerName = "");
+
+        ILogger LogWarning(string format, string message, [CallerMemberName] string callerName = "");
+
+        ILogger LogWarning(string format, string[] messages, [CallerMemberName] string callerName = "");
+
+        ILogger LogWarning(string format, object[] messages, [CallerMemberName] string callerName = "");
+
+        ILogger LogError(string error, [CallerMemberName] string callerName = "");
+
+        ILogger LogError(Exception error, [CallerMemberName] string callerName = "");
+
+        ILogger LogError(string[] errors, [CallerMemberName] string callerName = "");
+
+        ILogger LogError(string format, Exception error, [CallerMemberName] string callerName = "");
+
+        ILogger LogError(IEnumerable<Exception> errors, [CallerMemberName] string callerName = "");
+
+        ILogger LogError(string format, IEnumerable<Exception> errors, [CallerMemberName] string callerName = "");
+
+        ILogger LogError(string format, object[] errors, [CallerMemberName] string callerName = "");
     }
 }

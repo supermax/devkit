@@ -1,13 +1,13 @@
 ﻿#region
 
 using DevKit.Logging;
-using DevKit.PubSub;
+using DevKit.Logging.Extensions;
 using UnityEngine;
 using UnityEngine.UI;
 
 #endregion
 
-namespace DevKit.Demo
+namespace DevKit.PubSub.Demo
 {
     public class ChatMsgCountController : MonoBehaviour
     {
@@ -39,13 +39,13 @@ namespace DevKit.Demo
 
         private void OnChatMessageReceived(ChatPayload payload)
         {
-            Loggers.Console.LogInfo("Received: {0}", payload);
+            this.LogInfo("Received: {0}", payload.ToString());
             _counterText.text = $"Message Count: {++_msgCount}";
         }
 
         public void KillMe()
         {
-            Loggers.Console.LogInfo("Killing {0}", gameObject);
+            this.LogInfo("Killing {0}", gameObject.ToString());
             Destroy(gameObject);
         }
     }

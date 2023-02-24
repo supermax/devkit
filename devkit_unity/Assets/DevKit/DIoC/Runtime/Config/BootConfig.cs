@@ -4,8 +4,6 @@ using UnityEngine;
 
 namespace DevKit.DIoC.Config
 {
-    [Serializable]
-    [DataContract]
     public class BootConfig : ScriptableObject
     {
         public bool AutoConfig

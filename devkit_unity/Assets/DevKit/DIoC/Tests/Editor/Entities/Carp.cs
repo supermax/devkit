@@ -1,4 +1,4 @@
-namespace DevKit.Editor.IOC.Tests.Entities
+namespace DevKit.DIoC.Tests.Editor.Entities
 {
     public class Carp : Fish
     {

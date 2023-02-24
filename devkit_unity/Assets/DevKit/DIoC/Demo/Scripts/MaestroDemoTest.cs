@@ -1,8 +1,9 @@
-using DevKit.Demo.IOC.Entities;
+using DevKit.DIoC.Demo.Entities;
 using UnityEngine;
 
-namespace DevKit.DIoC.Demo.Scripts
+namespace DevKit.DIoC.Demo
 {
+    // TODO add more tests
     public class MaestroDemoTest : MonoBehaviour
     {
         private void Start()

@@ -4,7 +4,7 @@ using UnityEngine;
 
 #endregion
 
-namespace DevKit.Demo
+namespace DevKit.PubSub.Demo
 {
     [CreateAssetMenu(fileName = "MultiThreadingToggle", menuName = "Demo/Scriptable Objects/Multi-Threading Toggle")]
     public class MultiThreadingToggle : ScriptableObject

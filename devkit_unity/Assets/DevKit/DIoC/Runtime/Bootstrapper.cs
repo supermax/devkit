@@ -1,11 +1,10 @@
 using System;
 using DevKit.Core.Extensions;
-using DevKit.DIoC;
 using DevKit.DIoC.Config;
 using DevKit.Logging;
 using UnityEngine;
 
-namespace DevKit.IOC
+namespace DevKit.DIoC
 {
     /// <summary>
     /// Responsible for loading and mapping types into <see cref="Maestro"/> container
@@ -40,13 +39,35 @@ namespace DevKit.IOC
             if (_bootConfig == null)
             {
                 Loggers.Console.LogInfo($"{nameof(BootConfig)} is null. Skipping {nameof(Setup)}");
+                return;
+            }
+            if (_bootConfig.AutoConfig)
+            {
+                AutoConfig();
+            }
+            LoadConfig();
+        }
+
+        private void AutoConfig()
+        {
+            Loggers.Console.LogInfo(nameof(AutoConfig));
+
+            // TODO implement
+        }
+
+        private void LoadConfig()
+        {
+            if (_bootConfig == null)
+            {
+                Loggers.Console.LogInfo($"{nameof(BootConfig)} is null. Skipping {nameof(Setup)}");
+                return;
             }
             if (_bootConfig.Assemblies.IsNullOrEmpty())
             {
                 Loggers.Console.LogInfo($"{nameof(_bootConfig.Assemblies)} is null. Skipping {nameof(Setup)}");
             }
 
-            Loggers.Console.LogInfo("Processing {0}...", _bootConfig);
+            Loggers.Console.LogInfo("Processing {0}...", nameof(BootConfig));
 
             foreach (var assemblyConfig in _bootConfig.Assemblies)
             {
@@ -73,7 +94,7 @@ namespace DevKit.IOC
                 }
             }
 
-            Loggers.Console.LogInfo("Processed {0}.", _bootConfig);
+            Loggers.Console.LogInfo("Processed {0}.", nameof(BootConfig));
         }
 
         private static void Map(TypeConfig typeConfig)

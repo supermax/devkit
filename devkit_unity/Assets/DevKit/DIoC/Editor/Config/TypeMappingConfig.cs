@@ -4,7 +4,7 @@ using DevKit.DIoC.Config;
 using UnityEditor;
 using UnityEngine;
 
-namespace DevKit.Editor.IOC.Config
+namespace DevKit.DIoC.Editor.Config
 {
     [Serializable]
     public class TypeMappingConfig : BaseMappingConfig<TypeConfig>

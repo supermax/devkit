@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Linq;
 using DevKit.Core.Extensions;
@@ -6,15 +5,12 @@ using DevKit.DIoC.Config;
 using UnityEditor;
 using UnityEngine;
 
-namespace DevKit.Editor.IOC.Config
+namespace DevKit.DIoC.Editor.Config
 {
-    [Serializable]
     [CreateAssetMenu(fileName = "BootConfig", menuName = "Boot Config")]
     public class BootMappingConfig : BootConfig
     {
         [SerializeField] private bool _autoConfig;
-
-        [SerializeField] private TextAsset _configJson;
 
         [SerializeField] private AssemblyMappingConfig[] _assemblies;
 
@@ -22,23 +18,16 @@ namespace DevKit.Editor.IOC.Config
         {
             Debug.Log(nameof(OnValidate));
 
-            // AutoConfig = _autoConfig;
-            // Assemblies = _assemblies.Select(assemblyMapping => assemblyMapping.GetConfig()).ToArray();
-            // var json = Assemblies.ToJson();
-            // Debug.Log(json);
-            //
-            // string configFilePath;
-            // if (_configJson == null)
-            // {
-            //     _configJson = new TextAsset();
-            //     configFilePath = AssetDatabase.GetAssetPath(_configJson);
-            //     configFilePath = Path.ChangeExtension(configFilePath, "json");
-            // }
-            // else
-            // {
-            //     configFilePath = AssetDatabase.GetAssetPath(_configJson);
-            // }
-            // File.WriteAllText(configFilePath, json);
+            AutoConfig = _autoConfig;
+            Assemblies = _assemblies.Select(assemblyMapping => assemblyMapping.GetConfig()).ToArray();
+            var json = Assemblies.ToJson();
+            Debug.Log(json);
+
+            var configFilePath = AssetDatabase.GetAssetPath(this);
+            configFilePath = Path.ChangeExtension(configFilePath, "json");
+
+            // TODO add checks if file writing is in progress and don't call this function again until it's execution is done
+            File.WriteAllTextAsync(configFilePath, json);
         }
     }
 }

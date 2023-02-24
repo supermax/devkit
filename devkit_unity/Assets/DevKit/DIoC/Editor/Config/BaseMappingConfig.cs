@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace DevKit.Editor.IOC.Config
+namespace DevKit.DIoC.Editor.Config
 {
     public abstract class BaseMappingConfig<T>
     {

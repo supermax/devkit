@@ -1,4 +1,4 @@
-namespace DevKit.Demo.IOC.Entities
+namespace DevKit.DIoC.Demo.Entities
 {
     public interface IEnemy
     {

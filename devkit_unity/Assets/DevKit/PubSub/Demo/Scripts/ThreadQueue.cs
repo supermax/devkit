@@ -3,17 +3,16 @@
 using System;
 using System.Collections.Concurrent;
 using System.Threading;
-using DevKit.Logging;
 using DevKit.Core.WeakRef;
+using DevKit.Logging.Extensions;
 
 #endregion
 
-namespace DevKit.Demo
+namespace DevKit.PubSub.Demo
 {
     public class ThreadQueue<T> : IDisposable
     {
-        private readonly ConcurrentQueue<Tuple<WeakReferenceDelegate, T>> _queue =
-            new ConcurrentQueue<Tuple<WeakReferenceDelegate, T>>();
+        private readonly ConcurrentQueue<Tuple<WeakReferenceDelegate, T>> _queue = new();
 
         private Timer _timer;
 
@@ -25,7 +24,7 @@ namespace DevKit.Demo
 
         private void OnTick(object state)
         {
-            Loggers.Console.LogWarning("OnTick - Thread ID: {0}", Thread.CurrentThread.ManagedThreadId);
+            this.LogInfo("OnTick - Thread ID: {0}", Thread.CurrentThread.ManagedThreadId.ToString());
 
             while (_queue.Count > 0)
             {

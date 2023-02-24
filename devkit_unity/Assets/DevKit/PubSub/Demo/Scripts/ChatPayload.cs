@@ -1,4 +1,4 @@
-﻿namespace DevKit.Demo
+﻿namespace DevKit.PubSub.Demo
 {
     public class ChatPayload
     {
