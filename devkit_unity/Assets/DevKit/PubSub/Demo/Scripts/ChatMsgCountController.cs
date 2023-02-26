@@ -4,6 +4,7 @@ using DevKit.Logging;
 using DevKit.Logging.Extensions;
 using UnityEngine;
 using UnityEngine.UI;
+using Logger = DevKit.Logging.Logger;
 
 #endregion
 
@@ -34,7 +35,7 @@ namespace DevKit.PubSub.Demo
 
         private void OnDestroy()
         {
-            Loggers.Console.LogInfo("{0} destroyed", nameof(ChatMsgCountController));
+            Logger.Default.LogInfo("{0} destroyed", nameof(ChatMsgCountController));
         }
 
         private void OnChatMessageReceived(ChatPayload payload)

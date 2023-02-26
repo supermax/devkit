@@ -12,7 +12,7 @@ namespace DevKit.Logging.Extensions
             {
                 callerName = obj.GetType().Name;
             }
-            return Loggers.Console.LogInfo(message, callerName);
+            return Logger.Default.LogInfo(message, callerName);
         }
     }
 }

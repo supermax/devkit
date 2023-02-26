@@ -25,7 +25,7 @@ namespace DevKit.PubSub
         // List of subscribers to optimize add (subscribe) operation
         private readonly List<Subscriber> _add = new();
 
-        private readonly ILogger _logger = Loggers.Console;
+        private readonly ILogger _logger = Logger.Default;
 
         /// <summary>
         /// Static CTOR to initialize other monitoring tools (singletons)
@@ -33,11 +33,11 @@ namespace DevKit.PubSub
         static Messenger()
         {
             // init MainThreadDispatcher and print main thread ID
-            Loggers.Console.LogInfo("Main Thread ID: {0}", UnityMainThreadDispatcher.Default.ThreadId.ToString());
+            Logger.Default.LogInfo("Main Thread ID: {0}", UnityMainThreadDispatcher.Default.ThreadId.ToString());
 
 #if DEBUG
             // init MessengerMonitor
-            Loggers.Console.LogInfo("Messenger Monitor {0}", MessengerMonitor.Default.ToString());
+            Logger.Default.LogInfo("Messenger Monitor {0}", MessengerMonitor.Default.ToString());
 #endif
         }
 

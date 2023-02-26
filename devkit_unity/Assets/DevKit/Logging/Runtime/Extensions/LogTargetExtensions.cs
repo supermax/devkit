@@ -1,4 +1,4 @@
-namespace DevKit.Logging
+namespace DevKit.Logging.Extensions
 {
     public static class LogTargetExtensions
     {

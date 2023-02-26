@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace DevKit.PubSub.Demo
 {
-    [CreateAssetMenu(fileName = "MultiThreadingToggle", menuName = "Demo/Scriptable Objects/Multi-Threading Toggle")]
+    [CreateAssetMenu(fileName = "MultiThreadingToggle", menuName = "PubSub/Demo/MultiThreadingToggle")]
     public class MultiThreadingToggle : ScriptableObject
     {
         [SerializeField] private bool _isMultiThreadingOn = true;

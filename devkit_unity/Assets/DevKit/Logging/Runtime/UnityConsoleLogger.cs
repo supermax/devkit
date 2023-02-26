@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace DevKit.Logging
 {
-    internal class UnityConsoleLogger : ILogger
+    public class UnityConsoleLogger : ILogger
     {
         public ILoggerConfig Config { get; set; } = new ConsoleLoggerConfig();
 

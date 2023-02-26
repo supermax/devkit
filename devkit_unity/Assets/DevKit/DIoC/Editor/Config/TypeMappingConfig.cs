@@ -1,6 +1,7 @@
 using System;
 using DevKit.Core.Extensions;
 using DevKit.DIoC.Config;
+using DevKit.DIoC.Extensions;
 using UnityEditor;
 using UnityEngine;
 
@@ -26,14 +27,12 @@ namespace DevKit.DIoC.Editor.Config
 
         public override TypeConfig GetConfig()
         {
-            // TODO use type's full name and not just simple name
-
             var config = new TypeConfig
                 {
                     Name = Name,
                     InitTrigger = _initTrigger,
                     IsSingleton = _singleton,
-                    SourceType = _type.name,
+                    SourceType = _type.text.GetFullTypeName(),
                 };
 
             if (!_implementations.IsNullOrEmpty())
@@ -41,7 +40,11 @@ namespace DevKit.DIoC.Editor.Config
                 config.TypeMappings = new string[_implementations.Length];
                 for (var i = 0; i < _implementations.Length; i++)
                 {
-                    config.TypeMappings[i] = _implementations[i].name;
+                    if (_implementations[i] == null)
+                    {
+                        continue;
+                    }
+                    config.TypeMappings[i] = _implementations[i].text.GetFullTypeName();
                 }
             }
             if (_dependencies.IsNullOrEmpty())
@@ -52,7 +55,11 @@ namespace DevKit.DIoC.Editor.Config
             config.TypeDependencies = new string[_dependencies.Length];
             for (var i = 0; i < _dependencies.Length; i++)
             {
-                config.TypeDependencies[i] = _dependencies[i].name;
+                if (_dependencies[i] == null)
+                {
+                    continue;
+                }
+                config.TypeDependencies[i] = _dependencies[i].text.GetFullTypeName();
             }
             return config;
         }

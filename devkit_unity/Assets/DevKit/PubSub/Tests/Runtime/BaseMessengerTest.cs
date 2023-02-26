@@ -11,7 +11,7 @@ namespace DevKit.Tests.Messaging
 
         protected BaseMessengerTest()
         {
-            Logger = Loggers.Console;
+            Logger = Logging.Logger.Default;
             Messenger = PubSub.Messenger.Default;
         }
     }

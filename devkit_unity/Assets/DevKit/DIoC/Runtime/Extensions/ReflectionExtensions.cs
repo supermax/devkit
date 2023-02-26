@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using DevKit.Core.Extensions;
 using DevKit.DIoC.Attributes;
 
 namespace DevKit.DIoC.Extensions
 {
-    internal static class ReflectionExtensions
+    public static class ReflectionExtensions
     {
         public static ConstructorInfo GetDefaultConstructor(this Type src)
         {
@@ -55,6 +56,21 @@ namespace DevKit.DIoC.Extensions
                 exeMethods.Add(method);
             }
             return exeMethods.ToArray();
+        }
+
+        public static string GetFullTypeName(this string cSharpCode)
+        {
+            const string pattern = @"^(?:(?:\s*//.*(?:\r?\n|\r))*\s*)*(?:using\s+[\w.]+\s*;\s*)*(?:namespace\s+(?<namespace>[\w.]+)\s*{\s*(?:public\s+(?:class|interface)\s+(?<classname>[\w]+))?)?";
+            var match = Regex.Match(cSharpCode, pattern);
+            var namespaceName = string.Empty;
+            var className = string.Empty;
+            if (match.Success)
+            {
+                namespaceName = match.Groups["namespace"].Value;
+                className = match.Groups["classname"].Value;
+            }
+            var typeName = namespaceName.IsNullOrEmpty() ? className : $"{namespaceName}.{className}";
+            return typeName;
         }
     }
 }

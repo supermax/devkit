@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace DevKit.DIoC.Editor.Config
 {
-    [CreateAssetMenu(fileName = "BootConfig", menuName = "Boot Config")]
+    [CreateAssetMenu(fileName = "BootConfig", menuName = "Bootstrapper/Boot Config")]
     public class BootMappingConfig : BootConfig
     {
         [SerializeField] private bool _autoConfig;

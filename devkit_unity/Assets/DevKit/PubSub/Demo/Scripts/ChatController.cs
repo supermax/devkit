@@ -7,6 +7,7 @@ using DevKit.Logging;
 using DevKit.PubSub.Components;
 using UnityEngine;
 using UnityEngine.UI;
+using Logger = DevKit.Logging.Logger;
 
 #endregion
 
@@ -232,10 +233,10 @@ namespace DevKit.PubSub.Demo
         {
             if (!gameObject)
             {
-                Loggers.Console.LogError($"cannot destroy {nameof(gameObject)}");
+                Logger.Default.LogError($"cannot destroy {nameof(gameObject)}");
                 return;
             }
-            Loggers.Console.LogInfo("Killing {0}", gameObject.ToString());
+            Logger.Default.LogInfo("Killing {0}", gameObject.ToString());
             DestroyImmediate(gameObject);
         }
 
@@ -246,7 +247,7 @@ namespace DevKit.PubSub.Demo
         {
             // dispose thread queue
             _threadQueue.Dispose();
-            Loggers.Console.LogInfo("{0} - \"{1}\" destroyed", name, _userId);
+            Logger.Default.LogInfo("{0} - \"{1}\" destroyed", name, _userId);
         }
 
         /// <summary>

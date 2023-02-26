@@ -3,6 +3,7 @@ using DevKit.Core.Extensions;
 using DevKit.DIoC.Config;
 using DevKit.Logging;
 using UnityEngine;
+using Logger = DevKit.Logging.Logger;
 
 namespace DevKit.DIoC
 {
@@ -38,7 +39,7 @@ namespace DevKit.DIoC
         {
             if (_bootConfig == null)
             {
-                Loggers.Console.LogInfo($"{nameof(BootConfig)} is null. Skipping {nameof(Setup)}");
+                Logger.Default.LogInfo($"{nameof(BootConfig)} is null. Skipping {nameof(Setup)}");
                 return;
             }
             if (_bootConfig.AutoConfig)
@@ -50,7 +51,7 @@ namespace DevKit.DIoC
 
         private void AutoConfig()
         {
-            Loggers.Console.LogInfo(nameof(AutoConfig));
+            Logger.Default.LogInfo(nameof(AutoConfig));
 
             // TODO implement
         }
@@ -59,26 +60,26 @@ namespace DevKit.DIoC
         {
             if (_bootConfig == null)
             {
-                Loggers.Console.LogInfo($"{nameof(BootConfig)} is null. Skipping {nameof(Setup)}");
+                Logger.Default.LogInfo($"{nameof(BootConfig)} is null. Skipping {nameof(Setup)}");
                 return;
             }
             if (_bootConfig.Assemblies.IsNullOrEmpty())
             {
-                Loggers.Console.LogInfo($"{nameof(_bootConfig.Assemblies)} is null. Skipping {nameof(Setup)}");
+                Logger.Default.LogInfo($"{nameof(_bootConfig.Assemblies)} is null. Skipping {nameof(Setup)}");
             }
 
-            Loggers.Console.LogInfo("Processing {0}...", nameof(BootConfig));
+            Logger.Default.LogInfo("Processing {0}...", nameof(BootConfig));
 
             foreach (var assemblyConfig in _bootConfig.Assemblies)
             {
                 if (assemblyConfig == null)
                 {
-                    Loggers.Console.LogInfo($"{nameof(AssemblyConfig)} is null. Skipping it.");
+                    Logger.Default.LogInfo($"{nameof(AssemblyConfig)} is null. Skipping it.");
                     continue;
                 }
                 if (assemblyConfig.Types.IsNullOrEmpty())
                 {
-                    Loggers.Console.LogInfo($"[{assemblyConfig.Name}] {nameof(AssemblyConfig)}->{nameof(assemblyConfig.Types)} is null/empty. Skipping it.");
+                    Logger.Default.LogInfo($"[{assemblyConfig.Name}] {nameof(AssemblyConfig)}->{nameof(assemblyConfig.Types)} is null/empty. Skipping it.");
                     continue;
                 }
 
@@ -86,7 +87,7 @@ namespace DevKit.DIoC
                 {
                     if (typeConfig == null)
                     {
-                        Loggers.Console.LogInfo($"{nameof(TypeConfig)} is null. Skipping it.");
+                        Logger.Default.LogInfo($"{nameof(TypeConfig)} is null. Skipping it.");
                         continue;
                     }
 
@@ -94,7 +95,7 @@ namespace DevKit.DIoC
                 }
             }
 
-            Loggers.Console.LogInfo("Processed {0}.", nameof(BootConfig));
+            Logger.Default.LogInfo("Processed {0}.", nameof(BootConfig));
         }
 
         private static void Map(TypeConfig typeConfig)
