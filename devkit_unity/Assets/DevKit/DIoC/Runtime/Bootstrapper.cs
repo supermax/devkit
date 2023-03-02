@@ -12,7 +12,7 @@ namespace DevKit.DIoC
     /// </summary>
     public class Bootstrapper : MonoBehaviour
     {
-        [SerializeField] protected BootConfig _bootConfig;
+        [SerializeReference] protected BootConfig _bootConfig;
 
         public BootConfig BootConfig
         {

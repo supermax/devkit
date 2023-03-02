@@ -12,22 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5ae38ac754c498eba7081e2345e1d24, type: 3}
   m_Name: BootConfig
   m_EditorClassIdentifier: 
-  _autoConfig: 0
+  _autoConfig: 1
   _assemblies:
   - Name: 
     _assembly: {fileID: 0}
     _types:
     - Name: 
       _initTrigger: 0
-      _singleton: 0
-      _type: {fileID: 11500000, guid: 3f4ad1323bb744eb98169b77a415d2c5, type: 3}
-      _implementations:
-      - {fileID: 11500000, guid: 569598c23ecc41ecba6a913ee1bcc4ac, type: 3}
-      _dependencies: []
-    - Name: 
-      _initTrigger: 0
-      _singleton: 0
-      _type: {fileID: 11500000, guid: 3f4ad1323bb744eb98169b77a415d2c5, type: 3}
-      _implementations:
-      - {fileID: 11500000, guid: 569598c23ecc41ecba6a913ee1bcc4ac, type: 3}
+      _singleton: 1
+      _type: {fileID: 11500000, guid: e5ae38ac754c498eba7081e2345e1d24, type: 3}
+      _implementations: []
       _dependencies: []

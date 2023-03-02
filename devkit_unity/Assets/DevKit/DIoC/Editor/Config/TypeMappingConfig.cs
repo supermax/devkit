@@ -14,9 +14,10 @@ namespace DevKit.DIoC.Editor.Config
         private TypeInitTrigger _initTrigger;
 
         [SerializeField]
+        [Tooltip("If checked, then the instance of this type will be singleton")]
         private bool _singleton;
 
-        [SerializeField]
+        [SerializeReference]
         private MonoScript _type;
 
         [SerializeField]
@@ -32,36 +33,38 @@ namespace DevKit.DIoC.Editor.Config
                     Name = Name,
                     InitTrigger = _initTrigger,
                     IsSingleton = _singleton,
-                    SourceType = _type.text.GetFullTypeName(),
+                    SourceType = GetTypeName(_type),
+                    TypeMappings = GetTypesNames(_implementations),
+                    TypeDependencies = GetTypesNames(_dependencies)
                 };
-
-            if (!_implementations.IsNullOrEmpty())
-            {
-                config.TypeMappings = new string[_implementations.Length];
-                for (var i = 0; i < _implementations.Length; i++)
-                {
-                    if (_implementations[i] == null)
-                    {
-                        continue;
-                    }
-                    config.TypeMappings[i] = _implementations[i].text.GetFullTypeName();
-                }
-            }
-            if (_dependencies.IsNullOrEmpty())
-            {
-                return config;
-            }
-
-            config.TypeDependencies = new string[_dependencies.Length];
-            for (var i = 0; i < _dependencies.Length; i++)
-            {
-                if (_dependencies[i] == null)
-                {
-                    continue;
-                }
-                config.TypeDependencies[i] = _dependencies[i].text.GetFullTypeName();
-            }
             return config;
+        }
+
+        private static string[] GetTypesNames(MonoScript[] scripts)
+        {
+            if (scripts.IsNullOrEmpty())
+            {
+                return null;
+            }
+
+            var typeNames = new string[scripts.Length];
+            for (var i = 0; i < scripts.Length; i++)
+            {
+                typeNames[i] = GetTypeName(scripts[i]);
+            }
+            return typeNames;
+        }
+
+        private static string GetTypeName(MonoScript script)
+        {
+            if (script == null)
+            {
+                return null;
+            }
+
+            var implementationType = script.GetClass();
+            var typeName = implementationType != null ? implementationType.FullName : script.text.GetFullTypeName();
+            return typeName;
         }
     }
 }
