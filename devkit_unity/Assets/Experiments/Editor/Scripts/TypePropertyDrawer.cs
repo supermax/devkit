@@ -2,55 +2,84 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using DevKit.Core.Extensions;
 using UnityEngine;
 using UnityEditor;
 using UnityEditorInternal;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 
-[CustomPropertyDrawer(typeof(TypeSelector), true)]
-public class TypePropertyDrawer : PropertyDrawer
+[CustomEditor(typeof(TypeSelector), true)]
+public class TypePropertyDrawer : Editor
 {
-    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    // TODO ensure var values persist
+    private string[] _assemblyNames;
+
+    private Assembly[] _assemblies;
+
+    private string _selectedAssemblyName;
+
+    private Assembly _selectedAssembly;
+
+    private int _selectedAssemblyIndex;
+
+    protected override void OnHeaderGUI()
     {
-        EditorGUI.BeginProperty(position, label, property);
+        Debug.LogWarning("base.OnHeaderGUI();");
+        base.OnHeaderGUI();
+    }
 
-        // Begin a horizontal group
-        //EditorGUILayout.BeginHorizontal();
+    public override void OnInspectorGUI()
+    {
+        Debug.LogWarning("base.OnInspectorGUI();");
 
-        // Draw the object field
-        var objectType = fieldInfo.FieldType;
+        EditorGUILayout.Foldout(true, "Type Mapping", true);
+        EditorGUILayout.BeginVertical();
 
-        var obj = fieldInfo.GetValue(property.serializedObject.targetObject);
-        Debug.LogWarningFormat("obj: {0}", obj);
-
-        var value = obj as Object;
-
-        var newObj = EditorGUI.ObjectField(position, "Type", value, typeof(AssemblyDefinitionAsset), false);
-
-        // var ass = AppDomain.CurrentDomain.GetAssemblies()[0];
-        //
-        // var types = ass.ExportedTypes.ToArray();
-        // var content = new string[types.Length];
-        //
-        // for (int i = 0; i < types.Length; i++)
-        // {
-        //     content[i] = types[i].FullName;
-        // }
-        //
-        // Array.Sort(content);
-        //
-        // EditorGUI.Popup(position, "Type: ", 0, content);
-
-        // Update the value if it has changed
-        if (!Equals(newObj, obj))
+        if (_assemblyNames.IsNullOrEmpty())
         {
-            fieldInfo.SetValue(property.serializedObject.targetObject, newObj);
+            _assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            _assemblyNames = new string[_assemblies.Length];
+            for (var i = 0; i < _assemblies.Length; i++)
+            {
+                _assemblyNames[i] = _assemblies[i].GetName().Name;
+            }
+            if (!_assemblies.IsNullOrEmpty())
+            {
+                Array.Sort(_assemblyNames);
+            }
         }
 
-        // End the horizontal group
-        //EditorGUILayout.EndHorizontal();
+        if (!_assemblyNames.IsNullOrEmpty())
+        {
+            _selectedAssemblyIndex = EditorGUILayout.Popup("Assembly ", _selectedAssemblyIndex, _assemblyNames);
+            if(_selectedAssemblyIndex >= 0 && _selectedAssemblyIndex < _assemblyNames.Length)
+            {
+                _selectedAssembly = _assemblies[_selectedAssemblyIndex];
+                _selectedAssemblyName = _assemblyNames[_selectedAssemblyIndex];
+            }
+        }
 
-        EditorGUI.EndProperty();
+        if (_selectedAssembly != null)
+        {
+            var types = _selectedAssembly.GetTypes();
+            var typeNames = new string[types.Length];
+            for (var i = 0; i < types.Length; i++)
+            {
+                typeNames[i] = types[i].FullName;
+            }
+            if (!typeNames.IsNullOrEmpty())
+            {
+                Array.Sort(typeNames);
+            }
+
+            EditorGUILayout.Popup("Type ", 0, typeNames);
+        }
+
+        EditorGUILayout.EndVertical();
+
+        base.OnInspectorGUI();
     }
+
+
 }

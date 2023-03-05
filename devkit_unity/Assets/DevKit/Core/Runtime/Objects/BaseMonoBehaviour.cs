@@ -35,7 +35,7 @@ namespace DevKit.Core.Objects
         {
             if (IsLoggingEnabled)
             {
-                Debug.LogFormat("{0}", callerName);
+                Debug.LogFormat("{0}->{1}", GetType().Name, callerName);
             }
         }
 

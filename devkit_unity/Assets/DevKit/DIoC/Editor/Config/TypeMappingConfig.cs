@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using DevKit.Core.Extensions;
 using DevKit.DIoC.Config;
 using DevKit.DIoC.Extensions;
@@ -26,6 +27,8 @@ namespace DevKit.DIoC.Editor.Config
         [SerializeField]
         private MonoScript[] _dependencies;
 
+        public Assembly Assembly { get; set; }
+
         public override TypeConfig GetConfig()
         {
             var config = new TypeConfig
@@ -37,10 +40,18 @@ namespace DevKit.DIoC.Editor.Config
                     TypeMappings = GetTypesNames(_implementations),
                     TypeDependencies = GetTypesNames(_dependencies)
                 };
+            if (Name.IsNullOrEmpty())
+            {
+                Name = config.SourceType;
+            }
+            if (config.Name.IsNullOrEmpty())
+            {
+                config.Name = Name;
+            }
             return config;
         }
 
-        private static string[] GetTypesNames(MonoScript[] scripts)
+        private string[] GetTypesNames(MonoScript[] scripts)
         {
             if (scripts.IsNullOrEmpty())
             {
@@ -55,16 +66,35 @@ namespace DevKit.DIoC.Editor.Config
             return typeNames;
         }
 
-        private static string GetTypeName(MonoScript script)
+        private string GetTypeName(MonoScript script)
         {
-            if (script == null)
-            {
-                return null;
-            }
+            script.ThrowIfNull(nameof(script));
+            script.text.ThrowIfNullOrEmpty($"Empty {nameof(script)}.{nameof(script.text)}");
 
             var implementationType = script.GetClass();
             var typeName = implementationType != null ? implementationType.FullName : script.text.GetFullTypeName();
-            return typeName;
+
+            if (typeName.IsNullOrEmpty())
+            {
+                throw new OperationCanceledException($"Script `{script.name}` has empty `{nameof(typeName)}`.");
+            }
+            typeName = typeName.ToLowerInvariant();
+
+            Debug.LogFormat("Validating type: `{0}`...", typeName);
+
+            var types = Assembly.GetTypes();
+            foreach (var type in types)
+            {
+                if (type.FullName.IsNullOrEmpty()
+                    || !type.FullName.ToLowerInvariant().Contains(typeName))
+                {
+                    continue;
+                }
+                Debug.LogFormat("Validated type: `{0}`...", type.FullName);
+                return type.FullName;
+            }
+
+            throw new OperationCanceledException($"Cannot get type `{typeName}`.");
         }
     }
 }

@@ -1,7 +1,8 @@
 using System;
 using DevKit.Core.Extensions;
+using DevKit.Core.Objects;
 using DevKit.DIoC.Config;
-using DevKit.Logging;
+using DevKit.Logging.Extensions;
 using UnityEngine;
 using Logger = DevKit.Logging.Logger;
 
@@ -10,7 +11,7 @@ namespace DevKit.DIoC
     /// <summary>
     /// Responsible for loading and mapping types into <see cref="Maestro"/> container
     /// </summary>
-    public class Bootstrapper : MonoBehaviour
+    public class Bootstrapper : BaseMonoBehaviour
     {
         [SerializeReference] protected BootConfig _bootConfig;
 
@@ -39,7 +40,7 @@ namespace DevKit.DIoC
         {
             if (_bootConfig == null)
             {
-                Logger.Default.LogInfo($"{nameof(BootConfig)} is null. Skipping {nameof(Setup)}");
+                this.LogInfo($"{nameof(BootConfig)} is null. Skipping {nameof(Setup)}");
                 return;
             }
             if (_bootConfig.AutoConfig)
@@ -60,26 +61,26 @@ namespace DevKit.DIoC
         {
             if (_bootConfig == null)
             {
-                Logger.Default.LogInfo($"{nameof(BootConfig)} is null. Skipping {nameof(Setup)}");
+                this.LogInfo($"{nameof(BootConfig)} is null. Skipping {nameof(Setup)}");
                 return;
             }
             if (_bootConfig.Assemblies.IsNullOrEmpty())
             {
-                Logger.Default.LogInfo($"{nameof(_bootConfig.Assemblies)} is null. Skipping {nameof(Setup)}");
+                this.LogInfo($"{nameof(_bootConfig.Assemblies)} is null. Skipping {nameof(Setup)}");
             }
 
-            Logger.Default.LogInfo("Processing {0}...", nameof(BootConfig));
+            this.LogInfo("Processing {0}...", nameof(BootConfig));
 
             foreach (var assemblyConfig in _bootConfig.Assemblies)
             {
                 if (assemblyConfig == null)
                 {
-                    Logger.Default.LogInfo($"{nameof(AssemblyConfig)} is null. Skipping it.");
+                    this.LogInfo($"{nameof(AssemblyConfig)} is null. Skipping it.");
                     continue;
                 }
                 if (assemblyConfig.Types.IsNullOrEmpty())
                 {
-                    Logger.Default.LogInfo($"[{assemblyConfig.Name}] {nameof(AssemblyConfig)}->{nameof(assemblyConfig.Types)} is null/empty. Skipping it.");
+                    this.LogInfo($"[{assemblyConfig.Name}] {nameof(AssemblyConfig)}->{nameof(assemblyConfig.Types)} is null/empty. Skipping it.");
                     continue;
                 }
 
@@ -87,25 +88,38 @@ namespace DevKit.DIoC
                 {
                     if (typeConfig == null)
                     {
-                        Logger.Default.LogInfo($"{nameof(TypeConfig)} is null. Skipping it.");
+                        this.LogInfo($"{nameof(TypeConfig)} is null. Skipping it.");
                         continue;
                     }
 
-                    Map(typeConfig);
+                    Map(assemblyConfig, typeConfig);
                 }
             }
 
-            Logger.Default.LogInfo("Processed {0}.", nameof(BootConfig));
+            this.LogInfo("Processed {0}.", nameof(BootConfig));
         }
 
-        private static void Map(TypeConfig typeConfig)
+        private static void Map(AssemblyConfig assemblyConfig, TypeConfig typeConfig)
         {
+            //TODO move assembly name to type map
+
+            assemblyConfig.ThrowIfNull(nameof(assemblyConfig));
+            typeConfig.ThrowIfNull(nameof(typeConfig));
+
             var maestroInterfaceType = typeof (IMaestro);
             var mapMethodInfo = maestroInterfaceType.GetMethod(nameof(Maestro.Default.Map));
-            var sourceType = Type.GetType(typeConfig.SourceType);
+            var sourceType = Type.GetType($"{typeConfig.SourceType}, {assemblyConfig.Name}", true, true);
             var genericMapMethodInfo = mapMethodInfo.MakeGenericMethod(sourceType);
 
-            genericMapMethodInfo.Invoke(Maestro.Default, null);
+            var typeMapObject = genericMapMethodInfo.Invoke(Maestro.Default, null);
+            var typeMapObjectType = typeMapObject.GetType();
+            var mapToTypeMethodInfo = typeMapObjectType.GetMethod("To");
+            var targetTypeName = typeConfig.TypeMappings[0];
+            var targetType = Type.GetType($"{targetTypeName}, {assemblyConfig.Name}", true, true);
+            var genericMapToMethodInfo = mapToTypeMethodInfo.MakeGenericMethod(targetType);
+            typeMapObject = genericMapToMethodInfo.Invoke(typeMapObject, new object[]{string.Empty});
+
+            Debug.LogWarning(typeMapObject);
 
             //Maestro.Default.Map<object>().Singleton<object>();
         }

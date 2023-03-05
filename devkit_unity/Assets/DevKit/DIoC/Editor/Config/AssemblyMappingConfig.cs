@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using DevKit.Core.Extensions;
 using DevKit.DIoC.Config;
 using UnityEditorInternal;
@@ -9,30 +10,48 @@ namespace DevKit.DIoC.Editor.Config
     [Serializable]
     public class AssemblyMappingConfig : BaseMappingConfig<AssemblyConfig>
     {
-        [SerializeField] private AssemblyDefinitionAsset _assembly;
+        [SerializeField]
+        private AssemblyDefinitionAsset _assemblyDefinition;
 
-        [SerializeField] private TypeMappingConfig[] _types;
+        [SerializeField]
+        private TypeMappingConfig[] _typeMappings;
 
         public override AssemblyConfig GetConfig()
         {
             var config = new AssemblyConfig();
-            if (_assembly != null)
+            if (_assemblyDefinition != null)
             {
-                Name = _assembly.name;
-                config.Name = _assembly.name;
+                var info = _assemblyDefinition.text.FromJson<AssemblyInfo>();
+                Name = info.Name;
+                config.Name = Name;
             }
 
-            if (_types.IsNullOrEmpty())
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            var assemblyName = Name.ToLowerInvariant();
+            Assembly selectedAssembly = null;
+            foreach (var assembly in assemblies)
+            {
+                if (assembly.FullName.IsNullOrEmpty()
+                    || !assembly.FullName.ToLowerInvariant().Contains(assemblyName))
+                {
+                    continue;
+                }
+                selectedAssembly = assembly;
+            }
+
+            if (selectedAssembly == null || _typeMappings.IsNullOrEmpty())
             {
                 return config;
             }
 
-            config.Types = new TypeConfig[_types.Length];
-            for (var i = 0; i < _types.Length; i++)
+            config.Types = new TypeConfig[_typeMappings.Length];
+            for (var i = 0; i < _typeMappings.Length; i++)
             {
-                config.Types[i] = _types[i].GetConfig();
+                _typeMappings[i].Assembly = selectedAssembly;
+                config.Types[i] = _typeMappings[i].GetConfig();
             }
             return config;
         }
     }
+
 }

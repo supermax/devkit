@@ -1,8 +1,6 @@
-using UnityEngine;
-
 namespace DevKit.DIoC.Config
 {
-    public class BootConfig : ScriptableObject
+    public interface IBootConfig
     {
         public bool AutoConfig
         {
