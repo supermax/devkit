@@ -19,5 +19,9 @@ namespace DevKit.Entities.API
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         T Create<T>() where T : class, IEntity<T>;
+
+        TInterface Register<TInterface, TImplementation>()
+            where TInterface : class
+            where TImplementation : class, TInterface;
     }
 }

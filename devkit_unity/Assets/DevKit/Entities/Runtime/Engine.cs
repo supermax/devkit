@@ -21,6 +21,10 @@ namespace DevKit.Entities
         /// <returns></returns>
         public abstract T Create<T>() where T : class, IEntity<T>;
 
+        public abstract TInterface Register<TInterface, TImplementation>()
+            where TInterface : class
+            where TImplementation : class, TInterface;
+
         public virtual void Dispose()
         {
             Config = null;

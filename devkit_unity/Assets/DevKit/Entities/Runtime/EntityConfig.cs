@@ -12,11 +12,12 @@ namespace DevKit.Entities
     [DataContract]
     public class EntityConfig : IEntityConfig
     {
-        private IDictionary<string, PropertyValueHolder> _propertyValues;
+        [DataMember(Name = "properties")]
+        public Dictionary<string, PropertyValueHolder> PropertyValues { get; set; } = new();
 
-        public void Init(IDictionary<string, PropertyValueHolder> propertyValues)
+        public void Init(Dictionary<string, PropertyValueHolder> propertyValues)
         {
-            _propertyValues = propertyValues;
+            PropertyValues = propertyValues;
         }
 
         /// <summary>
@@ -26,19 +27,19 @@ namespace DevKit.Entities
         /// <returns></returns>
         public PropertyValueHolder GetPropertyInitialValue(string name)
         {
-            var value = _propertyValues[name];
+            var value = PropertyValues[name];
             return value;
         }
 
         public void Dispose()
         {
-            if (_propertyValues == null)
+            if (PropertyValues == null)
             {
                 return;
             }
 
-            _propertyValues.Clear();
-            _propertyValues = null;
+            PropertyValues.Clear();
+            PropertyValues = null;
         }
     }
 }

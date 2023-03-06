@@ -18,6 +18,7 @@ namespace DevKit.Entities
         /// <summary>
         /// Property values container
         /// </summary>
+        [DataMember(Name = "properties")]
         public Dictionary<string, PropertyValueHolder> PropertyValues { get; } = new ();
 
         public void SetPropertyValue(string name, bool? value)
