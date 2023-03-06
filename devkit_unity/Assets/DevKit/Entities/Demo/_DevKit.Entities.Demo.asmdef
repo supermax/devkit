@@ -1,0 +1,17 @@
+{
+    "name": "DevKit.Entities.Demo",
+    "rootNamespace": "",
+    "references": [
+        "GUID:189092fc0a61b4360931e9f8819b9ac2",
+        "GUID:5f475148164a84863bdfbd9172dccaa3"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -12,6 +12,25 @@ namespace DevKit.Core.Extensions
     public static class CollectionExtensions
     {
         /// <summary>
+        /// Convert array to array of strings
+        /// </summary>
+        /// <param name="source">The source array</param>
+        /// <param name="converter"><see cref="T"/> to <see cref="string"/> conversion function</param>
+        /// <typeparam name="T">The type of the item</typeparam>
+        /// <returns>The array of strings</returns>
+        public static string[] ToStringArray<T>(this T[] source, Func<T, string> converter)
+        {
+            source.ThrowIfNull(nameof(source));
+
+            var copy = new string[source.Length];
+            for (var i = 0; i < source.Length; i++)
+            {
+                copy[i] = converter(source[i]);
+            }
+            return copy;
+        }
+
+        /// <summary>
         /// Convert array to array of objects
         /// </summary>
         /// <param name="source">The source array</param>
@@ -19,10 +38,8 @@ namespace DevKit.Core.Extensions
         /// <returns>The array of objects</returns>
         public static object[] ToObjectArray<T>(this T[] source)
         {
-            if(source.IsNullOrEmpty())
-            {
-                return null;
-            }
+            source.ThrowIfNull(nameof(source));
+
             var copy = new object[source.Length];
             Array.Copy(source, copy, source.Length);
             return copy;
@@ -493,6 +510,28 @@ namespace DevKit.Core.Extensions
             }
             var last = collection[^1];
             return last;
+        }
+
+        /// <summary>
+        /// Randomly shuffles array and returns same instance
+        /// </summary>
+        /// <param name="arr">The source to shuffle</param>
+        /// <typeparam name="T">The type of the items</typeparam>
+        /// <returns>Shuffled array</returns>
+        public static T[] Shuffle<T>(this T[] arr)
+        {
+            // init standard randomizer
+            var rnd = new System.Random();
+
+            // capture array length
+            var n = arr.Length;
+            // loop to shuffle array items in random order
+            while (n > 1)
+            {
+                var i = rnd.Next(n--);
+                (arr[n], arr[i]) = (arr[i], arr[n]);
+            }
+            return arr;
         }
     }
 }
