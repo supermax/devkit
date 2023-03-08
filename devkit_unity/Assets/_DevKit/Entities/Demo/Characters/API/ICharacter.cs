@@ -13,7 +13,7 @@ namespace DevKit.Entities.Demo.Characters.API
         /// <summary>
         /// Character config section
         /// </summary>
-        ICharactersConfig Config { get; set; }
+        IEntityConfig Config { get; set; }
 
         /// <summary>
         /// Character's Health Value
@@ -28,12 +28,12 @@ namespace DevKit.Entities.Demo.Characters.API
         /// <summary>
         /// Indicates if this character can be attacked
         /// </summary>
-        bool IsTargetable { get; set; }
+        bool? IsTargetable { get; set; }
 
         /// <summary>
         /// Indicates if this character can attack
         /// </summary>
-        bool CanAttack { get; set; }
+        bool? CanAttack { get; set; }
 
         /// <summary>
         /// Returns <code>true</code> in case this character can be attacked by other entity\character

@@ -34,7 +34,7 @@ namespace DevKit.Entities.Demo.Characters
             var characterConfig = GetConfig();
             if (character != null && characterConfig != null)
             {
-                character.Config = characterConfig;
+                character.Config = characterConfig.GetEntityConfig<T>();
             }
 
             entity.Init();
@@ -43,6 +43,7 @@ namespace DevKit.Entities.Demo.Characters
 
         public override TInterface Register<TInterface, TImplementation>()
         {
+            // TODO use _typeMappings
             throw new NotImplementedException();
         }
     }

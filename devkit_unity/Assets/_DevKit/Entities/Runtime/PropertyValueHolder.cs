@@ -1,4 +1,7 @@
-﻿namespace DevKit.Entities
+﻿using System;
+using System.Runtime.Serialization;
+
+namespace DevKit.Entities
 {
     /// <summary>
     /// Performance friendly, strongly typed, holder of property values
@@ -6,21 +9,26 @@
     /// <remarks>
     /// Mainly used in RPG entities with engine initialization and optimal calculations
     /// </remarks>
+    [DataContract]
+    [Serializable]
     public struct PropertyValueHolder
     {
         /// <summary>
         /// Holds <see cref="bool"/> value
         /// </summary>
+        [DataMember(Name = "boolean")]
         public bool? Bool { get; private set; }
 
         /// <summary>
         /// Holds <see cref="double"/> value
         /// </summary>
+        [DataMember(Name = "numeric")]
         public double? Number { get; private set; }
 
         /// <summary>
         /// Holds <see cref="string"/> value
         /// </summary>
+        [DataMember(Name = "text")]
         public string Text { get; private set; }
 
         /// <summary>

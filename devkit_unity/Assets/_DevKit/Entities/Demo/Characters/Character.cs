@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using DevKit.Entities.API;
 using DevKit.Entities.Demo.Characters.API;
 
@@ -10,9 +11,11 @@ namespace DevKit.Entities.Demo.Characters
     /// <remarks>
     /// Extends <see cref="Entity{T}"/> by adding required properties and functions for battle and etc
     /// </remarks>
+    [DataContract]
+    [Serializable]
     public abstract class Character : Entity<ICharacter>, ICharacter
     {
-        public ICharactersConfig Config { get; set; }
+        public IEntityConfig Config { get; set; }
 
         /// <inheritdoc />
         public virtual double? Health
@@ -43,7 +46,7 @@ namespace DevKit.Entities.Demo.Characters
         }
 
         /// <inheritdoc />
-        public virtual bool IsTargetable
+        public virtual bool? IsTargetable
         {
             get
             {
@@ -57,7 +60,7 @@ namespace DevKit.Entities.Demo.Characters
         }
 
         /// <inheritdoc />
-        public virtual bool CanAttack
+        public virtual bool? CanAttack
         {
             get
             {
@@ -87,11 +90,10 @@ namespace DevKit.Entities.Demo.Characters
         {
             base.Init();
 
-            var type = GetType();
-            Damage = Config.GetPropertyInitialValue(type, nameof(Damage)).Number;
-            Health = Config.GetPropertyInitialValue(type, nameof(Health)).Number;
-            CanAttack = Config.GetPropertyInitialValue(type, nameof(CanAttack)).Bool.GetValueOrDefault();
-            IsTargetable = Config.GetPropertyInitialValue(type, nameof(IsTargetable)).Bool.GetValueOrDefault();
+            Damage = Config.GetPropertyInitialValue(nameof(Damage)).Number;
+            Health = Config.GetPropertyInitialValue(nameof(Health)).Number;
+            CanAttack = Config.GetPropertyInitialValue(nameof(CanAttack)).Bool;
+            IsTargetable = Config.GetPropertyInitialValue(nameof(IsTargetable)).Bool;
         }
     }
 }

@@ -1,6 +1,6 @@
 {
     "name": "DevKit.Core",
-    "rootNamespace": "",
+    "rootNamespace": "DevKit",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],

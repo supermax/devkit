@@ -12,7 +12,7 @@ namespace DevKit.Entities
     [DataContract]
     public class EntityConfig : IEntityConfig
     {
-        [DataMember(Name = "properties")]
+        [DataMember(Name = "values")]
         public Dictionary<string, PropertyValueHolder> PropertyValues { get; set; } = new();
 
         public void Init(Dictionary<string, PropertyValueHolder> propertyValues)

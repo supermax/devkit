@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using DevKit.Core.Extensions;
 using DevKit.Core.Observables.API;
 
 namespace DevKit.Core.Observables
@@ -18,36 +19,37 @@ namespace DevKit.Core.Observables
 
         protected bool IsDisposed;
 
+        protected bool IsUpdateSuspended;
+
         public virtual event PropertyChangedEventHandler<T> PropertyChanged;
 
-        public IObservableObject<T> Subscribe(DevKit.Core.Observables.API.IObserver<T> observer)
+        public IObservableObject<T> Subscribe(API.IObserver<T> observer)
         {
-            if (observer == null)
-            {
-                throw new ArgumentNullException(nameof(observer));
-            }
+            observer.ThrowIfNull(nameof(observer));
             PropertyChanged += observer.OnPropertyChanged;
             return this;
         }
 
-        public IObservableObject<T> Unsubscribe(DevKit.Core.Observables.API.IObserver<T> observer)
+        public IObservableObject<T> Unsubscribe(API.IObserver<T> observer)
         {
-            if (observer == null)
-            {
-                throw new ArgumentNullException(nameof(observer));
-            }
+            observer.ThrowIfNull(nameof(observer));
             PropertyChanged -= observer.OnPropertyChanged;
             return this;
         }
 
         public IObservableObject<T> BeginUpdate()
         {
-            throw new NotImplementedException();
+            IsUpdateSuspended = true;
+            // TODO suspend events
+            return this;
         }
 
         public IObservableObject<T> EndUpdate()
         {
-            throw new NotImplementedException();
+            IsUpdateSuspended = true;
+            // TODO resume events
+            InvokePropertyChanged("[]", null, null);
+            return this;
         }
 
         /// <summary>
@@ -58,7 +60,7 @@ namespace DevKit.Core.Observables
         /// <param name="newValue"></param>
         protected virtual void InvokePropertyChanged(string name, object prevValue, object newValue)
         {
-            if (PropertyChanged == null)
+            if (PropertyChanged == null || IsUpdateSuspended)
             {
                 return;
             }
@@ -91,5 +93,4 @@ namespace DevKit.Core.Observables
 
         }
     }
-
 }

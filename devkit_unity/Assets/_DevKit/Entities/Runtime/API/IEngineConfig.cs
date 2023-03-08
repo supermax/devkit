@@ -12,7 +12,7 @@ namespace DevKit.Entities.API
         /// Initialize config values
         /// </summary>
         /// <param name="entitiesConfig"></param>
-        void Init(IDictionary<Type, IEntityConfig> entitiesConfig);
+        void Init(Dictionary<Type, EntityConfig> entitiesConfig);
 
         /// <summary>
         /// Gets initial value for given property
@@ -20,7 +20,7 @@ namespace DevKit.Entities.API
         /// <param name="name"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        PropertyValueHolder GetPropertyInitialValue<T>(string name);
+        PropertyValueHolder? GetPropertyInitialValue<T>(string name);
 
         /// <summary>
         /// Gets initial value for given property
@@ -28,6 +28,10 @@ namespace DevKit.Entities.API
         /// <param name="type"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        PropertyValueHolder GetPropertyInitialValue(Type type, string name);
+        PropertyValueHolder? GetPropertyInitialValue(Type type, string name);
+
+        IEntityConfig GetEntityConfig<T>();
+
+        IEntityConfig GetEntityConfig(Type type);
     }
 }

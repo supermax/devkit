@@ -11,7 +11,9 @@ namespace DevKit.Entities
     /// </summary>
     [Serializable]
     [DataContract]
-    public class EntityCollection<TKey, TValue> : ObservableCollection<TKey, TValue>, IEntityCollection<TKey, TValue> where TValue : class, IEntity<TValue>
+    public class EntityCollection<TKey, TValue>
+        : ObservableCollection<TKey, TValue>, IEntityCollection<TKey, TValue>
+        where TValue : class, IEntity<TValue>
     {
 
     }

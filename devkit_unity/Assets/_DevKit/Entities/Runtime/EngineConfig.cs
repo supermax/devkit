@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using DevKit.Core.Extensions;
 using DevKit.Entities.API;
 
 namespace DevKit.Entities
@@ -15,7 +16,8 @@ namespace DevKit.Entities
         /// <summary>
         /// Contains config values for entities
         /// </summary>
-        protected IDictionary<Type, IEntityConfig> EntitiesConfig;
+        [DataMember(Name = "values")]
+        public Dictionary<Type, EntityConfig> EntitiesConfig { get; set; } = new();
 
         public abstract void Init();
 
@@ -28,23 +30,47 @@ namespace DevKit.Entities
             EntitiesConfig.Clear();
         }
 
-        public void Init(IDictionary<Type, IEntityConfig> entitiesConfig)
+        public void Init(Dictionary<Type, EntityConfig> entitiesConfig)
         {
             EntitiesConfig = entitiesConfig;
         }
 
-        public PropertyValueHolder GetPropertyInitialValue<T>(string name)
+        public PropertyValueHolder? GetPropertyInitialValue<T>(string name)
         {
             var type = typeof(T);
             var value = GetPropertyInitialValue(type, name);
             return value;
         }
 
-        public PropertyValueHolder GetPropertyInitialValue(Type type, string name)
+        public PropertyValueHolder? GetPropertyInitialValue(Type type, string name)
         {
+            type.ThrowIfNull(nameof(type));
+            name.ThrowIfNull(nameof(name));
+
             var entityConfig = EntitiesConfig[type];
+            if (!EntitiesConfig.ContainsKey(type))
+            {
+                return null;
+            }
             var value = entityConfig.GetPropertyInitialValue(name);
             return value;
+        }
+
+        public IEntityConfig GetEntityConfig<T>()
+        {
+            var type = typeof (T);
+            return GetEntityConfig(type);
+        }
+
+        public IEntityConfig GetEntityConfig(Type type)
+        {
+            type.ThrowIfNull(nameof(type));
+            if (!EntitiesConfig.ContainsKey(type))
+            {
+                return null;
+            }
+            var entityConfig = EntitiesConfig[type];
+            return entityConfig;
         }
 
         protected virtual void Dispose(bool disposing)
