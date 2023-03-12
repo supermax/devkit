@@ -12,6 +12,34 @@ namespace DevKit.Core.Extensions
     public static class CollectionExtensions
     {
         /// <summary>
+        /// Returns first element or default value of <see cref="T"/>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        public static T GetFirstOrDefault<T>(this IEnumerable<T> source)
+        {
+            source.ThrowIfNull(nameof(source));
+
+            if (source is IList<T> list)
+            {
+                if (list.Count > 0)
+                {
+                    return list[0];
+                }
+            }
+            else
+            {
+                using var enumerator = source.GetEnumerator();
+                if (enumerator.MoveNext())
+                {
+                    return enumerator.Current;
+                }
+            }
+            return default;
+        }
+
+        /// <summary>
         /// Convert array to array of strings
         /// </summary>
         /// <param name="source">The source array</param>

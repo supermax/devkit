@@ -1,6 +1,6 @@
 {
     "name": "DevKit.PubSub.Editor",
-    "rootNamespace": "",
+    "rootNamespace": "DevKit",
     "references": [
         "GUID:189092fc0a61b4360931e9f8819b9ac2",
         "GUID:6999c3584136d4335a7639c03272c528"

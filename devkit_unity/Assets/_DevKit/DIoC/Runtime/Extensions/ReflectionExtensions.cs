@@ -72,5 +72,18 @@ namespace DevKit.DIoC.Extensions
             var typeName = namespaceName.IsNullOrEmpty() ? className : $"{namespaceName}.{className}";
             return typeName;
         }
+
+        public static ITypeWrapper GetTypeWrapper(this object obj)
+        {
+            var type = obj.GetType();
+            var wrapper = type.GetTypeWrapper();
+            return wrapper;
+        }
+
+        public static ITypeWrapper GetTypeWrapper(this Type type)
+        {
+            var wrapper = new TypeWrapper(type);
+            return wrapper;
+        }
     }
 }

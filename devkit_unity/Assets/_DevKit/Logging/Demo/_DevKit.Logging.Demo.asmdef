@@ -1,6 +1,6 @@
 {
     "name": "DevKit.Logging.Demo",
-    "rootNamespace": "",
+    "rootNamespace": "DevKit",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],

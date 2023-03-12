@@ -17,19 +17,19 @@ namespace DevKit.Entities
         /// Holds <see cref="bool"/> value
         /// </summary>
         [DataMember(Name = "boolean")]
-        public bool? Bool { get; private set; }
+        public bool? Bool { get; set; }
 
         /// <summary>
         /// Holds <see cref="double"/> value
         /// </summary>
         [DataMember(Name = "numeric")]
-        public double? Number { get; private set; }
+        public double? Number { get; set; }
 
         /// <summary>
         /// Holds <see cref="string"/> value
         /// </summary>
         [DataMember(Name = "text")]
-        public string Text { get; private set; }
+        public string Text { get; set; }
 
         /// <summary>
         /// Sets <see cref="double"/> value

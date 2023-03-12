@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using DevKit.Entities.Demo.Characters.API;
 
+// TODO do we need specific `CharactersEngine` or we can make it more generic `EntityEngine`
 namespace DevKit.Entities.Demo.Characters
 {
     /// <summary>
@@ -10,13 +11,13 @@ namespace DevKit.Entities.Demo.Characters
     /// <remarks>
     /// Extends <see cref="Engine"/> for entities
     /// </remarks>
-    public class CharactersEngine : Engine, ICharactersEngine
+    public class EntityEngine : Engine, IEntityEngine
     {
         private readonly IDictionary<Type, Type> _typeMappings = new Dictionary<Type, Type>();
 
-        protected virtual ICharactersConfig GetConfig()
+        protected virtual IEntityEngineConfig GetConfig()
         {
-            return Config as ICharactersConfig;
+            return Config as IEntityEngineConfig;
         }
 
         /// <summary>

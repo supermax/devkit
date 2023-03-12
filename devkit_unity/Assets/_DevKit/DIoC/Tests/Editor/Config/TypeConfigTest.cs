@@ -1,6 +1,7 @@
 using DevKit.Core.Extensions;
 using DevKit.DIoC.Config;
 using DevKit.DIoC.Tests.Editor.Entities;
+using DevKit.Serialization.Json.Extensions;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -14,6 +15,7 @@ namespace DevKit.DIoC.Tests.Editor.Config
         {
             var config = new TypeConfig
                 {
+                    Name = nameof(TypeConfig),
                     InitTrigger = TypeInitTrigger.OnMapping,
                     SourceType = typeof(Animal).FullName
                 };

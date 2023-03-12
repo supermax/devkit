@@ -1,12 +1,13 @@
 {
     "name": "DevKit.DIoC.Editor.Tests",
-    "rootNamespace": "",
+    "rootNamespace": "DevKit",
     "references": [
         "GUID:27619889b8ba8c24980f49ee34dbb44a",
         "GUID:0acc523941302664db1f4e527237feb3",
         "GUID:189092fc0a61b4360931e9f8819b9ac2",
         "GUID:5845246a973934255b26491e5bff45e7",
-        "GUID:db37a1d36d5b54f03a677354ad7a8efa"
+        "GUID:db37a1d36d5b54f03a677354ad7a8efa",
+        "GUID:5667eaf776092417d984f0d642785a98"
     ],
     "includePlatforms": [
         "Editor"

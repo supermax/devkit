@@ -1,12 +1,27 @@
-﻿using DevKit.Core.Observables.API;
+﻿using System;
+using DevKit.Core.Observables.API;
 
 namespace DevKit.Entities.API
 {
     /// <summary>
     /// Interface for base entity class
     /// </summary>
-    public interface IEntity<T> : IObservableObject<T>, IInitializable where T : class
+    public interface IEntity<T>
+        : IObservableObject<T>
+            , IInitializable
+            , IDataErrorInfo
+        where T : class
     {
+        /// <summary>
+        /// Entity ID (<see cref="Guid"/> format)
+        /// </summary>
+        Guid Id { get; }
+
+        /// <summary>
+        /// Entity Type ID (<see cref="Guid"/> format)
+        /// </summary>
+        Guid TypeId { get; }
+
         /// <summary>
         /// Sets the boolean property value
         /// </summary>

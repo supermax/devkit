@@ -2,7 +2,6 @@ using System;
 using System.Runtime.Serialization;
 using UnityEditor;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace DevKit.DIoC.Config
 {

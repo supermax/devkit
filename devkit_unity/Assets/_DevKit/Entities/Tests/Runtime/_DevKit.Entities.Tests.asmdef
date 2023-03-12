@@ -1,10 +1,12 @@
 {
     "name": "DevKit.Entities.Tests",
-    "rootNamespace": "",
+    "rootNamespace": "DevKit",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "DevKit.Entities"
+        "DevKit.Core",
+        "DevKit.Entities",
+        "DevKit.Serialization"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

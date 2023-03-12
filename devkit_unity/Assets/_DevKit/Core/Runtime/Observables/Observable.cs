@@ -21,7 +21,9 @@ namespace DevKit.Core.Observables
 
         protected bool IsUpdateSuspended;
 
-        public virtual event PropertyChangedEventHandler<T> PropertyChanged;
+        // TODO consider using weak ref delegate
+        [field: NonSerialized]
+        public event PropertyChangedEventHandler<T> PropertyChanged;
 
         public IObservableObject<T> Subscribe(API.IObserver<T> observer)
         {
@@ -37,14 +39,14 @@ namespace DevKit.Core.Observables
             return this;
         }
 
-        public IObservableObject<T> BeginUpdate()
+        public virtual IObservableObject<T> BeginUpdate()
         {
             IsUpdateSuspended = true;
             // TODO suspend events
             return this;
         }
 
-        public IObservableObject<T> EndUpdate()
+        public virtual IObservableObject<T> EndUpdate()
         {
             IsUpdateSuspended = true;
             // TODO resume events

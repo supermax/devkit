@@ -16,15 +16,102 @@ namespace DevKit.Entities
         where T : class
     {
         /// <summary>
+        /// ID's value holder
+        /// </summary>
+        protected Guid IdValue;
+
+        /// <summary>
+        /// Type ID's value holder
+        /// </summary>
+        protected Guid TypeIdValue;
+
+        /// <summary>
+        ///     Gets or sets the id.
+        /// </summary>
+        /// <value>The id.</value>
+        [DataMember(Name = "id")]
+        public virtual Guid Id
+        {
+            get { return IdValue; }
+            set
+            {
+                IdValue = value;
+                SetPropertyValue(nameof(Id), Id.ToString());
+            }
+        }
+
+        /// <summary>
+        ///     Gets or sets the id.
+        /// </summary>
+        /// <value>The id.</value>
+        [DataMember(Name = "typeId")]
+        public virtual Guid TypeId
+        {
+            get { return TypeId; }
+            set
+            {
+                IdValue = value;
+                SetPropertyValue(nameof(TypeId), TypeId.ToString());
+            }
+        }
+
+        [IgnoreDataMember]
+        public virtual string Error { get; protected set; }
+
+        /// <summary>
         /// Property values container
         /// </summary>
         [DataMember(Name = "properties")]
         public Dictionary<string, PropertyValueHolder> PropertyValues { get; } = new ();
 
+        /// <summary>
+        /// Default ctor
+        /// </summary>
+        protected Entity()
+        {
+            Id = Guid.NewGuid();
+        }
+
+        /// <summary>
+        /// Ctor that accepts ID
+        /// </summary>
+        /// <param name="id"></param>
+        protected Entity(Guid id)
+        {
+            Id = id;
+        }
+
+        /// <summary>
+        /// Property's indexer
+        /// </summary>
+        /// <param name="propertyName">The name of the property</param>
+        /// /// <returns><see cref="PropertyValueHolder"/> with property values</returns>
+        public virtual PropertyValueHolder this[string propertyName]
+        {
+            get
+            {
+                return PropertyValues[propertyName];
+            }
+        }
+
+        /// <summary>
+        /// Validates property's value and returns the text with error or empty/null if value is valid
+        /// </summary>
+        /// <param name="propertyName">The name of the property</param>
+        /// <returns><see cref="string"/> with validation text</returns>
+        public virtual string Validate(string propertyName)
+        {
+            return null;
+        }
+
         public void SetPropertyValue(string name, bool? value)
         {
             var holder = PropertyValues[name];
             var oldValue = holder.Bool;
+            if (oldValue == value)
+            {
+                return;
+            }
             holder.SetValue(value);
             InvokePropertyChanged(name, oldValue, value);
         }
@@ -33,6 +120,10 @@ namespace DevKit.Entities
         {
             var holder = PropertyValues[name];
             var oldValue = holder.Number;
+            if (Equals(oldValue, value))
+            {
+                return;
+            }
             holder.SetValue(value);
             InvokePropertyChanged(name, oldValue, value);
         }
@@ -41,12 +132,20 @@ namespace DevKit.Entities
         {
             var holder = PropertyValues[name];
             var oldValue = holder.Text;
+            if (oldValue == value)
+            {
+                return;
+            }
             holder.SetValue(value);
             InvokePropertyChanged(name, oldValue, value);
         }
 
         public PropertyValueHolder GetPropertyValue(string name)
         {
+            if (!PropertyValues.ContainsKey(name))
+            {
+                PropertyValues[name] = new PropertyValueHolder();
+            }
             var holder = PropertyValues[name];
             return holder;
         }
@@ -64,20 +163,20 @@ namespace DevKit.Entities
 
             switch (modifier)
             {
-                case PropertyModifierType.Multiply:
-                    propValue.SetValue(propValue.Number.Value*value);
+                case PropertyModifierType.Multiplication:
+                    SetPropertyValue(name, propValue.Number.Value*value);
                     break;
 
-                case PropertyModifierType.Devide:
-                    propValue.SetValue(propValue.Number.Value/value);
+                case PropertyModifierType.Division:
+                    SetPropertyValue(name, propValue.Number.Value/value);
                     break;
 
-                case PropertyModifierType.Add:
-                    propValue.SetValue(propValue.Number.Value+value);
+                case PropertyModifierType.Addition:
+                    SetPropertyValue(name, propValue.Number.Value+value);
                     break;
 
-                case PropertyModifierType.Substruct:
-                    propValue.SetValue(propValue.Number.Value-value);
+                case PropertyModifierType.Subtraction:
+                    SetPropertyValue(name, propValue.Number.Value-value);
                     break;
 
                 default:

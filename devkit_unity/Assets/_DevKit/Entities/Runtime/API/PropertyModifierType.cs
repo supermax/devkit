@@ -1,13 +1,13 @@
-﻿namespace DevKit.Core.Observables.API
+﻿namespace DevKit.Entities.API
 {
     /// <summary>
     /// Numeric property modifier operation type
     /// </summary>
     public enum PropertyModifierType
     {
-        Multiply,
-        Devide,
-        Add,
-        Substruct
+        Multiplication,
+        Division,
+        Addition,
+        Subtraction
     }
 }

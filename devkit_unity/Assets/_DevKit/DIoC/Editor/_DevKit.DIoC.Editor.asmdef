@@ -1,9 +1,10 @@
 {
     "name": "DevKit.DIoC.Editor",
-    "rootNamespace": "",
+    "rootNamespace": "DevKit",
     "references": [
         "GUID:189092fc0a61b4360931e9f8819b9ac2",
-        "GUID:db37a1d36d5b54f03a677354ad7a8efa"
+        "GUID:db37a1d36d5b54f03a677354ad7a8efa",
+        "GUID:5667eaf776092417d984f0d642785a98"
     ],
     "includePlatforms": [
         "Editor"

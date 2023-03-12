@@ -4,6 +4,7 @@ using UnityEngine.TestTools;
 
 namespace DevKit.Entities.Tests.Engine
 {
+    [TestFixture]
     public class EngineTest
     {
         [Test]

@@ -1,6 +1,6 @@
 {
     "name": "DevKit.Core.Editor",
-    "rootNamespace": "",
+    "rootNamespace": "DevKit",
     "references": [
         "GUID:189092fc0a61b4360931e9f8819b9ac2"
     ],

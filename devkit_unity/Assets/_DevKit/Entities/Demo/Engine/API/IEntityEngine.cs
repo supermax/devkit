@@ -3,12 +3,12 @@
 namespace DevKit.Entities.Demo.Characters.API
 {
     /// <summary>
-    /// Interface for characters engine class
+    /// Interface for main engine class
     /// </summary>
     /// <remarks>
     /// Extends <see cref="IEngine"/>
     /// </remarks>
-    public interface ICharactersEngine : IEngine
+    public interface IEntityEngine : IEngine
     {
 
     }

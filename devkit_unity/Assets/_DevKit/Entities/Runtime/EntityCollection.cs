@@ -12,7 +12,7 @@ namespace DevKit.Entities
     [Serializable]
     [DataContract]
     public class EntityCollection<TKey, TValue>
-        : ObservableCollection<TKey, TValue>, IEntityCollection<TKey, TValue>
+        : ObservableDictionary<TKey, TValue>, IEntityCollection<TKey, TValue>
         where TValue : class, IEntity<TValue>
     {
 
