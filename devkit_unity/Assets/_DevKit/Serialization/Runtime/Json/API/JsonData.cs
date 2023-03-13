@@ -16,7 +16,7 @@ namespace DevKit.Serialization.Json.API
 	/// <summary>
 	///     Json Data
 	/// </summary>
-	public sealed class JsonData : IJsonWrapper, IEquatable<JsonData>, IMapContainer
+	public sealed class JsonData : IJsonWrapper, IEquatable<JsonData>, IMapContainer, ILoggable
 	{
 		#region Fields
 
@@ -387,20 +387,38 @@ namespace DevKit.Serialization.Json.API
 		/// <value>
 		///     <c>true</c> if [is debug mode]; otherwise, <c>false</c>.
 		/// </value>
-		public static bool IsDebugMode { get; set; }
+		public bool IsDebugMode { get; set; }
+
+		public void LogError(string format, params object[] args)
+		{
+			if (!IsDebugMode)
+			{
+				return;
+			}
+			UnityEngine.Debug.LogErrorFormat($"[{nameof(JsonData)}]: {format}", args);
+		}
+
+		public void LogError(Exception ex)
+		{
+			if (!IsDebugMode)
+			{
+				return;
+			}
+			UnityEngine.Debug.LogErrorFormat("[{0}]: {1}", nameof(JsonData), ex);
+		}
 
 		/// <summary>
 		///     writes given message to debug log
 		/// </summary>
 		/// <param name="format">The format.</param>
 		/// <param name="args">The arguments.</param>
-		private static void Log(string format, params object[] args)
+		public void Log(string format, params object[] args)
 		{
 			if (!IsDebugMode)
 			{
 				return;
 			}
-			UnityEngine.Debug.LogFormat($"[{nameof(JsonData)}] {format}", args);
+			UnityEngine.Debug.LogFormat($"[{nameof(JsonData)}]: {format}", args);
 		}
 
 		#region Public Indexers
@@ -600,7 +618,7 @@ namespace DevKit.Serialization.Json.API
 
 			if (obj is not char c)
 			{
-				throw new ArgumentException("Unable to wrap the given object with JsonData");
+				throw new ArgumentException($"Unable to wrap the given object with {nameof(JsonData)}");
 			}
 
 			_type = JsonType.String;
@@ -625,7 +643,7 @@ namespace DevKit.Serialization.Json.API
 		/// </summary>
 		/// <param name="data">The data.</param>
 		/// <returns></returns>
-		public static implicit operator JsonData(Boolean data)
+		public static implicit operator JsonData(bool data)
 		{
 			return new JsonData(data);
 		}
@@ -634,7 +652,7 @@ namespace DevKit.Serialization.Json.API
 		/// </summary>
 		/// <param name="data">The data.</param>
 		/// <returns></returns>
-		public static implicit operator JsonData(Double data)
+		public static implicit operator JsonData(double data)
 		{
 			return new JsonData(data);
 		}
@@ -643,7 +661,7 @@ namespace DevKit.Serialization.Json.API
 		/// </summary>
 		/// <param name="data">The data.</param>
 		/// <returns></returns>
-		public static implicit operator JsonData(Int32 data)
+		public static implicit operator JsonData(int data)
 		{
 			return new JsonData(data);
 		}
@@ -652,16 +670,7 @@ namespace DevKit.Serialization.Json.API
 		/// </summary>
 		/// <param name="data">The data.</param>
 		/// <returns></returns>
-		public static implicit operator JsonData(Int64 data)
-		{
-			return new JsonData(data);
-		}
-
-		/// <summary>
-		/// </summary>
-		/// <param name="data">The data.</param>
-		/// <returns></returns>
-		public static implicit operator JsonData(String data)
+		public static implicit operator JsonData(string data)
 		{
 			return new JsonData(data);
 		}
@@ -675,7 +684,7 @@ namespace DevKit.Serialization.Json.API
 		/// <param name="data">The data.</param>
 		/// <returns></returns>
 		/// <exception cref="System.InvalidCastException">Instance of JsonData doesn't hold a double</exception>
-		public static explicit operator Boolean(JsonData data)
+		public static explicit operator bool(JsonData data)
 		{
 			if (data._type != JsonType.Boolean)
 			{
@@ -690,7 +699,7 @@ namespace DevKit.Serialization.Json.API
 		/// <param name="data">The data.</param>
 		/// <returns></returns>
 		/// <exception cref="System.InvalidCastException">Instance of JsonData doesn't hold a double</exception>
-		public static explicit operator Double(JsonData data)
+		public static explicit operator double(JsonData data)
 		{
 			if (data._type != JsonType.Double)
 			{
@@ -705,7 +714,7 @@ namespace DevKit.Serialization.Json.API
 		/// <param name="data">The data.</param>
 		/// <returns></returns>
 		/// <exception cref="System.InvalidCastException">Instance of JsonData doesn't hold an int</exception>
-		public static explicit operator Int32(JsonData data)
+		public static explicit operator int(JsonData data)
 		{
 			if (data._type != JsonType.Int)
 			{
@@ -720,7 +729,7 @@ namespace DevKit.Serialization.Json.API
 		/// <param name="data">The data.</param>
 		/// <returns></returns>
 		/// <exception cref="System.InvalidCastException">Instance of JsonData doesn't hold an long</exception>
-		public static explicit operator Int64(JsonData data)
+		public static explicit operator long(JsonData data)
 		{
 			if (data._type != JsonType.Long)
 			{
@@ -735,7 +744,7 @@ namespace DevKit.Serialization.Json.API
 		/// <param name="data">The data.</param>
 		/// <returns></returns>
 		/// <exception cref="System.InvalidCastException">Instance of JsonData doesn't hold a string</exception>
-		public static explicit operator String(JsonData data)
+		public static explicit operator string(JsonData data)
 		{
 			if (data._type != JsonType.String)
 			{
@@ -812,11 +821,6 @@ namespace DevKit.Serialization.Json.API
 		{
 			return EnsureDictionary().GetEnumerator();
 		}
-
-		//IDictionaryEnumerator IDictionary.GetEnumerator()
-		//{
-		//	return ((IDictionary)this).GetEnumerator();
-		//}
 
 		/// <summary>
 		///     Removes the element with the specified key from the <see cref="T:System.Collections.IDictionary" /> object.
@@ -1116,14 +1120,8 @@ namespace DevKit.Serialization.Json.API
 			}
 
 			_type = JsonType.Object;
-			if (_instObject == null)
-			{
-				_instObject = new Dictionary<string, JsonData>();
-			}
-			if (_objectList == null)
-			{
-				_objectList = new List<KeyValuePair<string, JsonData>>();
-			}
+			_instObject ??= new Dictionary<string, JsonData>();
+			_objectList ??= new List<KeyValuePair<string, JsonData>>();
 
 			return (IDictionary)_instObject;
 		}
@@ -1143,10 +1141,7 @@ namespace DevKit.Serialization.Json.API
 			}
 
 			_type = JsonType.Array;
-			if (_instArray == null)
-			{
-				_instArray = new List<JsonData>();
-			}
+			_instArray ??= new List<JsonData>();
 
 			return (IList)_instArray;
 		}
@@ -1235,7 +1230,9 @@ namespace DevKit.Serialization.Json.API
 		private bool EqualsImpl(JsonData x)
 		{
 			if (x._type != _type)
+			{
 				return false;
+			}
 
 			switch (_type)
 			{
@@ -1244,28 +1241,37 @@ namespace DevKit.Serialization.Json.API
 
 				case JsonType.Object:
 					if (_instObject.Count != x._instObject.Count)
+					{
 						return false;
+					}
 
 					// Json object is unordered (json.org)
 					foreach (var entry in _instObject)
 					{
-						JsonData foundValue;
-						if (!x._instObject.TryGetValue(entry.Key, out foundValue))
+						if (!x._instObject.TryGetValue(entry.Key, out var foundValue))
+						{
 							return false;
+						}
 
 						if (!Equals(entry.Value, foundValue))
+						{
 							return false;
+						}
 					}
 					return true;
 
 				case JsonType.Array:
 					if (_instArray.Count != x._instArray.Count)
+					{
 						return false;
+					}
 
 					for (var i = 0; i < _instArray.Count; ++i)
 					{
 						if (!Equals(_instArray[i], x._instArray[i]))
+						{
 							return false;
+						}
 					}
 					return true;
 
@@ -1414,23 +1420,23 @@ namespace DevKit.Serialization.Json.API
 					break;
 
 				case JsonType.String:
-					_instString = default(String);
+					_instString = default;
 					break;
 
 				case JsonType.Int:
-					_instInt = default(Int32);
+					_instInt = default;
 					break;
 
 				case JsonType.Long:
-					_instLong = default(Int64);
+					_instLong = default;
 					break;
 
 				case JsonType.Double:
-					_instDouble = default(Double);
+					_instDouble = default;
 					break;
 
 				case JsonType.Boolean:
-					_instBoolean = default(Boolean);
+					_instBoolean = default;
 					break;
 			}
 

@@ -285,30 +285,25 @@ namespace DevKit.Serialization.Json.Interpreters
 			    number.IndexOf('e') != -1 ||
 			    number.IndexOf('E') != -1)
 			{
-				double nDouble;
-				if (Double.TryParse(number, out nDouble))
+				if (double.TryParse(number, out var nDouble))
 				{
 					Token = JsonToken.Double;
 					Value = nDouble;
-
 					return;
 				}
 			}
 
-			int nInt32;
-			if (Int32.TryParse(number, out nInt32))
+			if (int.TryParse(number, out var nInt32))
 			{
 				Token = JsonToken.Int;
 				Value = nInt32;
 				return;
 			}
 
-			long nInt64;
-			if (Int64.TryParse(number, out nInt64))
+			if (long.TryParse(number, out var nInt64))
 			{
 				Token = JsonToken.Long;
 				Value = nInt64;
-
 				return;
 			}
 

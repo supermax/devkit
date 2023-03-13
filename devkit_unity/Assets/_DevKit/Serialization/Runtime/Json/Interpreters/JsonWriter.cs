@@ -18,7 +18,7 @@ namespace DevKit.Serialization.Json.Interpreters
 	{
 		#region Fields
 
-		private static readonly NumberFormatInfo NumberFormat;
+		private static readonly NumberFormatInfo NumberFormat = NumberFormatInfo.InvariantInfo;
 		private readonly StringBuilder _instStringBuilder;
 
 		private WriterContext _context;
@@ -78,14 +78,6 @@ namespace DevKit.Serialization.Json.Interpreters
 		#region Constructors
 
 		/// <summary>
-		///     Initializes the <see cref="JsonWriter" /> class.
-		/// </summary>
-		static JsonWriter()
-		{
-			NumberFormat = NumberFormatInfo.InvariantInfo;
-		}
-
-		/// <summary>
 		///     Initializes a new instance of the <see cref="JsonWriter" /> class.
 		/// </summary>
 		public JsonWriter()
@@ -112,11 +104,7 @@ namespace DevKit.Serialization.Json.Interpreters
 		/// <exception cref="System.ArgumentNullException">writer</exception>
 		public JsonWriter(TextWriter writer)
 		{
-			if (writer == null)
-			{
-				throw new ArgumentNullException("writer");
-			}
-			TextWriter = writer;
+			TextWriter = writer ?? throw new ArgumentNullException(nameof(writer));
 			Init();
 		}
 
@@ -293,7 +281,7 @@ namespace DevKit.Serialization.Json.Interpreters
 		/// <param name="str">The STR.</param>
 		private void PutString(string str)
 		{
-			Put(String.Empty);
+			Put(string.Empty);
 
 			TextWriter.Write('"');
 
@@ -367,11 +355,11 @@ namespace DevKit.Serialization.Json.Interpreters
 
 		private void Dispose(bool disposed)
 		{
-			if(!disposed) return;
-			if (TextWriter != null)
+			if (!disposed)
 			{
-				TextWriter.Dispose();
+				return;
 			}
+			TextWriter?.Dispose();
 			_disposed = true;
 		}
 
@@ -399,10 +387,7 @@ namespace DevKit.Serialization.Json.Interpreters
 			_context = new WriterContext();
 			_ctxStack.Push(_context);
 
-			if (_instStringBuilder != null)
-			{
-				_instStringBuilder.Remove(0, _instStringBuilder.Length);
-			}
+			_instStringBuilder?.Remove(0, _instStringBuilder.Length);
 		}
 
 		/// <summary>
@@ -521,7 +506,7 @@ namespace DevKit.Serialization.Json.Interpreters
 		/// <summary>
 		///     Writes the specified rawValue without any changes. May corrupt json!
 		/// </summary>
-		/// <param name="str">The STR.</param>
+		/// <param name="rawValue">The string</param>
 		public void WriteRawValue(string rawValue)
 		{
 			DoValidation(Condition.Value);

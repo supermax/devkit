@@ -34,8 +34,7 @@ namespace DevKit.Serialization.Json.API
 		/// <param name="innerException">The inner exception.</param>
 		internal JsonException(ParserToken token,
 			Exception innerException) :
-				base(string.Format(
-					"Invalid token '{0}' in input string", token),
+				base($"Invalid token '{token}' in input string",
 					innerException)
 		{
 		}
@@ -45,8 +44,7 @@ namespace DevKit.Serialization.Json.API
 		/// </summary>
 		/// <param name="c">The c.</param>
 		internal JsonException(int c) :
-			base(string.Format(
-				"Invalid character '{0}' in input string", (char) c))
+			base($"Invalid character '{(char)c}' in input string")
 		{
 		}
 
@@ -56,8 +54,7 @@ namespace DevKit.Serialization.Json.API
 		/// <param name="c">The c.</param>
 		/// <param name="innerException">The inner exception.</param>
 		internal JsonException(int c, Exception innerException) :
-			base(string.Format(
-				"Invalid character '{0}' in input string", (char) c),
+			base($"Invalid character '{(char)c}' in input string",
 				innerException)
 		{
 		}

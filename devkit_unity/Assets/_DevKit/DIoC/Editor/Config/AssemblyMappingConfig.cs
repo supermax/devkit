@@ -22,7 +22,7 @@ namespace DevKit.DIoC.Editor.Config
             var config = new AssemblyConfig();
             if (_assemblyDefinition != null)
             {
-                var info = _assemblyDefinition.text.FromJson<AssemblyInfo>();
+                var info = _assemblyDefinition.text.ToObject<AssemblyInfo>();
                 Name = info.Name;
                 config.Name = Name;
             }

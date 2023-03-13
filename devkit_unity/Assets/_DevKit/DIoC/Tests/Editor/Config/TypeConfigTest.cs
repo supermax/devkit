@@ -23,7 +23,7 @@ namespace DevKit.DIoC.Tests.Editor.Config
             Debug.LogFormat("{0}", json);
             Assert.NotNull(json);
 
-            config = json.FromJson<TypeConfig>();
+            config = json.ToObject<TypeConfig>();
             Debug.LogFormat("{0}", config);
             Assert.NotNull(config);
         }

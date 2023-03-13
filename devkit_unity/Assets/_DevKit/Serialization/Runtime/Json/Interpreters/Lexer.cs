@@ -259,11 +259,12 @@ namespace DevKit.Serialization.Json.Interpreters
 		{
 			while (ctx.Lex.GetChar())
 			{
-				if (ctx.Lex._inputChar == ' ' ||
-				    ctx.Lex._inputChar >= '\t' && ctx.Lex._inputChar <= '\r')
+				if (ctx.Lex._inputChar is ' ' or >= '\t' and <= '\r')
+				{
 					continue;
+				}
 
-				if (ctx.Lex._inputChar >= '1' && ctx.Lex._inputChar <= '9')
+				if (ctx.Lex._inputChar is >= '1' and <= '9')
 				{
 					ctx.Lex._stringBuffer.Append((char) ctx.Lex._inputChar);
 					ctx.NextState = 3;
@@ -337,7 +338,7 @@ namespace DevKit.Serialization.Json.Interpreters
 		{
 			ctx.Lex.GetChar();
 
-			if (ctx.Lex._inputChar >= '1' && ctx.Lex._inputChar <= '9')
+			if (ctx.Lex._inputChar is >= '1' and <= '9')
 			{
 				ctx.Lex._stringBuffer.Append((char) ctx.Lex._inputChar);
 				ctx.NextState = 3;
@@ -364,14 +365,13 @@ namespace DevKit.Serialization.Json.Interpreters
 		{
 			while (ctx.Lex.GetChar())
 			{
-				if (ctx.Lex._inputChar >= '0' && ctx.Lex._inputChar <= '9')
+				if (ctx.Lex._inputChar is >= '0' and <= '9')
 				{
 					ctx.Lex._stringBuffer.Append((char) ctx.Lex._inputChar);
 					continue;
 				}
 
-				if (ctx.Lex._inputChar == ' ' ||
-				    ctx.Lex._inputChar >= '\t' && ctx.Lex._inputChar <= '\r')
+				if (ctx.Lex._inputChar is ' ' or >= '\t' and <= '\r')
 				{
 					ctx.Return = true;
 					ctx.NextState = 1;
@@ -414,8 +414,7 @@ namespace DevKit.Serialization.Json.Interpreters
 		{
 			ctx.Lex.GetChar();
 
-			if (ctx.Lex._inputChar == ' ' ||
-			    ctx.Lex._inputChar >= '\t' && ctx.Lex._inputChar <= '\r')
+			if (ctx.Lex._inputChar is ' ' or >= '\t' and <= '\r')
 			{
 				ctx.Return = true;
 				ctx.NextState = 1;
@@ -471,14 +470,13 @@ namespace DevKit.Serialization.Json.Interpreters
 		{
 			while (ctx.Lex.GetChar())
 			{
-				if (ctx.Lex._inputChar >= '0' && ctx.Lex._inputChar <= '9')
+				if (ctx.Lex._inputChar is >= '0' and <= '9')
 				{
 					ctx.Lex._stringBuffer.Append((char) ctx.Lex._inputChar);
 					continue;
 				}
 
-				if (ctx.Lex._inputChar == ' ' ||
-				    ctx.Lex._inputChar >= '\t' && ctx.Lex._inputChar <= '\r')
+				if (ctx.Lex._inputChar is ' ' or >= '\t' and <= '\r')
 				{
 					ctx.Return = true;
 					ctx.NextState = 1;
@@ -517,7 +515,7 @@ namespace DevKit.Serialization.Json.Interpreters
 		{
 			ctx.Lex.GetChar();
 
-			if (ctx.Lex._inputChar >= '0' && ctx.Lex._inputChar <= '9')
+			if (ctx.Lex._inputChar is >= '0' and <= '9')
 			{
 				ctx.Lex._stringBuffer.Append((char) ctx.Lex._inputChar);
 				ctx.NextState = 8;
@@ -545,14 +543,13 @@ namespace DevKit.Serialization.Json.Interpreters
 		{
 			while (ctx.Lex.GetChar())
 			{
-				if (ctx.Lex._inputChar >= '0' && ctx.Lex._inputChar <= '9')
+				if (ctx.Lex._inputChar is >= '0' and <= '9')
 				{
 					ctx.Lex._stringBuffer.Append((char) ctx.Lex._inputChar);
 					continue;
 				}
 
-				if (ctx.Lex._inputChar == ' ' ||
-				    ctx.Lex._inputChar >= '\t' && ctx.Lex._inputChar <= '\r')
+				if (ctx.Lex._inputChar is ' ' or >= '\t' and <= '\r')
 				{
 					ctx.Return = true;
 					ctx.NextState = 1;
@@ -866,8 +863,7 @@ namespace DevKit.Serialization.Json.Interpreters
 
 			while (ctx.Lex.GetChar())
 			{
-				if ((ctx.Lex._inputChar < '0' || ctx.Lex._inputChar > '9') && (ctx.Lex._inputChar < 'A' || ctx.Lex._inputChar > 'F') &&
-				    (ctx.Lex._inputChar < 'a' || ctx.Lex._inputChar > 'f'))
+				if (ctx.Lex._inputChar is (< '0' or > '9') and (< 'A' or > 'F') and (< 'a' or > 'f'))
 				{
 					return false;
 				}
@@ -969,7 +965,10 @@ namespace DevKit.Serialization.Json.Interpreters
 		{
 			while (ctx.Lex.GetChar())
 			{
-				if (ctx.Lex._inputChar != '\n') continue;
+				if (ctx.Lex._inputChar != '\n')
+				{
+					continue;
+				}
 				ctx.NextState = 1;
 				return true;
 			}
@@ -981,7 +980,10 @@ namespace DevKit.Serialization.Json.Interpreters
 		{
 			while (ctx.Lex.GetChar())
 			{
-				if (ctx.Lex._inputChar != '*') continue;
+				if (ctx.Lex._inputChar != '*')
+				{
+					continue;
+				}
 				ctx.NextState = 28;
 				return true;
 			}
@@ -997,21 +999,20 @@ namespace DevKit.Serialization.Json.Interpreters
 		{
 			while (ctx.Lex.GetChar())
 			{
-				if (ctx.Lex._inputChar == '*')
+				switch (ctx.Lex._inputChar)
 				{
-					continue;
-				}
+					case '*':
+						continue;
 
-				if (ctx.Lex._inputChar == '/')
-				{
-					ctx.NextState = 1;
-					return true;
-				}
+					case '/':
+						ctx.NextState = 1;
+						return true;
 
-				ctx.NextState = 27;
-				return true;
+					default:
+						ctx.NextState = 27;
+						return true;
+				}
 			}
-
 			return true;
 		}
 
@@ -1031,7 +1032,7 @@ namespace DevKit.Serialization.Json.Interpreters
 		}
 
 		/// <summary>
-		///     Nexts the char.
+		///     Next char.
 		/// </summary>
 		/// <returns></returns>
 		private int NextChar()
@@ -1047,7 +1048,7 @@ namespace DevKit.Serialization.Json.Interpreters
 		}
 
 		/// <summary>
-		///     Nexts the token.
+		///     Next token.
 		/// </summary>
 		/// <returns></returns>
 		/// <exception cref="JsonException"></exception>
@@ -1086,7 +1087,7 @@ namespace DevKit.Serialization.Json.Interpreters
 		}
 
 		/// <summary>
-		///     Ungets the char.
+		///     Unget the char.
 		/// </summary>
 		private void UngetChar()
 		{
