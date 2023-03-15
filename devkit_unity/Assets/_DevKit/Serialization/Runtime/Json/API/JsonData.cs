@@ -1356,18 +1356,18 @@ namespace DevKit.Serialization.Json.API
 			return data;
 		}
 
-		/// <summary>
-		/// Adds the specified key.
-		/// </summary>
-		/// <param name="key">The key.</param>
-		/// <param name="value">The value.</param>
-		/// <returns></returns>
-		public JsonData Add(int key, object value)
-		{
-			var data = ToJsonData(value);
-			this[key] = data;
-			return data;
-		}
+		// /// <summary>
+		// /// Adds the specified key.
+		// /// </summary>
+		// /// <param name="key">The key.</param>
+		// /// <param name="value">The value.</param>
+		// /// <returns></returns>
+		// public JsonData Add(int key, object value)
+		// {
+		// 	var data = ToJsonData(value);
+		// 	this[key] = data;
+		// 	return data;
+		// }
 
 		/// <summary>
 		///     Removes all items from the <see cref="T:System.Collections.IList" />.

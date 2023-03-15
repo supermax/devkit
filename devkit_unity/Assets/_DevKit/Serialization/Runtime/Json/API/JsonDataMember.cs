@@ -9,7 +9,7 @@ namespace DevKit.Serialization.Json.API
 	/// <summary>
 	///     JSON Data Member Attribute
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
 	public class JsonDataMemberAttribute : Attribute
 	{
 		/// <summary>

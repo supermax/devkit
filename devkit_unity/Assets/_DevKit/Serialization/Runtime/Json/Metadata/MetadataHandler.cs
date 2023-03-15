@@ -2,7 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using DevKit.Core.Extensions;
 using DevKit.DIoC.Extensions;
+using DevKit.Serialization.Json.API;
 using DevKit.Serialization.Json.Helpers;
 using UnityEngine;
 
@@ -25,7 +27,7 @@ namespace DevKit.Serialization.Json.Metadata
 		/// <summary>
 		///     Gets or sets a value indicating whether [is debug mode].
 		/// </summary>
-		/// <remarks>DO NOT TURN ON CONSTANTLY! THIS WILL SLOW MAPER'S WORK</remarks>
+		/// <remarks>DO NOT TURN ON CONSTANTLY! THIS WILL SLOW MAPPER'S WORK</remarks>
 		/// <value>
 		///     <c>true</c> if [is debug mode]; otherwise, <c>false</c>.
 		/// </value>
@@ -138,22 +140,27 @@ namespace DevKit.Serialization.Json.Metadata
 		/// </summary>
 		/// <param name="fInfo">The f information.</param>
 		/// <param name="data">The data.</param>
-		private PropertyMetadata AddFieldMetadata(FieldInfo fInfo, ObjectMetadata data)
+		private void AddFieldMetadata(FieldInfo fInfo, ObjectMetadata data)
 		{
 			var isIgnorable = ReflectionHelper.IsIgnorableMember(fInfo);
 			Log("{0}(field: {1}, {2}: {3})", nameof(AddFieldMetadata), fInfo, nameof(isIgnorable), isIgnorable);
 			if (isIgnorable)
 			{
-				return null;
+				return;
 			}
 
-			var attr = ReflectionHelper.GetDataMemberAttribute(fInfo);
-            var attrName = (attr != null ? attr.Name : null) ?? fInfo.Name;
+			var attributes = ReflectionHelper.GetDataMemberAttributes(fInfo);
+			if (attributes.IsNullOrEmpty())
+			{
+				return;
+			}
 
-			var fData = new PropertyMetadata(fInfo.FieldType, fInfo, true, attr);
-			data.Properties.Add(attrName, fData);
-
-            return fData;
+			foreach (var attr in attributes)
+			{
+				var attrName = attr?.Name ?? fInfo.Name;
+				var fData = new PropertyMetadata(fInfo.FieldType, fInfo, true, attr);
+				data.Properties.Add(attrName, fData);
+			}
 		}
 
 		/// <summary>
@@ -161,42 +168,38 @@ namespace DevKit.Serialization.Json.Metadata
 		/// </summary>
 		/// <param name="pInfo">The p information.</param>
 		/// <param name="data">The data.</param>
-		internal PropertyMetadata AddPropertyMetadata(PropertyInfo pInfo, ObjectMetadata data)
+		internal void AddPropertyMetadata(PropertyInfo pInfo, ObjectMetadata data)
 		{
-			var isIgnorable = ReflectionHelper.IsIgnorableMember(pInfo);
-			Log("{0}(prop: {1}, {2}: {3})", nameof(AddPropertyMetadata), pInfo, nameof(isIgnorable),isIgnorable);
-			if (isIgnorable) return null;
-
-			// TODO improve this part to reduce reflection actions
-			var attr = ReflectionHelper.GetDataMemberAttribute(pInfo);
-			var attrName = (attr != null ? attr.Name : null) ?? pInfo.Name;
-
-			PropertyMetadata pData;
-			if(data.Properties.ContainsKey(attrName))
-			{
-				pData = data.Properties[attrName];
-				return pData;
-			}
-
 			// TODO check if we can ensure that this is an indexer
 			if (pInfo.Name == "Item")
 			{
 				var parameters = pInfo.GetIndexParameters();
 				if (parameters.Length != 1)
 				{
-					return null;
+					return;
 				}
 				if (parameters[0].ParameterType == typeof(string))
 				{
 					data.ElementType = pInfo.PropertyType; // TODO !!!! why reassigning type in this case?
 				}
-				return null;
+				return;
 			}
 
-			pData = new PropertyMetadata(pInfo.PropertyType, pInfo, false, attr);
-			data.Properties.Add(attrName, pData);
+			var isIgnorable = ReflectionHelper.IsIgnorableMember(pInfo);
+			Log("{0}(prop: {1}, {2}: {3})", nameof(AddPropertyMetadata), pInfo, nameof(isIgnorable),isIgnorable);
+			if (isIgnorable)
+			{
+				return;
+			}
 
-            return pData;
+			// TODO improve this part to reduce reflection actions
+			var attributes = ReflectionHelper.GetDataMemberAttributes(pInfo);
+			foreach (var attr in attributes)
+			{
+				var attrName = attr?.Name ?? pInfo.Name;
+				var pData = new PropertyMetadata(pInfo.PropertyType, pInfo, false, attr);
+				data.Properties.Add(attrName, pData);
+			}
 		}
 
 		/// <summary>
@@ -206,22 +209,33 @@ namespace DevKit.Serialization.Json.Metadata
         internal IList<PropertyMetadata> AddTypeProperties(Type type)
         {
 			IList<PropertyMetadata> propsMeta;
-            if (_typeProperties.ContainsKey(type))
+            lock (_typePropertiesLock)
             {
-				propsMeta = _typeProperties[type];
-                return propsMeta;
+	            if (_typeProperties.ContainsKey(type))
+	            {
+		            propsMeta = _typeProperties[type];
+		            return propsMeta;
+	            }
             }
+
             var typeWrapper = type.GetTypeWrapper();
             propsMeta = new List<PropertyMetadata>();
             var props = typeWrapper.GetProperties();
             Log("{0}({1}.{2}())", nameof(AddTypeProperties), nameof(typeWrapper), nameof(typeWrapper.GetProperties));
             foreach (var pInfo in props)
             {
-                if (pInfo.Name == "Item" || ReflectionHelper.IsIgnorableMember(pInfo)) continue;
+	            if (pInfo.Name == "Item" || ReflectionHelper.IsIgnorableMember(pInfo))
+	            {
+		            continue;
+	            }
 
-				var attr = ReflectionHelper.GetDataMemberAttribute(pInfo);
-				propsMeta.Add(new PropertyMetadata(pInfo.PropertyType, pInfo, false, attr));
+				var attributes = ReflectionHelper.GetDataMemberAttributes(pInfo);
+				foreach (var attr in attributes)
+				{
+					propsMeta.Add(new PropertyMetadata(pInfo.PropertyType, pInfo, false, attr));
+				}
             }
+
             Log("AddTypeProperties(typeWrapper.GetFields())");
             var fields = typeWrapper.GetFields();
             foreach (var fInfo in fields)
@@ -230,9 +244,13 @@ namespace DevKit.Serialization.Json.Metadata
 				{
 					continue;
 				}
-				var attr = ReflectionHelper.GetDataMemberAttribute(fInfo);
-                propsMeta.Add(new PropertyMetadata(fInfo.FieldType, fInfo, true, attr));
+				var attributes = ReflectionHelper.GetDataMemberAttributes(fInfo);
+				foreach (var attr in attributes)
+				{
+					propsMeta.Add(new PropertyMetadata(fInfo.FieldType, fInfo, true, attr));
+				}
             }
+
             if (IsDebugMode)
             {
 	            foreach (var prop in propsMeta)

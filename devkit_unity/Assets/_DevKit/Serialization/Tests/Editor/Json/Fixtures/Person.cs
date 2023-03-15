@@ -3,9 +3,12 @@ using DevKit.Serialization.Json.API;
 namespace DevKit.Serialization.Tests.Editor.Json.Fixtures
 {
     [JsonDataContract]
-    public abstract class Person
+    // ReSharper disable once ClassNeverInstantiated.Global
+    public class Person
     {
-        [JsonDataMember("firstName")] public string Name { get; set; }
+        [JsonDataMember("name")]
+        [JsonDataMember("firstName")]
+        public string Name { get; set; }
 
         [JsonDataMember("lastName")] public string Surname { get; set; }
 

@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 using DevKit.Core.Extensions;
 using DevKit.Serialization.Json.API;
@@ -11,11 +12,16 @@ namespace DevKit.Serialization.Json.Helpers
 		/// </summary>
 		/// <param name="info">The information.</param>
 		/// <returns></returns>
-		internal static JsonDataMemberAttribute GetDataMemberAttribute(MemberInfo info)
+		internal static JsonDataMemberAttribute[] GetDataMemberAttributes(MemberInfo info)
 		{
 			var attributes = info.GetCustomAttributes(typeof (JsonDataMemberAttribute), true);
-			var attribute = attributes.GetFirstOrDefault() as JsonDataMemberAttribute;
-			return attribute ;
+			if (attributes.IsNullOrEmpty())
+			{
+				return null;
+			}
+			var jsonAttributes = new JsonDataMemberAttribute[attributes.Length];
+			Array.Copy(attributes, jsonAttributes, attributes.Length);
+			return jsonAttributes;
 		}
 
 		/// <summary>

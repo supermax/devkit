@@ -49,9 +49,12 @@ namespace DevKit.Serialization.Tests.Editor.Json
 			var personJsonString = TestConstants.GetPerson(name, surname, age);
 			var jsonDataPerson = JsonMapper.Default.ToObject(personJsonString);
 			Assert.NotNull(jsonDataPerson);
-			Assert.AreEqual(age, jsonDataPerson["age"]);
-			Assert.AreEqual(name, jsonDataPerson["firstName"]);
-			Assert.AreEqual(surname, jsonDataPerson["lastName"]);
+			Assert.AreEqual(name, jsonDataPerson["firstName"].GetPrimitiveValue());
+			Assert.AreEqual(surname, jsonDataPerson["lastName"].GetPrimitiveValue());
+
+			var ageVal = jsonDataPerson["age"];
+			Assert.True(ageVal.IsInt);
+			Assert.AreEqual(age, ageVal.GetPrimitiveValue());
 
 			var person = JsonMapper.Default.ToObject<Person>(jsonDataPerson);
 			Assert.NotNull(person);
@@ -65,15 +68,18 @@ namespace DevKit.Serialization.Tests.Editor.Json
 			var jd = new JsonData
 			{
 				{"name", "New Name"},
-				{"ver", 1.0f},
-				{"person", jsonDataPerson},
+				{"age", 1},
+				{"person", jsonDataPerson}, // this should be ignored when serialized to Person
 				//{"arr", new [] {1, 2, 3}} // TODO fix array init in JsonData
 			};
 
-			// TODO
-			var str = jd.ToJson();
-			Assert.NotNull(str);
+			var jsonStr = jd.ToJson();
+			Assert.NotNull(jsonStr);
 
+			var newPerson = JsonMapper.Default.ToObject<Person>(jsonStr);
+			Assert.NotNull(newPerson);
+			Assert.AreEqual(jd["name"].GetPrimitiveValue(), newPerson.Name);
+			Assert.AreEqual(jd["age"].GetPrimitiveValue(), newPerson.Age);
 		}
 
 		[Test]
