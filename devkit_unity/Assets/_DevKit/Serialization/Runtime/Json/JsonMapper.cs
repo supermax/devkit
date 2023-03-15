@@ -394,8 +394,7 @@ namespace DevKit.Serialization.Json
 						var fInfo = (FieldInfo) propData.Info;
 						if (!fInfo.IsInitOnly)
 						{
-							var value = ReadValue(propData.Type, reader,
-								propData.Attribute != null ? propData.Attribute.FallbackValue : null);
+							var value = ReadValue(propData.Type, reader, propData.Attribute?.FallbackValue);
 							fInfo.SetValue(instance, value);
 							Log("{3} -> {0}.SetValue({1}, {2});", fInfo, instance, value, nameof(ReadValue));
 						}

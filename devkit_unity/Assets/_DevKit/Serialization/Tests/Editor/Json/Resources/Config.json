@@ -1,5 +1,4 @@
 {
-
     "defaultConfig": {
       "name": "",
       "server": "",
@@ -7,7 +6,7 @@
       "timeout": 20,
       "max_retries": 5,
       "is_post": false,
-      "suppress_errors": [ ],
+      "suppress_errors": [ 404 ],
       "suppress_all": false,
       "lock_on_error": false
     },
@@ -18,7 +17,7 @@
         "server": "vc",
         "service_path": "secured/activity/balance.rest?"
       },
-      "oepnPaymentTrans": {
+      "openPaymentTrans": {
         "server": "payment",
         "service_path": "secured/payment/open.rest?"
       },

@@ -4,7 +4,7 @@ using DevKit.Serialization.Json.API;
 namespace DevKit.Serialization.Tests.Editor.Json.Fixtures
 {
 	[JsonDataContract]
-    public class SpinResultObj : BaseDataObj
+    public class SpinResultObj : BaseDataObject
     {
         [JsonDataMember(Name = "totalWon")]
         public int TotalWon { get; set; }
@@ -34,7 +34,7 @@ namespace DevKit.Serialization.Tests.Editor.Json.Fixtures
     }
 
     [JsonDataContract]
-    public class Line : BaseDataObj
+    public class Line : BaseDataObject
     {
         [JsonDataMember(Name = "lineNumber")]
         public int LineNumber { get; set; }

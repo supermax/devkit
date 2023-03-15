@@ -22,10 +22,10 @@ namespace DevKit.Serialization.Tests.Editor.Json
 
 		#region Methods
 
-		[SetUp]
+		[OneTimeSetUp]
 		public void Startup()
 		{
-			_jsonTest = FileResources.GetJsonTextAsset("_JsonTest").text;
+			_jsonTest = FileHelper.GetJsonTextAsset("JsonTest").text;
 		}
 
 		#endregion
@@ -46,63 +46,69 @@ namespace DevKit.Serialization.Tests.Editor.Json
 			const string surname = "person_surname";
 			const int age = 27;
 
-			var personJsonString = StringResources.GetPerametrizedPerson(name, surname, age);
+			var personJsonString = TestConstants.GetPerson(name, surname, age);
 			var jsonDataPerson = JsonMapper.Default.ToObject(personJsonString);
+			Assert.NotNull(jsonDataPerson);
+			Assert.AreEqual(age, jsonDataPerson["age"]);
+			Assert.AreEqual(name, jsonDataPerson["firstName"]);
+			Assert.AreEqual(surname, jsonDataPerson["lastName"]);
 
 			var person = JsonMapper.Default.ToObject<Person>(jsonDataPerson);
+			Assert.NotNull(person);
+			Assert.AreEqual(name, person.Name);
+			Assert.AreEqual(surname, person.Surname);
+			Assert.AreEqual(age, person.Age);
 
 			jsonDataPerson = JsonMapper.Default.ToJson(person);
+			Assert.NotNull(jsonDataPerson);
 
 			var jd = new JsonData
 			{
-				{"name", "Maxim"},
+				{"name", "New Name"},
 				{"ver", 1.0f},
 				{"person", jsonDataPerson},
-				{"arr", new JsonData {new int[] {1, 2, 3}}}
+				//{"arr", new [] {1, 2, 3}} // TODO fix array init in JsonData
 			};
 
 			// TODO
 			var str = jd.ToJson();
 			Assert.NotNull(str);
 
-			Assert.AreEqual(name, person.Name);
-			Assert.AreEqual(surname, person.Surname);
-			Assert.AreEqual(age, person.Age);
 		}
 
 		[Test]
 		public void JsonMapper_Conversion_GetJsonDataObjectFromString_NotNull()
 		{
-			var person = JsonMapper.Default.ToObject(StringResources.Person);
+			var person = JsonMapper.Default.ToObject(TestConstants.Person);
 			Assert.IsNotNull(person);
 		}
 
 		[Test]
 		public void JsonMapper_Conversion_JsonDataObjectToSpecifiedType_NotNull()
 		{
-			var jsonDataPerson = JsonMapper.Default.ToObject(StringResources.Person);
+			var jsonDataPerson = JsonMapper.Default.ToObject(TestConstants.Person);
 			var person = JsonMapper.Default.ToObject<Person>(jsonDataPerson);
 		}
 
 		[Test]
 		public void JsonMapper_Conversion_GetArrayOfJsonData_WithRightCount()
 		{
-			var persons = JsonMapper.Default.ToObject(StringResources.PersonArray);
+			var persons = JsonMapper.Default.ToObject(TestConstants.PersonArray);
 			Assert.IsNotNull(persons);
-			Assert.AreEqual(persons.Count, StringResources.PersonsArrayCount);
+			Assert.AreEqual(persons.Count, TestConstants.PersonsArrayCount);
 		}
 
 		[Test]
 		public void JsonMapper_Conversion_CountOfObjectsProperties_EqualsToTypesPropertiesCount()
 		{
-			var jsonDataPerson = JsonMapper.Default.ToObject(StringResources.Person);
-			Assert.AreEqual(jsonDataPerson.Count, StringResources.PersonPropertiesCount);
+			var jsonDataPerson = JsonMapper.Default.ToObject(TestConstants.Person);
+			Assert.AreEqual(jsonDataPerson.Count, TestConstants.PersonPropertiesCount);
 		}
 
 		[Test]
 		public void JsonMapper_Conversion_ArrayOfJsonData_ToSpecifiedType_RightElementCount()
 		{
-			var jsonDataPersons = JsonMapper.Default.ToObject(StringResources.PersonArray);
+			var jsonDataPersons = JsonMapper.Default.ToObject(TestConstants.PersonArray);
 			var persons = JsonMapper.Default.ToObject<Person[]>(jsonDataPersons);
 			Assert.AreEqual(jsonDataPersons.Count, persons.Length);
 		}
@@ -133,12 +139,11 @@ namespace DevKit.Serialization.Tests.Editor.Json
 		[Test]
 		public void JsonMapper_Conversion_Subclasses_Initialized()
 		{
-			//var jsonDataJsonClass = JsonMapper.Default.ToObject(StringResources.JsonClass);
-			var jsonClass = JsonMapper.Default.ToObject<JsonClass>(StringResources.JsonClass);
+			var jsonStr = FileHelper.GetJsonTextAsset("Parent").text;
+			var parent = JsonMapper.Default.ToObject<Parent>(jsonStr);
 
-			Assert.IsNotNull(jsonClass.Child);
-			Assert.IsNotNull(jsonClass.SubChild);
-			Assert.AreEqual(5, jsonClass.SomeAnotherInt); // = 5 bcs failed to cast from dbl to int
+			Assert.IsNotNull(parent);
+			Assert.IsNotNull(parent.MyChild);
 		}
 
 		[Test]

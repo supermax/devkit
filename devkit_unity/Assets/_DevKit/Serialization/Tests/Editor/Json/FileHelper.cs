@@ -3,14 +3,14 @@ using UnityEngine;
 
 namespace DevKit.Serialization.Tests.Editor.Json
 {
-	internal static class FileResources
+	internal static class FileHelper
 	{
 		public static TextAsset GetJsonTextAsset(string fileName)
 		{
 			Assert.That(fileName, Is.Not.Null);
 			Assert.That(fileName, Is.Not.Empty);
 
-			var jTextAsset = UnityEngine.Resources.Load<TextAsset>(fileName);
+			var jTextAsset = Resources.Load<TextAsset>(fileName);
 			return jTextAsset;
 		}
 	}

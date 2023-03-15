@@ -17,7 +17,7 @@
 		"server": "vc",
 		"service_path": "secured/activity/balance.rest?"
 	  },
-	  "oepnPaymentTrans": {
+	  "openPaymentTrans": {
 		"server": "payment",
 		"service_path": "secured/payment/open.rest?"
 	  },

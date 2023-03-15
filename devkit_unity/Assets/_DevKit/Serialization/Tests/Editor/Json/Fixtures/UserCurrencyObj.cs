@@ -3,7 +3,7 @@
 namespace DevKit.Serialization.Tests.Editor.Json.Fixtures
 {
 	[JsonDataContract]
-    public class UserCurrencyObj : BaseDataObj
+    public class UserCurrencyObj : BaseDataObject
     {
         [JsonDataMember(Name = "money")]
         public int Money { get; set; }
