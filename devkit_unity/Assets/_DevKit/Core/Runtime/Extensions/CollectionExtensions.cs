@@ -93,17 +93,6 @@ namespace DevKit.Core.Extensions
         }
 
         /// <summary>
-        /// Checks if string is null or empty
-        /// </summary>
-        /// <param name="source">The source string</param>
-        /// <returns>"True" if string is null or empty</returns>
-        public static bool IsNullOrEmpty(this string source)
-        {
-            var isEmpty = string.IsNullOrEmpty(source);
-            return isEmpty;
-        }
-
-        /// <summary>
         /// Iterate thru the collection and execute the given action
         /// </summary>
         /// <param name="collection">The source collection</param>

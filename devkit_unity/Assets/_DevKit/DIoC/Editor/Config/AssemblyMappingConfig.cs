@@ -26,6 +26,10 @@ namespace DevKit.DIoC.Editor.Config
                 Name = info.Name;
                 config.Name = Name;
             }
+            if (Name.IsNullOrEmpty())
+            {
+                return config;
+            }
 
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             var assemblyName = Name.ToLowerInvariant();

@@ -1,17 +1,18 @@
 using System;
-using System.Runtime.Serialization;
+using System.Collections.Generic;
+using DevKit.Core.Extensions;
 
 namespace DevKit.DIoC.Config
 {
     [Serializable]
-    [DataContract]
-    public abstract class BaseConfig
+    public abstract class BaseConfig : Dictionary<string, object>
     {
-        [DataMember(Name = "name")]
+        protected readonly string NameKey = nameof(Name).ToJsonPropName();
+
         public virtual string Name
         {
-            get;
-            set;
+            get { return this[NameKey] as string; }
+            set { this[NameKey] = value; }
         }
     }
 }

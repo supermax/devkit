@@ -1,6 +1,5 @@
 using System;
 using System.Runtime.Serialization;
-using UnityEditor;
 using UnityEngine;
 
 namespace DevKit.DIoC.Config
@@ -12,10 +11,16 @@ namespace DevKit.DIoC.Config
         [SerializeField]
         private MonoBehaviour _instance;
 
-        [SerializeField]
-        private MonoScript _interface;
+        public MonoBehaviour Instance
+        {
+            get { return _instance;}
+            set { _instance = value; }
+        }
 
-        [SerializeField]
-        private MonoScript[] _dependencies;
+        public Type SourceType { get; set; }
+
+        public Type[] TypeMappings { get; set; }
+
+        public Type[] TypeDependencies { get; set; }
     }
 }

@@ -1,13 +1,13 @@
 using System;
-using System.Runtime.Serialization;
+using DevKit.Serialization.Json.API;
 
 namespace DevKit.DIoC.Editor.Config
 {
     [Serializable]
-    [DataContract]
+    [JsonDataContract]
     public class AssemblyInfo
     {
-        [DataMember(Name = "name")]
+        [JsonDataMember(Name = "name")]
         public string Name { get; set; }
     }
 }

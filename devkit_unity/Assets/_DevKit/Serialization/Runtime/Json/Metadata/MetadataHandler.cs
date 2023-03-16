@@ -240,6 +240,10 @@ namespace DevKit.Serialization.Json.Metadata
 		            }
 
 		            var attributes = ReflectionHelper.GetDataMemberAttributes(pInfo);
+		            if (attributes.IsNullOrEmpty())
+		            {
+			            continue;
+		            }
 		            foreach (var attr in attributes)
 		            {
 			            propsMeta.Add(new PropertyMetadata(pInfo.PropertyType, pInfo, false, attr));
@@ -261,6 +265,10 @@ namespace DevKit.Serialization.Json.Metadata
 			            continue;
 		            }
 		            var attributes = ReflectionHelper.GetDataMemberAttributes(fInfo);
+		            if (attributes.IsNullOrEmpty())
+		            {
+			            continue;
+		            }
 		            foreach (var attr in attributes)
 		            {
 			            propsMeta.Add(new PropertyMetadata(fInfo.FieldType, fInfo, true, attr));
