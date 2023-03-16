@@ -1,11 +1,12 @@
 {
 	"id": "100003333007032",
-	"name": "Gil Plane",
+	"name": "John Dhow",
 	"first_name": "John",
 	"last_name": "Dhow",
 	"link": "https:\/\/www.facebook.com\/profile",
 	"username": "john.dho",
 	"birthday": "01\/29\/1983",
+	/* array of objects */
 	"favorite_athletes": [{
 		"id": "29756652821",
 		"name": "Muhammad Ali"

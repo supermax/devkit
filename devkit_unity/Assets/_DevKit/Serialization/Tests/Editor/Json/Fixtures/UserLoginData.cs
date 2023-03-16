@@ -4,7 +4,7 @@ using DevKit.Serialization.Json.API;
 namespace DevKit.Serialization.Tests.Editor.Json.Fixtures
 {
 	[JsonDataContract]
-	public class MeRequestData
+	public class UserLoginData
 	{
 		[JsonDataMember(Name = "id")]
 		public string ID { get; set; }
@@ -46,7 +46,7 @@ namespace DevKit.Serialization.Tests.Editor.Json.Fixtures
 		public string UpdatedTime { get; set; }
 
 		[JsonDataMember(Name = "favorite_athletes")]
-		public IList<MeRequestData> FavoriteAthletes { get; set; }
+		public IList<UserLoginData> FavoriteAthletes { get; set; }
 
 	}
 }

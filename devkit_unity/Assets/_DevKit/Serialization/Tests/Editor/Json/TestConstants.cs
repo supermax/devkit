@@ -18,7 +18,7 @@
 
 		public const string Person = "{\"firstName\":\"First Name\", \"lastName\":\"Last Name\", \"age\" : 120, \"numbers\": [1, 2, 3]}";
 
-		public const int PersonPropertiesCount = 3;
+		public const int PersonPropertiesCount = 4;
 
 		#endregion
 

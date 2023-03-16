@@ -9,7 +9,7 @@ namespace DevKit.Serialization.Json.API
 	/// <summary>
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Enum)]
-	public class JsonDataContractAttribute : JsonDataMemberAttribute
+	public class JsonDataContractAttribute : JsonDataMemberAttribute, ISerializableContractAttribute
 	{
 		/// <summary>
 		///     Initializes a new instance of the <see cref="JsonDataContractAttribute" /> class.

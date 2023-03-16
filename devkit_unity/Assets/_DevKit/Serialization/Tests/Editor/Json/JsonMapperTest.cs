@@ -108,7 +108,7 @@ namespace DevKit.Serialization.Tests.Editor.Json
 		public void JsonMapper_Conversion_CountOfObjectsProperties_EqualsToTypesPropertiesCount()
 		{
 			var jsonDataPerson = JsonMapper.Default.ToObject(TestConstants.Person);
-			Assert.AreEqual(jsonDataPerson.Count, TestConstants.PersonPropertiesCount);
+			Assert.AreEqual(TestConstants.PersonPropertiesCount, jsonDataPerson.Count);
 		}
 
 		[Test]
@@ -129,16 +129,10 @@ namespace DevKit.Serialization.Tests.Editor.Json
 		[Test]
 		public void JsonMapper_Conversion_LoginDataFormatToClass()
 		{
-			//var loginJsonData = JsonMapper.Default.ToObject(_jsonTest);
-			//Assert.IsNotNull(loginJsonData);
-
-			//var lvl = (int) loginJsonData["Empire"]["2010"][0]["lvl"];
-			//var obj = JsonMapper.Default.ToObject<MeRequestData>(loginJsonData);
-
-			JsonMapper.Default.RegisterImporter<IList<MeRequestData>,List<MeRequestData>>(lst => new List<MeRequestData>(lst));
-
-			var obj = JsonMapper.Default.ToObject<MeRequestData>(_jsonTest);
-
+			JsonMapper.Default.RegisterImporter<IList<UserLoginData>,List<UserLoginData>>(
+				lst =>
+					new List<UserLoginData>(lst));
+			var obj = JsonMapper.Default.ToObject<UserLoginData>(_jsonTest);
 			Assert.IsNotNull(obj);
 		}
 
@@ -161,11 +155,11 @@ namespace DevKit.Serialization.Tests.Editor.Json
 			var o1 = loginJsonData[0];
 			var o2 = loginJsonData[1];
 
-			var spinResult = JsonMapper.Default.ToObject<SpinResultObj>(o1);
-			var currency = JsonMapper.Default.ToObject<UserCurrencyObj>(o2);
+			var id = JsonMapper.Default.ToObject<string>(o1);
+			var name = JsonMapper.Default.ToObject<string>(o2);
 
-			Assert.IsNotNull(spinResult);
-			Assert.IsNotNull(currency);
+			Assert.IsNotNull(id);
+			Assert.IsNotNull(name);
 		}
 
 		internal class SomeClass

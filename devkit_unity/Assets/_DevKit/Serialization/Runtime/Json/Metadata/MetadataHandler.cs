@@ -194,6 +194,10 @@ namespace DevKit.Serialization.Json.Metadata
 
 			// TODO improve this part to reduce reflection actions
 			var attributes = ReflectionHelper.GetDataMemberAttributes(pInfo);
+			if (attributes.IsNullOrEmpty())
+			{
+				return;
+			}
 			foreach (var attr in attributes)
 			{
 				var attrName = attr?.Name ?? pInfo.Name;
@@ -221,34 +225,47 @@ namespace DevKit.Serialization.Json.Metadata
             var typeWrapper = type.GetTypeWrapper();
             propsMeta = new List<PropertyMetadata>();
             var props = typeWrapper.GetProperties();
-            Log("{0}({1}.{2}())", nameof(AddTypeProperties), nameof(typeWrapper), nameof(typeWrapper.GetProperties));
-            foreach (var pInfo in props)
+            Log("{0}({1}.{2}() = {3})"
+	            , nameof(AddTypeProperties)
+	            , nameof(typeWrapper)
+	            , nameof(typeWrapper.GetProperties)
+	            , props);
+            if (!props.IsNullOrEmpty())
             {
-	            if (pInfo.Name == "Item" || ReflectionHelper.IsIgnorableMember(pInfo))
+	            foreach (var pInfo in props)
 	            {
-		            continue;
-	            }
+		            if (pInfo.Name == "Item" || ReflectionHelper.IsIgnorableMember(pInfo))
+		            {
+			            continue;
+		            }
 
-				var attributes = ReflectionHelper.GetDataMemberAttributes(pInfo);
-				foreach (var attr in attributes)
-				{
-					propsMeta.Add(new PropertyMetadata(pInfo.PropertyType, pInfo, false, attr));
-				}
+		            var attributes = ReflectionHelper.GetDataMemberAttributes(pInfo);
+		            foreach (var attr in attributes)
+		            {
+			            propsMeta.Add(new PropertyMetadata(pInfo.PropertyType, pInfo, false, attr));
+		            }
+	            }
             }
 
-            Log("AddTypeProperties(typeWrapper.GetFields())");
             var fields = typeWrapper.GetFields();
-            foreach (var fInfo in fields)
+            Log("{0}({1}.{2}()) = {3}"
+	            , nameof(AddTypeProperties)
+	            , nameof(typeWrapper)
+	            , nameof(typeWrapper.GetFields), fields);
+            if (!fields.IsNullOrEmpty())
             {
-				if (!fInfo.IsPublic || ReflectionHelper.IsIgnorableMember(fInfo))
-				{
-					continue;
-				}
-				var attributes = ReflectionHelper.GetDataMemberAttributes(fInfo);
-				foreach (var attr in attributes)
-				{
-					propsMeta.Add(new PropertyMetadata(fInfo.FieldType, fInfo, true, attr));
-				}
+	            foreach (var fInfo in fields)
+	            {
+		            if (!fInfo.IsPublic || ReflectionHelper.IsIgnorableMember(fInfo))
+		            {
+			            continue;
+		            }
+		            var attributes = ReflectionHelper.GetDataMemberAttributes(fInfo);
+		            foreach (var attr in attributes)
+		            {
+			            propsMeta.Add(new PropertyMetadata(fInfo.FieldType, fInfo, true, attr));
+		            }
+	            }
             }
 
             if (IsDebugMode)

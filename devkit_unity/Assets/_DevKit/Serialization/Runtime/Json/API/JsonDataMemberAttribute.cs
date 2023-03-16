@@ -10,7 +10,7 @@ namespace DevKit.Serialization.Json.API
 	///     JSON Data Member Attribute
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
-	public class JsonDataMemberAttribute : Attribute
+	public class JsonDataMemberAttribute : Attribute, ISerializableMemberAttribute
 	{
 		/// <summary>
 		///     Initializes a new instance of the <see cref="JsonDataMemberAttribute" /> class.
