@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using DevKit.Core.Extensions;
 
 namespace DevKit.DIoC.Config
@@ -7,12 +8,27 @@ namespace DevKit.DIoC.Config
     [Serializable]
     public abstract class BaseConfig : Dictionary<string, object>
     {
-        protected readonly string NameKey = nameof(Name).ToJsonPropName();
-
         public virtual string Name
         {
-            get { return this[NameKey] as string; }
-            set { this[NameKey] = value; }
+            get { return GetValue<string>(); }
+            set { SetValue(value); }
+        }
+
+        protected virtual T GetValue<T>([CallerMemberName] string propertyName = "")
+        {
+            propertyName = propertyName.ToJsonPropName();
+            if (!ContainsKey(propertyName))
+            {
+                return default;
+            }
+            var value = (T)this[propertyName];
+            return value;
+        }
+
+        protected virtual void SetValue<T>(T value, [CallerMemberName] string propertyName = "")
+        {
+            propertyName = propertyName.ToJsonPropName();
+            this[propertyName] = value;
         }
     }
 }

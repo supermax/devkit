@@ -1,45 +1,38 @@
 using System;
-using System.Runtime.Serialization;
 
 namespace DevKit.DIoC.Config
 {
     [Serializable]
-    [DataContract]
     public class TypeConfig : BaseConfig
     {
-        [DataMember(Name = "sourceType")]
         public string SourceType
         {
-            get;
-            set;
+            get { return GetValue<string>(); }
+            set { SetValue(value); }
         }
 
-        [DataMember(Name = "typeMappings")]
         public string[] TypeMappings
         {
-            get;
-            set;
+            get { return GetValue<string[]>(); }
+            set { SetValue(value); }
         }
 
-        [DataMember(Name = "typeDependencies")]
         public string[] TypeDependencies
         {
-            get;
-            set;
+            get { return GetValue<string[]>(); }
+            set { SetValue(value); }
         }
 
-        [DataMember(Name = "initTrigger")]
         public TypeInitTrigger InitTrigger
         {
-            get;
-            set;
+            get { return GetValue<TypeInitTrigger>(); }
+            set { SetValue(value); }
         }
 
-        [DataMember(Name = "isSingleton")]
         public bool IsSingleton
         {
-            get;
-            set;
+            get { return GetValue<bool>(); }
+            set { SetValue(value); }
         }
     }
 }

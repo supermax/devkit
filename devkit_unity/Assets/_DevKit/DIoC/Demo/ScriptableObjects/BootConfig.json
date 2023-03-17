@@ -1,1 +1,1 @@
-[{"name":"DevKit.DIoC.Demo"}]
+[{"name":"DevKit.DIoC.Demo","types":[{"name":"DevKit.DIoC.Demo.Entities.IEnemy","initTrigger":0,"isSingleton":false,"sourceType":"DevKit.DIoC.Demo.Entities.IEnemy","typeMappings":["DevKit.DIoC.Demo.Entities.Witch"],"typeDependencies":null}]}]

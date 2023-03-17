@@ -1,5 +1,5 @@
 using System;
-using System.Runtime.Serialization;
+using DevKit.Core.Extensions;
 
 namespace DevKit.DIoC.Config
 {
@@ -8,8 +8,8 @@ namespace DevKit.DIoC.Config
     {
         public TypeConfig[] Types
         {
-            get;
-            set;
+            get { return GetValue<TypeConfig[]>(); }
+            set { SetValue(value); }
         }
     }
 }
