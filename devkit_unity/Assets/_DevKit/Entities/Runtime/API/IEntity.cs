@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using DevKit.Core.Observables.API;
 
 namespace DevKit.Entities.API
@@ -25,44 +26,44 @@ namespace DevKit.Entities.API
         /// <summary>
         /// Sets the boolean property value
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="value"></param>
-        void SetPropertyValue(string name, bool? value);
+        /// <param name="value">The boolean value</param>
+        /// <param name="name">The name of the property</param>
+        void SetPropertyValue(bool? value, [CallerMemberName] string name = "");
 
         /// <summary>
         /// Sets the numeric property value
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="value"></param>
-        void SetPropertyValue(string name, double? value);
+        /// <param name="value">The numeric value</param>
+        /// <param name="name">The name of the property</param>
+        void SetPropertyValue(double? value, [CallerMemberName] string name = "");
 
         /// <summary>
         /// Set the textual property value
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="value"></param>
-        void SetPropertyValue(string name, string value);
+        /// <param name="value">The textual value</param>
+        /// <param name="name">The name of the property</param>
+        void SetPropertyValue(string value, [CallerMemberName] string name = "");
 
         /// <summary>
         /// Get the property value
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="name">The name of the property</param>
         /// <returns></returns>
-        PropertyValueHolder GetPropertyValue(string name);
+        PropertyValueHolder GetPropertyValue([CallerMemberName] string name = "");
 
         /// <summary>
         /// Applies numeric property modifier
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="modifier"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <param name="name">The name of the property</param>
+        /// <param name="modifier">The type of the modifier</param>
+        /// <param name="value">The value to apply</param>
+        /// <returns>Modified numeric value</returns>
         double? ApplyPropertyModifier(string name, PropertyModifierType modifier, double value);
 
         /// <summary>
         /// Resets property value
         /// </summary>
-        /// <param name="name"></param>
-        void ResetPropertyValue(string name);
+        /// <param name="name">The name of the property</param>
+        void ResetPropertyValue([CallerMemberName] string name = "");
     }
 }

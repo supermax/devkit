@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Runtime.Serialization;
+using System.Text;
 
 namespace DevKit.Entities
 {
@@ -9,26 +9,22 @@ namespace DevKit.Entities
     /// <remarks>
     /// Mainly used in RPG entities with engine initialization and optimal calculations
     /// </remarks>
-    [DataContract]
     [Serializable]
     public struct PropertyValueHolder
     {
         /// <summary>
         /// Holds <see cref="bool"/> value
         /// </summary>
-        [DataMember(Name = "boolean")]
         public bool? Bool { get; set; }
 
         /// <summary>
         /// Holds <see cref="double"/> value
         /// </summary>
-        [DataMember(Name = "numeric")]
         public double? Number { get; set; }
 
         /// <summary>
         /// Holds <see cref="string"/> value
         /// </summary>
-        [DataMember(Name = "text")]
         public string Text { get; set; }
 
         /// <summary>
@@ -62,6 +58,17 @@ namespace DevKit.Entities
         {
             Text = value;
             return this;
+        }
+
+        public override string ToString()
+        {
+            var str = new StringBuilder();
+            str.Append('{')
+               .AppendFormat("\"bool:\" {0}", Bool)
+               .AppendFormat("\", number:\" {0}", Number)
+               .AppendFormat("\", text:\" \"{0}\"", Text)
+               .Append('}');
+            return str.ToString();
         }
     }
 }

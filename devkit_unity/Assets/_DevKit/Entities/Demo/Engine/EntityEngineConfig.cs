@@ -1,7 +1,6 @@
 ﻿using DevKit.Entities.Demo.Characters.API;
 
-// TODO do we need special config for the characters or we can use base engine config? (or we can make it more generic `EntityEngine`?)
-namespace DevKit.Entities.Demo.Characters
+namespace DevKit.Entities.Demo.Engine
 {
     /// <summary>
     /// Characters config class, used to determine basic character values and behavior

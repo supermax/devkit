@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 using DevKit.Core.Extensions;
 using DevKit.Entities.API;
 
@@ -10,13 +9,11 @@ namespace DevKit.Entities
     /// Base config class
     /// </summary>
     [Serializable]
-    [DataContract]
     public abstract class EngineConfig : IEngineConfig, IDisposable
     {
         /// <summary>
         /// Contains config values for entities
         /// </summary>
-        [DataMember(Name = "values")]
         public Dictionary<Type, EntityConfig> EntitiesConfig { get; set; } = new();
 
         public abstract void Init();

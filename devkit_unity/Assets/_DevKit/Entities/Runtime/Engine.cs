@@ -21,7 +21,9 @@ namespace DevKit.Entities
         /// <returns></returns>
         public abstract T Create<T>() where T : class, IEntity<T>;
 
-        public abstract TInterface Register<TInterface, TImplementation>()
+        protected abstract T Instantiate<T>() where T: class, IEntity<T>;
+
+        public abstract void Register<TInterface, TImplementation>()
             where TInterface : class
             where TImplementation : class, TInterface;
 

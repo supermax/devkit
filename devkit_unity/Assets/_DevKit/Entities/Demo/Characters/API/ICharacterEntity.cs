@@ -8,7 +8,7 @@ namespace DevKit.Entities.Demo.Characters.API
     /// <remarks>
     /// Extends basic <see cref="IEntity{T}"/>
     /// </remarks>
-    public interface ICharacter : IEntity<ICharacter>
+    public interface ICharacterEntity : IEntity<ICharacterEntity>
     {
         /// <summary>
         /// Character config section

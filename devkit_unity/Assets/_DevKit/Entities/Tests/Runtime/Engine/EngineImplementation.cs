@@ -9,7 +9,12 @@ namespace DevKit.Entities.Tests.Engine
             throw new System.NotImplementedException();
         }
 
-        public override TInterface Register<TInterface, TImplementation>()
+        public override void Register<TInterface, TImplementation>()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        protected override T Instantiate<T>()
         {
             throw new System.NotImplementedException();
         }

@@ -10,10 +10,10 @@ namespace DevKit.Entities.Demo.Battle
     /// </summary>
     /// <remarks>
     /// Extends <see cref="EntityCollection{TKey, TValue}"/>
-    /// May contains different types of <see cref="ICharacter"/>
+    /// May contains different types of <see cref="ICharacterEntity"/>
     /// </remarks>
     public class BattleUnit : Entity<IBattleUnit>, IBattleUnit
     {
-        public IEntityCollection<string, ICharacter> Characters { get; }
+        public IEntityCollection<string, ICharacterEntity> Characters { get; }
     }
 }

@@ -11,6 +11,6 @@ namespace DevKit.Entities.Demo.Battle.API
     /// </remarks>
     public interface IBattleUnit : IEntity<IBattleUnit>
     {
-        IEntityCollection<string, ICharacter> Characters { get; }
+        IEntityCollection<string, ICharacterEntity> Characters { get; }
     }
 }

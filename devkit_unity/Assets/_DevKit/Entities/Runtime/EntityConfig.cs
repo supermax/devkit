@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 using DevKit.Entities.API;
 
 namespace DevKit.Entities
@@ -9,10 +8,8 @@ namespace DevKit.Entities
     /// Config container for entity
     /// </summary>
     [Serializable]
-    [DataContract]
     public class EntityConfig : IEntityConfig
     {
-        [DataMember(Name = "values")]
         public Dictionary<string, PropertyValueHolder> PropertyValues { get; set; } = new();
 
         public void Init(Dictionary<string, PropertyValueHolder> propertyValues)

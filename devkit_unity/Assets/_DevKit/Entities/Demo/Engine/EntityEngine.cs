@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using DevKit.Entities.Demo.Characters.API;
 
-// TODO do we need specific `CharactersEngine` or we can make it more generic `EntityEngine`
-namespace DevKit.Entities.Demo.Characters
+namespace DevKit.Entities.Demo.Engine
 {
     /// <summary>
     /// Characters engine, used to instantiate character and to inject relevant config
@@ -11,7 +10,7 @@ namespace DevKit.Entities.Demo.Characters
     /// <remarks>
     /// Extends <see cref="Engine"/> for entities
     /// </remarks>
-    public class EntityEngine : Engine, IEntityEngine
+    public class EntityEngine : Entities.Engine, IEntityEngine
     {
         private readonly IDictionary<Type, Type> _typeMappings = new Dictionary<Type, Type>();
 
@@ -27,11 +26,8 @@ namespace DevKit.Entities.Demo.Characters
         /// <returns>new instance of <para>T</para> with injected config</returns>
         public override T Create<T>()
         {
-            var keyType = typeof (T);
-            var mappedType = _typeMappings.ContainsKey(keyType) ? _typeMappings[keyType] : keyType;
-
-            var entity = (T)Activator.CreateInstance(mappedType);
-            var character = entity as ICharacter;
+            var entity = Instantiate<T>();
+            var character = entity as ICharacterEntity;
             var characterConfig = GetConfig();
             if (character != null && characterConfig != null)
             {
@@ -42,10 +38,18 @@ namespace DevKit.Entities.Demo.Characters
             return entity;
         }
 
-        public override TInterface Register<TInterface, TImplementation>()
+        protected override T Instantiate<T>()
         {
-            // TODO use _typeMappings
-            throw new NotImplementedException();
+            var keyType = typeof (T);
+            var mappedType = _typeMappings.ContainsKey(keyType) ? _typeMappings[keyType] : keyType;
+            var objInstance = Activator.CreateInstance(mappedType);
+            var entity = objInstance as T;
+            return entity;
+        }
+
+        public override void Register<TInterface, TImplementation>()
+        {
+            _typeMappings[typeof (TInterface)] = typeof (TImplementation);
         }
     }
 }

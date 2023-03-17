@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+using System.Runtime.CompilerServices;
+using DevKit.Core.Extensions;
 using DevKit.Core.Observables;
-using DevKit.Core.Observables.API;
 using DevKit.Entities.API;
 
 namespace DevKit.Entities
@@ -11,7 +11,6 @@ namespace DevKit.Entities
     /// Base entity class
     /// </summary>
     [Serializable]
-    [DataContract]
     public abstract class Entity<T> : Observable<T>, IEntity<T>
         where T : class
     {
@@ -29,7 +28,6 @@ namespace DevKit.Entities
         ///     Gets or sets the id.
         /// </summary>
         /// <value>The id.</value>
-        [DataMember(Name = "id")]
         public virtual Guid Id
         {
             get { return IdValue; }
@@ -44,7 +42,6 @@ namespace DevKit.Entities
         ///     Gets or sets the id.
         /// </summary>
         /// <value>The id.</value>
-        [DataMember(Name = "typeId")]
         public virtual Guid TypeId
         {
             get { return TypeId; }
@@ -55,13 +52,11 @@ namespace DevKit.Entities
             }
         }
 
-        [IgnoreDataMember]
         public virtual string Error { get; protected set; }
 
         /// <summary>
         /// Property values container
         /// </summary>
-        [DataMember(Name = "properties")]
         public Dictionary<string, PropertyValueHolder> PropertyValues { get; } = new ();
 
         /// <summary>
@@ -104,8 +99,10 @@ namespace DevKit.Entities
             return null;
         }
 
-        public void SetPropertyValue(string name, bool? value)
+        /// <inheritdoc/>
+        public void SetPropertyValue(bool? value, [CallerMemberName] string name = "")
         {
+            name = name.ToJsonPropName();
             var holder = PropertyValues[name];
             var oldValue = holder.Bool;
             if (oldValue == value)
@@ -116,8 +113,10 @@ namespace DevKit.Entities
             InvokePropertyChanged(name, oldValue, value);
         }
 
-        public virtual void SetPropertyValue(string name, double? value)
+        /// <inheritdoc/>
+        public virtual void SetPropertyValue(double? value, [CallerMemberName] string name = "")
         {
+            name = name.ToJsonPropName();
             var holder = PropertyValues[name];
             var oldValue = holder.Number;
             if (Equals(oldValue, value))
@@ -128,8 +127,10 @@ namespace DevKit.Entities
             InvokePropertyChanged(name, oldValue, value);
         }
 
-        public void SetPropertyValue(string name, string value)
+        /// <inheritdoc/>
+        public void SetPropertyValue(string value, [CallerMemberName] string name = "")
         {
+            name = name.ToJsonPropName();
             var holder = PropertyValues[name];
             var oldValue = holder.Text;
             if (oldValue == value)
@@ -140,8 +141,10 @@ namespace DevKit.Entities
             InvokePropertyChanged(name, oldValue, value);
         }
 
-        public PropertyValueHolder GetPropertyValue(string name)
+        /// <inheritdoc/>
+        public PropertyValueHolder GetPropertyValue([CallerMemberName] string name = "")
         {
+            name = name.ToJsonPropName();
             if (!PropertyValues.ContainsKey(name))
             {
                 PropertyValues[name] = new PropertyValueHolder();
@@ -150,6 +153,7 @@ namespace DevKit.Entities
             return holder;
         }
 
+        /// <inheritdoc/>
         public virtual double? ApplyPropertyModifier(string name, PropertyModifierType modifier, double value)
         {
             // TODO implement each modifier operation (see "Multiply" as sample)
@@ -164,19 +168,19 @@ namespace DevKit.Entities
             switch (modifier)
             {
                 case PropertyModifierType.Multiplication:
-                    SetPropertyValue(name, propValue.Number.Value*value);
+                    SetPropertyValue(propValue.Number.Value*value, name);
                     break;
 
                 case PropertyModifierType.Division:
-                    SetPropertyValue(name, propValue.Number.Value/value);
+                    SetPropertyValue(propValue.Number.Value/value, name);
                     break;
 
                 case PropertyModifierType.Addition:
-                    SetPropertyValue(name, propValue.Number.Value+value);
+                    SetPropertyValue(propValue.Number.Value+value, name);
                     break;
 
                 case PropertyModifierType.Subtraction:
-                    SetPropertyValue(name, propValue.Number.Value-value);
+                    SetPropertyValue(propValue.Number.Value-value, name);
                     break;
 
                 default:
@@ -185,8 +189,10 @@ namespace DevKit.Entities
             return propValue.Number;
         }
 
-        public virtual void ResetPropertyValue(string name)
+        /// <inheritdoc/>
+        public virtual void ResetPropertyValue([CallerMemberName] string name = "")
         {
+            name = name.ToJsonPropName();
             PropertyValues.Remove(name);
 
             // TODO restore initial value from config

@@ -230,6 +230,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 61f560b2df3b8424894f6b8cbc4a5cce,
         type: 2}
+    - target: {fileID: 8582652051014588076, guid: d1f2aeb5fb6b6467ab57950b1da18e18,
+        type: 3}
+      propertyPath: _isLoggingEnabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8582652051014588077, guid: d1f2aeb5fb6b6467ab57950b1da18e18,
         type: 3}
       propertyPath: m_RootOrder

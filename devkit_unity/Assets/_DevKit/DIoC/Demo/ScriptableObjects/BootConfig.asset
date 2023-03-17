@@ -18,7 +18,7 @@ MonoBehaviour:
     _assemblyDefinition: {fileID: 5897886265953266890, guid: d6cb68cfd90444de688ed755fdbc4ba5,
       type: 3}
     _typeMappings:
-    - Name: 
+    - Name: DevKit.DIoC.Demo.Entities.IEnemy
       _initTrigger: 0
       _singleton: 0
       _type: {fileID: 11500000, guid: 3f4ad1323bb744eb98169b77a415d2c5, type: 3}

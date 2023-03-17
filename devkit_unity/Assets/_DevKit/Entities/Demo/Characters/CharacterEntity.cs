@@ -13,7 +13,7 @@ namespace DevKit.Entities.Demo.Characters
     /// </remarks>
     [DataContract]
     [Serializable]
-    public abstract class Character : Entity<ICharacter>, ICharacter
+    public abstract class CharacterEntity : Entity<ICharacterEntity>, ICharacterEntity
     {
         public IEntityConfig Config { get; set; }
 
@@ -27,7 +27,7 @@ namespace DevKit.Entities.Demo.Characters
             }
             set
             {
-                SetPropertyValue(nameof(Health), value);
+                SetPropertyValue(value);
             }
         }
 
@@ -36,12 +36,12 @@ namespace DevKit.Entities.Demo.Characters
         {
             get
             {
-                var value = GetPropertyValue(nameof(Damage));
+                var value = GetPropertyValue();
                 return value.Number;
             }
             set
             {
-                SetPropertyValue(nameof(Damage), value);
+                SetPropertyValue(value);
             }
         }
 
@@ -50,12 +50,12 @@ namespace DevKit.Entities.Demo.Characters
         {
             get
             {
-                var value = GetPropertyValue(nameof(IsTargetable));
+                var value = GetPropertyValue();
                 return value.Bool.GetValueOrDefault();
             }
             set
             {
-                SetPropertyValue(nameof(IsTargetable), value);
+                SetPropertyValue(value);
             }
         }
 
@@ -64,12 +64,12 @@ namespace DevKit.Entities.Demo.Characters
         {
             get
             {
-                var value = GetPropertyValue(nameof(CanAttack));
+                var value = GetPropertyValue();
                 return value.Bool.GetValueOrDefault();
             }
             set
             {
-                SetPropertyValue(nameof(CanAttack), value);
+                SetPropertyValue(value);
             }
         }
 
