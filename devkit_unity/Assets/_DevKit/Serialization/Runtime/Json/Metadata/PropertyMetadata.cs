@@ -12,7 +12,7 @@ namespace DevKit.Serialization.Json.Metadata
 	/// <summary>
 	/// Property Metadata
 	/// </summary>
-	internal class PropertyMetadata
+	internal sealed class PropertyMetadata
 	{
 		/// <summary>
 		///     The info
@@ -92,7 +92,7 @@ namespace DevKit.Serialization.Json.Metadata
 
 	    public override string ToString()
 	    {
-	        return string.Format("Type: {0}, Info: {1}, IsField: {2}", GetMemberType(), Info, IsField);
+	        return $"Type: {GetMemberType()}, Info: {Info}, IsField: {IsField}";
 	    }
 	}
 }

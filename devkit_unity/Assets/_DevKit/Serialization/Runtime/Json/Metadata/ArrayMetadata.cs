@@ -50,7 +50,7 @@ namespace DevKit.Serialization.Json.Metadata
 
 		internal ArrayMetadata(Type elementType, bool isArray, bool isList)
 		{
-			ElementType = typeof (JsonData);  //elementType ?? typeof (JsonData);
+			ElementType = elementType ?? typeof (JsonData);
 			IsArray = isArray;
 			IsList = isList;
 		}

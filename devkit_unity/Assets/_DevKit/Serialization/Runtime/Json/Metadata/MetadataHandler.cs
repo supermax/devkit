@@ -3,14 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using DevKit.Core.Extensions;
-using DevKit.DIoC.Extensions;
-using DevKit.Serialization.Json.API;
-using DevKit.Serialization.Json.Helpers;
+using DevKit.Serialization.Json.Extensions;
 using UnityEngine;
 
 namespace DevKit.Serialization.Json.Metadata
 {
-    internal class MetadataHandler
+    internal sealed class MetadataHandler
     {
         private readonly IDictionary<Type, ArrayMetadata> _arrayMetadata = new Dictionary<Type, ArrayMetadata>();
 
@@ -38,7 +36,7 @@ namespace DevKit.Serialization.Json.Metadata
 		/// </summary>
 		/// <param name="format">The format.</param>
 		/// <param name="args">The arguments.</param>
-		internal virtual void Log(string format, params object[] args)
+		internal void Log(string format, params object[] args)
 		{
 			if (!IsDebugMode)
 			{
@@ -47,7 +45,7 @@ namespace DevKit.Serialization.Json.Metadata
 			Debug.LogFormat($"[{GetType()}] {format}", args);
 		}
 
-		internal virtual void LogError(string format, params object[] args)
+		internal void LogError(string format, params object[] args)
 		{
 			if (!IsDebugMode)
 			{
@@ -142,14 +140,14 @@ namespace DevKit.Serialization.Json.Metadata
 		/// <param name="data">The data.</param>
 		private void AddFieldMetadata(FieldInfo fInfo, ObjectMetadata data)
 		{
-			var isIgnorable = ReflectionHelper.IsIgnorableMember(fInfo);
+			var isIgnorable = fInfo.IsIgnorableMember();
 			Log("{0}(field: {1}, {2}: {3})", nameof(AddFieldMetadata), fInfo, nameof(isIgnorable), isIgnorable);
 			if (isIgnorable)
 			{
 				return;
 			}
 
-			var attributes = ReflectionHelper.GetDataMemberAttributes(fInfo);
+			var attributes = fInfo.GetDataMemberAttributes();
 			if (attributes.IsNullOrEmpty())
 			{
 				return;
@@ -185,7 +183,7 @@ namespace DevKit.Serialization.Json.Metadata
 				return;
 			}
 
-			var isIgnorable = ReflectionHelper.IsIgnorableMember(pInfo);
+			var isIgnorable = pInfo.IsIgnorableMember();
 			Log("{0}(prop: {1}, {2}: {3})", nameof(AddPropertyMetadata), pInfo, nameof(isIgnorable),isIgnorable);
 			if (isIgnorable)
 			{
@@ -193,7 +191,7 @@ namespace DevKit.Serialization.Json.Metadata
 			}
 
 			// TODO improve this part to reduce reflection actions
-			var attributes = ReflectionHelper.GetDataMemberAttributes(pInfo);
+			var attributes = pInfo.GetDataMemberAttributes();
 			if (attributes.IsNullOrEmpty())
 			{
 				return;
@@ -234,14 +232,15 @@ namespace DevKit.Serialization.Json.Metadata
             {
 	            foreach (var pInfo in props)
 	            {
-		            if (pInfo.Name == "Item" || ReflectionHelper.IsIgnorableMember(pInfo))
+		            if (pInfo.Name == "Item" || pInfo.IsIgnorableMember())
 		            {
 			            continue;
 		            }
 
-		            var attributes = ReflectionHelper.GetDataMemberAttributes(pInfo);
+		            var attributes = pInfo.GetDataMemberAttributes();
 		            if (attributes.IsNullOrEmpty())
 		            {
+			            propsMeta.Add(new PropertyMetadata(pInfo.PropertyType, pInfo, false, null));
 			            continue;
 		            }
 		            foreach (var attr in attributes)
@@ -260,13 +259,14 @@ namespace DevKit.Serialization.Json.Metadata
             {
 	            foreach (var fInfo in fields)
 	            {
-		            if (!fInfo.IsPublic || ReflectionHelper.IsIgnorableMember(fInfo))
+		            if (!fInfo.IsPublic || fInfo.IsIgnorableMember())
 		            {
 			            continue;
 		            }
-		            var attributes = ReflectionHelper.GetDataMemberAttributes(fInfo);
+		            var attributes = fInfo.GetDataMemberAttributes();
 		            if (attributes.IsNullOrEmpty())
 		            {
+			            propsMeta.Add(new PropertyMetadata(fInfo.FieldType, fInfo, true, null));
 			            continue;
 		            }
 		            foreach (var attr in attributes)

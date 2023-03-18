@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace DevKit.DIoC.Extensions
+namespace DevKit.Serialization.Json.API
 {
     /// <summary>
 	/// Interface for TypeWrapper

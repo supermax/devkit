@@ -12,7 +12,7 @@ namespace DevKit.Serialization.Json.Metadata
 	/// <summary>
 	///     Object Metadata
 	/// </summary>
-	internal class ObjectMetadata
+	internal sealed class ObjectMetadata
 	{
 		/// <summary>
 		///     Gets or sets the type of the element.

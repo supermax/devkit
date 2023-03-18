@@ -9,8 +9,8 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using DevKit.Core.Extensions;
-using DevKit.DIoC.Extensions;
 using DevKit.Serialization.Json.API;
+using DevKit.Serialization.Json.Extensions;
 using DevKit.Serialization.Json.Interpreters;
 using DevKit.Serialization.Json.Metadata;
 

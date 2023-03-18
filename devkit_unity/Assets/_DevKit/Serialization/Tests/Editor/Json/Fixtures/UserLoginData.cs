@@ -45,8 +45,8 @@ namespace DevKit.Serialization.Tests.Editor.Json.Fixtures
 		[JsonDataMember(Name = "updated_time")]
 		public string UpdatedTime { get; set; }
 
-		[JsonDataMember(Name = "favorite_athletes")]
-		public IList<UserLoginData> FavoriteAthletes { get; set; }
+		[JsonDataMember(Name = "items")]
+		public IList<UserLoginData> Items { get; set; }
 
 	}
 }

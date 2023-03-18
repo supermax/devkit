@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using DevKit.Core.Extensions;
 
-namespace DevKit.DIoC.Extensions
+namespace DevKit.Serialization.Json.API
 {
 	internal class TypeWrapper : ITypeWrapper
 	{

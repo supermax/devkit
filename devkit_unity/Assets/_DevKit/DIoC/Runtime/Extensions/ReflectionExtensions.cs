@@ -7,9 +7,9 @@ using DevKit.DIoC.Attributes;
 
 namespace DevKit.DIoC.Extensions
 {
-    public static class ReflectionExtensions
+    internal static class ReflectionExtensions
     {
-        public static ConstructorInfo GetDefaultConstructor(this Type src)
+        internal static ConstructorInfo GetDefaultConstructor(this Type src)
         {
             ConstructorInfo defCtor = null;
             var constructors = src.GetConstructors();
@@ -30,7 +30,7 @@ namespace DevKit.DIoC.Extensions
             return defCtor;
         }
 
-        public static PropertyInfo[] GetInjectableProperties(this Type src)
+        internal static PropertyInfo[] GetInjectableProperties(this Type src)
         {
             var injectProps = new List<PropertyInfo>();
             var props = src.GetProperties();
@@ -44,7 +44,7 @@ namespace DevKit.DIoC.Extensions
             return injectProps.ToArray();
         }
 
-        public static MethodInfo[] GetExecutableMethods(this Type src)
+        internal static MethodInfo[] GetExecutableMethods(this Type src)
         {
             var exeMethods = new List<MethodInfo>();
             var methods = src.GetMethods();
@@ -56,34 +56,6 @@ namespace DevKit.DIoC.Extensions
                 exeMethods.Add(method);
             }
             return exeMethods.ToArray();
-        }
-
-        public static string GetFullTypeName(this string cSharpCode)
-        {
-            const string pattern = @"^(?:(?:\s*//.*(?:\r?\n|\r))*\s*)*(?:using\s+[\w.]+\s*;\s*)*(?:namespace\s+(?<namespace>[\w.]+)\s*{\s*(?:public\s+(?:class|interface)\s+(?<classname>[\w]+))?)?";
-            var match = Regex.Match(cSharpCode, pattern);
-            var namespaceName = string.Empty;
-            var className = string.Empty;
-            if (match.Success)
-            {
-                namespaceName = match.Groups["namespace"].Value;
-                className = match.Groups["classname"].Value;
-            }
-            var typeName = namespaceName.IsNullOrEmpty() ? className : $"{namespaceName}.{className}";
-            return typeName;
-        }
-
-        public static ITypeWrapper GetTypeWrapper(this object obj)
-        {
-            var type = obj.GetType();
-            var wrapper = type.GetTypeWrapper();
-            return wrapper;
-        }
-
-        public static ITypeWrapper GetTypeWrapper(this Type type)
-        {
-            var wrapper = new TypeWrapper(type);
-            return wrapper;
         }
     }
 }

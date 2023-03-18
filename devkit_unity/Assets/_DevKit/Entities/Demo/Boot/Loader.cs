@@ -50,7 +50,6 @@ namespace DevKit.Entities.Demo.Boot
             playerConfig.PropertyValues["canAttack"] = new PropertyValueHolder {Bool = true};
             this.LogInfo($"{playerConfig}: {playerConfig.PropertyValues.ToJson()}");
 
-
             var values = new Dictionary<Type, EntityConfig>
                 {
                     {typeof(PlayerEntity), playerConfig}
