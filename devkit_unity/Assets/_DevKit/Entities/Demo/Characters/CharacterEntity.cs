@@ -72,32 +72,59 @@ namespace DevKit.Entities.Demo.Characters
             }
         }
 
-        /// <inheritdoc />
-        public virtual bool IsTargetableBy<TT>(TT entity) where TT : class, IEntity<TT>
+        public static string GetIsTargetableByKey<TT>()
         {
-            var isTargetable = Config.GetPropertyInitialValue($"{nameof(IsTargetableBy)}_{entity.TypeId}").Bool.GetValueOrDefault();
-            return isTargetable;
+            var key = $"{nameof(IsTargetableBy)}_{typeof(TT).Name}";
+            return key;
         }
 
         /// <inheritdoc />
-        public virtual bool CanAttackTarget<TT>(TT entity) where TT : class, IEntity<TT>
+        public virtual bool? IsTargetableBy<TT>(TT entity) where TT : class, IEntity<TT>
         {
-            var isTargetable = Config.GetPropertyInitialValue($"{nameof(CanAttackTarget)}_{entity.TypeId}").Bool.GetValueOrDefault();
+            var isTargetable = Config.GetPropertyInitialValue(GetIsTargetableByKey<TT>()).Bool;
             return isTargetable;
+        }
+
+        public static string GetCanAttackTargetKey<TT>()
+        {
+            var key = $"{nameof(CanAttackTarget)}_{typeof(TT).Name}";
+            return key;
+        }
+
+        /// <inheritdoc />
+        public virtual bool? CanAttackTarget<TT>(TT entity) where TT : class, IEntity<TT>
+        {
+            var isTargetable = Config.GetPropertyInitialValue(GetCanAttackTargetKey<TT>()).Bool;
+            return isTargetable;
+        }
+
+        public static string GetId<TT>(TT entity)
+        {
+            var key = $"{typeof(TT).Name}_{entity.GetHashCode()}";
+            return key;
         }
 
         public override void Init(IEntityConfig config)
         {
             BeginUpdate();
             Config = config;
+            Id = GetId(this);
             TypeId = config.GetPropertyInitialValue(nameof(TypeId)).Text;
             Damage = config.GetPropertyInitialValue(nameof(Damage)).Number;
-            var damage = Damage;
-
             Health = config.GetPropertyInitialValue(nameof(Health)).Number;
             CanAttack = config.GetPropertyInitialValue(nameof(CanAttack)).Bool;
             IsTargetable = config.GetPropertyInitialValue(nameof(IsTargetable)).Bool;
             EndUpdate();
+        }
+
+        public CharacterEntity()
+        {
+
+        }
+
+        public CharacterEntity(string id)
+        {
+            Id = id;
         }
     }
 }

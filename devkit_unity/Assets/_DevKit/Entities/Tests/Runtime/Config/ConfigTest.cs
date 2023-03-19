@@ -17,12 +17,9 @@ namespace DevKit.Entities.Tests.Config
 
             for (var i = 0; i < 100; i++)
             {
-                var holder = new PropertyValueHolder
-                    {
-                        Number = Random.value,
-                        Bool = Random.Range(0, 1) != 0,
-                        Text = $"prop_{i}"
-                    };
+                var holder = new PropertyValueHolder(Random.value)
+                             .SetValue(Random.Range(0, 1) != 0)
+                             .SetValue($"prop_{i}");
                 entityConfig.PropertyValues[holder.Text] = holder;
             }
             Assert.That(entityConfig.PropertyValues.Count, Is.EqualTo(100));

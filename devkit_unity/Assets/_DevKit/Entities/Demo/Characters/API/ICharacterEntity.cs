@@ -19,7 +19,7 @@ namespace DevKit.Entities.Demo.Characters.API
         /// <param name="entity"></param>
         /// <typeparam name="TT"></typeparam>
         /// <returns></returns>
-        bool IsTargetableBy<TT>(TT entity) where TT : class, IEntity<TT>;
+        bool? IsTargetableBy<TT>(TT entity) where TT : class, IEntity<TT>;
 
         /// <summary>
         /// Returns <code>true</code> in case this character can attack the given entity\character
@@ -27,7 +27,7 @@ namespace DevKit.Entities.Demo.Characters.API
         /// <param name="entity"></param>
         /// <typeparam name="TT"></typeparam>
         /// <returns></returns>
-        bool CanAttackTarget<TT>(TT entity) where TT : class, IEntity<TT>;
+        bool? CanAttackTarget<TT>(TT entity) where TT : class, IEntity<TT>;
     }
 
     public interface ICharacterEntity

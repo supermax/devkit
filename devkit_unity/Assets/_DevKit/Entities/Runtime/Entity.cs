@@ -104,15 +104,7 @@ namespace DevKit.Entities
         /// <inheritdoc/>
         public void SetPropertyValue(bool? value, [CallerMemberName] string name = "")
         {
-            if (!PropertyValues.ContainsKey(name))
-            {
-                name = name.ToJsonPropName();
-            }
-            if (!PropertyValues.ContainsKey(name))
-            {
-                PropertyValues[name] = new PropertyValueHolder();
-            }
-            var holder = PropertyValues[name];
+            var holder = GetValueHolder(name);
             var oldValue = holder.Bool;
             if (oldValue == value)
             {
@@ -125,15 +117,7 @@ namespace DevKit.Entities
         /// <inheritdoc/>
         public virtual void SetPropertyValue(double? value, [CallerMemberName] string name = "")
         {
-            if (!PropertyValues.ContainsKey(name))
-            {
-                name = name.ToJsonPropName();
-            }
-            if (!PropertyValues.ContainsKey(name))
-            {
-                PropertyValues[name] = new PropertyValueHolder();
-            }
-            var holder = PropertyValues[name];
+            var holder = GetValueHolder(name);
             var oldValue = holder.Number;
             if (Equals(oldValue, value))
             {
@@ -146,6 +130,18 @@ namespace DevKit.Entities
         /// <inheritdoc/>
         public void SetPropertyValue(string value, [CallerMemberName] string name = "")
         {
+            var holder = GetValueHolder(name);
+            var oldValue = holder.Text;
+            if (oldValue == value)
+            {
+                return;
+            }
+            holder.SetValue(value);
+            InvokePropertyChanged(name, oldValue, value);
+        }
+
+        protected PropertyValueHolder GetValueHolder(string name)
+        {
             if (!PropertyValues.ContainsKey(name))
             {
                 name = name.ToJsonPropName();
@@ -155,13 +151,7 @@ namespace DevKit.Entities
                 PropertyValues[name] = new PropertyValueHolder();
             }
             var holder = PropertyValues[name];
-            var oldValue = holder.Text;
-            if (oldValue == value)
-            {
-                return;
-            }
-            holder.SetValue(value);
-            InvokePropertyChanged(name, oldValue, value);
+            return holder;
         }
 
         /// <inheritdoc/>

@@ -32,14 +32,14 @@ namespace DevKit.Entities
             EntitiesConfig = entitiesConfig;
         }
 
-        public PropertyValueHolder? GetPropertyInitialValue<T>(string name)
+        public PropertyValueHolder GetPropertyInitialValue<T>(string name)
         {
             var type = typeof(T);
             var value = GetPropertyInitialValue(type, name);
             return value;
         }
 
-        public PropertyValueHolder? GetPropertyInitialValue(Type type, string name)
+        public PropertyValueHolder GetPropertyInitialValue(Type type, string name)
         {
             type.ThrowIfNull(nameof(type));
             name.ThrowIfNull(nameof(name));

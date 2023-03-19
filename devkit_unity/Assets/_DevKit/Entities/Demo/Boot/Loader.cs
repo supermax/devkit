@@ -11,6 +11,7 @@ using DevKit.Logging;
 using DevKit.Logging.Extensions;
 using DevKit.Serialization.Json.Extensions;
 using IEntityEngine = DevKit.Entities.Demo.Engine.API.IEntityEngine;
+using Random = UnityEngine.Random;
 
 namespace DevKit.Entities.Demo.Boot
 {
@@ -48,6 +49,16 @@ namespace DevKit.Entities.Demo.Boot
             var playerJson = player.ToJson();
             this.LogInfo($"Created {playerJson}");
 
+            _engine.Register<IEnemyEntity, EnemyEntity>();
+            this.LogInfo($"{_engine}.{nameof(_engine.Register)}: {typeof(IEnemyEntity)}");
+
+            for (var i = 0; i < 5; i++)
+            {
+                var enemy = _engine.Create<IEnemyEntity>();
+                var enemyJson = enemy.ToJson();
+                this.LogInfo($"Created {enemyJson}");
+            }
+
             _configManager = new EntityEngineConfigManager();
             _configManager.SaveConfigToFile("engine_config.json", _config);
         }
@@ -55,16 +66,29 @@ namespace DevKit.Entities.Demo.Boot
         private Dictionary<Type, EntityConfig> GetConfig()
         {
             var playerConfig = new EntityConfig();
-            playerConfig.PropertyValues["typeId"] = new PropertyValueHolder {Text = nameof(PlayerEntity)};
-            playerConfig.PropertyValues["health"] = new PropertyValueHolder {Number = 1000000};
-            playerConfig.PropertyValues["damage"] = new PropertyValueHolder {Number = 1000};
-            playerConfig.PropertyValues["isTargetable"] = new PropertyValueHolder {Bool = true};
-            playerConfig.PropertyValues["canAttack"] = new PropertyValueHolder {Bool = true};
+            playerConfig.PropertyValues["typeId"] = nameof(PlayerEntity);
+            playerConfig.PropertyValues["health"] = Random.Range(1000, 1000000);
+            playerConfig.PropertyValues["damage"] = Random.Range(1000, 1000000);
+            playerConfig.PropertyValues["isTargetable"] = Random.Range(0, 1) == 1;
+            playerConfig.PropertyValues["canAttack"] = Random.Range(0, 1) == 1;
+            playerConfig.PropertyValues[CharacterEntity<PlayerEntity>.GetCanAttackTargetKey<EnemyEntity>()] = Random.Range(0, 1) == 1;
+            playerConfig.PropertyValues[CharacterEntity<PlayerEntity>.GetIsTargetableByKey<EnemyEntity>()] = Random.Range(0, 1) == 1;
             this.LogInfo($"{playerConfig}: {playerConfig.PropertyValues.ToJson()}");
+
+            var enemyConfig = new EntityConfig();
+            enemyConfig.PropertyValues["typeId"] = nameof(EnemyEntity);
+            enemyConfig.PropertyValues["health"] = Random.Range(1000, 1000000);
+            enemyConfig.PropertyValues["damage"] = Random.Range(1000, 1000000);
+            enemyConfig.PropertyValues["isTargetable"] = Random.Range(0, 1) == 1;;
+            enemyConfig.PropertyValues["canAttack"] = Random.Range(0, 1) == 1;;
+            enemyConfig.PropertyValues[CharacterEntity<EnemyEntity>.GetCanAttackTargetKey<PlayerEntity>()] = Random.Range(0, 1) == 1;;
+            enemyConfig.PropertyValues[CharacterEntity<EnemyEntity>.GetIsTargetableByKey<PlayerEntity>()] = Random.Range(0, 1) == 1;;
+            this.LogInfo($"{enemyConfig}: {enemyConfig.PropertyValues.ToJson()}");
 
             var values = new Dictionary<Type, EntityConfig>
                 {
-                    {typeof(IPlayerEntity), playerConfig}
+                    {typeof(IPlayerEntity), playerConfig},
+                    {typeof(IEnemyEntity), enemyConfig}
                 };
             return values;
         }

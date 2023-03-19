@@ -689,7 +689,7 @@ namespace DevKit.Serialization.Json.API
 			if (data._type != JsonType.Boolean)
 			{
 				throw new InvalidCastException(
-					"Instance of JsonData doesn't hold a double");
+					"Instance of JsonData doesn't hold a bool");
 			}
 			return data._instBoolean;
 		}

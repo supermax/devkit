@@ -5,7 +5,7 @@ using DevKit.Serialization.Json.API;
 
 namespace DevKit.Serialization.Json.Extensions
 {
-    public static class ReflectionExtensions
+    internal static class ReflectionExtensions
     {
         public static ITypeWrapper GetTypeWrapper(this object obj)
         {
