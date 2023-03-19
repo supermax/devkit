@@ -17,24 +17,24 @@ namespace DevKit.Entities
         /// <summary>
         /// ID's value holder
         /// </summary>
-        protected Guid IdValue;
+        protected string IdValue;
 
         /// <summary>
         /// Type ID's value holder
         /// </summary>
-        protected Guid TypeIdValue;
+        protected string TypeIdValue;
 
         /// <summary>
         ///     Gets or sets the id.
         /// </summary>
         /// <value>The id.</value>
-        public virtual Guid Id
+        public virtual string Id
         {
             get { return IdValue; }
             set
             {
                 IdValue = value;
-                SetPropertyValue(nameof(Id), Id.ToString());
+                SetPropertyValue(value);
             }
         }
 
@@ -42,15 +42,18 @@ namespace DevKit.Entities
         ///     Gets or sets the id.
         /// </summary>
         /// <value>The id.</value>
-        public virtual Guid TypeId
+        public virtual string TypeId
         {
-            get { return TypeId; }
+            get { return TypeIdValue; }
             set
             {
-                IdValue = value;
-                SetPropertyValue(nameof(TypeId), TypeId.ToString());
+                TypeIdValue = value;
+                SetPropertyValue(value);
             }
         }
+
+        /// <inheritdoc/>
+        public IEntityConfig Config { get; protected set; }
 
         public virtual string Error { get; protected set; }
 
@@ -64,14 +67,13 @@ namespace DevKit.Entities
         /// </summary>
         protected Entity()
         {
-            Id = Guid.NewGuid();
         }
 
         /// <summary>
         /// Ctor that accepts ID
         /// </summary>
-        /// <param name="id"></param>
-        protected Entity(Guid id)
+        /// <param name="id">entity's id</param>
+        protected Entity(string id)
         {
             Id = id;
         }
@@ -102,7 +104,14 @@ namespace DevKit.Entities
         /// <inheritdoc/>
         public void SetPropertyValue(bool? value, [CallerMemberName] string name = "")
         {
-            name = name.ToJsonPropName();
+            if (!PropertyValues.ContainsKey(name))
+            {
+                name = name.ToJsonPropName();
+            }
+            if (!PropertyValues.ContainsKey(name))
+            {
+                PropertyValues[name] = new PropertyValueHolder();
+            }
             var holder = PropertyValues[name];
             var oldValue = holder.Bool;
             if (oldValue == value)
@@ -116,7 +125,14 @@ namespace DevKit.Entities
         /// <inheritdoc/>
         public virtual void SetPropertyValue(double? value, [CallerMemberName] string name = "")
         {
-            name = name.ToJsonPropName();
+            if (!PropertyValues.ContainsKey(name))
+            {
+                name = name.ToJsonPropName();
+            }
+            if (!PropertyValues.ContainsKey(name))
+            {
+                PropertyValues[name] = new PropertyValueHolder();
+            }
             var holder = PropertyValues[name];
             var oldValue = holder.Number;
             if (Equals(oldValue, value))
@@ -130,7 +146,14 @@ namespace DevKit.Entities
         /// <inheritdoc/>
         public void SetPropertyValue(string value, [CallerMemberName] string name = "")
         {
-            name = name.ToJsonPropName();
+            if (!PropertyValues.ContainsKey(name))
+            {
+                name = name.ToJsonPropName();
+            }
+            if (!PropertyValues.ContainsKey(name))
+            {
+                PropertyValues[name] = new PropertyValueHolder();
+            }
             var holder = PropertyValues[name];
             var oldValue = holder.Text;
             if (oldValue == value)
@@ -144,7 +167,10 @@ namespace DevKit.Entities
         /// <inheritdoc/>
         public PropertyValueHolder GetPropertyValue([CallerMemberName] string name = "")
         {
-            name = name.ToJsonPropName();
+            if (!PropertyValues.ContainsKey(name))
+            {
+                name = name.ToJsonPropName();
+            }
             if (!PropertyValues.ContainsKey(name))
             {
                 PropertyValues[name] = new PropertyValueHolder();
@@ -198,6 +224,9 @@ namespace DevKit.Entities
             // TODO restore initial value from config
             InvokePropertyChanged(name, null, null);
         }
+
+        /// <inheritdoc/>
+        public abstract void Init(IEntityConfig config);
 
         public virtual void Init()
         {

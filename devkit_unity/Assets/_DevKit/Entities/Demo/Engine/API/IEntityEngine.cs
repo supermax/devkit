@@ -1,6 +1,6 @@
 ﻿using DevKit.Entities.API;
 
-namespace DevKit.Entities.Demo.Characters.API
+namespace DevKit.Entities.Demo.Engine.API
 {
     /// <summary>
     /// Interface for main engine class

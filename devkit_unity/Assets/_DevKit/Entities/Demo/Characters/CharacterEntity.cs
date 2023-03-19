@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
 using DevKit.Entities.API;
 using DevKit.Entities.Demo.Characters.API;
 
@@ -11,18 +10,18 @@ namespace DevKit.Entities.Demo.Characters
     /// <remarks>
     /// Extends <see cref="Entity{T}"/> by adding required properties and functions for battle and etc
     /// </remarks>
-    [DataContract]
     [Serializable]
-    public abstract class CharacterEntity : Entity<ICharacterEntity>, ICharacterEntity
+    public abstract class CharacterEntity<T>
+        : Entity<T>
+            , ICharacterEntity<T>
+        where T: class
     {
-        public IEntityConfig Config { get; set; }
-
         /// <inheritdoc />
         public virtual double? Health
         {
             get
             {
-                var value = GetPropertyValue(nameof(Health));
+                var value = GetPropertyValue();
                 return value.Number;
             }
             set
@@ -74,26 +73,31 @@ namespace DevKit.Entities.Demo.Characters
         }
 
         /// <inheritdoc />
-        public virtual bool IsTargetableBy<T>(T entity) where T : class, IEntity<T>
+        public virtual bool IsTargetableBy<TT>(TT entity) where TT : class, IEntity<TT>
         {
-            // TODO take relevant values from character config
-            throw new NotImplementedException();
+            var isTargetable = Config.GetPropertyInitialValue($"{nameof(IsTargetableBy)}_{entity.TypeId}").Bool.GetValueOrDefault();
+            return isTargetable;
         }
 
-        public virtual bool CanAttackTarget<T>(T entity) where T : class, IEntity<T>
+        /// <inheritdoc />
+        public virtual bool CanAttackTarget<TT>(TT entity) where TT : class, IEntity<TT>
         {
-            // TODO take relevant values from character config
-            throw new NotImplementedException();
+            var isTargetable = Config.GetPropertyInitialValue($"{nameof(CanAttackTarget)}_{entity.TypeId}").Bool.GetValueOrDefault();
+            return isTargetable;
         }
 
-        public override void Init()
+        public override void Init(IEntityConfig config)
         {
-            base.Init();
+            BeginUpdate();
+            Config = config;
+            TypeId = config.GetPropertyInitialValue(nameof(TypeId)).Text;
+            Damage = config.GetPropertyInitialValue(nameof(Damage)).Number;
+            var damage = Damage;
 
-            Damage = Config.GetPropertyInitialValue(nameof(Damage)).Number;
-            Health = Config.GetPropertyInitialValue(nameof(Health)).Number;
-            CanAttack = Config.GetPropertyInitialValue(nameof(CanAttack)).Bool;
-            IsTargetable = Config.GetPropertyInitialValue(nameof(IsTargetable)).Bool;
+            Health = config.GetPropertyInitialValue(nameof(Health)).Number;
+            CanAttack = config.GetPropertyInitialValue(nameof(CanAttack)).Bool;
+            IsTargetable = config.GetPropertyInitialValue(nameof(IsTargetable)).Bool;
+            EndUpdate();
         }
     }
 }

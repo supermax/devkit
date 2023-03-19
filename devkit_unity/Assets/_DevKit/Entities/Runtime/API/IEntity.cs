@@ -14,14 +14,19 @@ namespace DevKit.Entities.API
         where T : class
     {
         /// <summary>
-        /// Entity ID (<see cref="Guid"/> format)
+        /// Gets Entity ID (normally will be same as class's name + hashcode)
         /// </summary>
-        Guid Id { get; }
+        string Id { get; }
 
         /// <summary>
-        /// Entity Type ID (<see cref="Guid"/> format)
+        /// Gets Entity Type ID (normally will be same as class's name)
         /// </summary>
-        Guid TypeId { get; }
+        string TypeId { get; }
+
+        /// <summary>
+        /// Gets Entity Config
+        /// </summary>
+        IEntityConfig Config { get; }
 
         /// <summary>
         /// Sets the boolean property value
@@ -65,5 +70,11 @@ namespace DevKit.Entities.API
         /// </summary>
         /// <param name="name">The name of the property</param>
         void ResetPropertyValue([CallerMemberName] string name = "");
+
+        /// <summary>
+        /// Init this instance with values from the <see cref="config"/>
+        /// </summary>
+        /// <param name="config">The entity config instance</param>
+        void Init(IEntityConfig config);
     }
 }

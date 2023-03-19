@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DevKit.Core.Extensions;
 using DevKit.Entities.API;
 
 namespace DevKit.Entities
@@ -24,6 +25,14 @@ namespace DevKit.Entities
         /// <returns></returns>
         public PropertyValueHolder GetPropertyInitialValue(string name)
         {
+            if (!PropertyValues.ContainsKey(name))
+            {
+                name = name.ToJsonPropName();
+            }
+            if (!PropertyValues.ContainsKey(name))
+            {
+                return default;
+            }
             var value = PropertyValues[name];
             return value;
         }

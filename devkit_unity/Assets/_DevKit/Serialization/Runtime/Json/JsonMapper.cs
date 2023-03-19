@@ -915,7 +915,7 @@ namespace DevKit.Serialization.Json
 				return;
 			}
 
-			if (obj is Int64)
+			if (obj is long)
 			{
 				writer.Write((long) obj);
 				return;

@@ -16,5 +16,10 @@ namespace DevKit.Entities.Demo.Battle
     public class BattleTeam : Entity<IBattleTeam>, IBattleTeam
     {
         public IEntityCollection<string, IBattleUnit> Units { get; }
+
+        public override void Init(IEntityConfig config)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

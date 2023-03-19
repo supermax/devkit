@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using DevKit.Entities.Demo.Characters.API;
+using IEntityEngine = DevKit.Entities.Demo.Engine.API.IEntityEngine;
 
 namespace DevKit.Entities.Demo.Engine
 {
@@ -12,12 +13,8 @@ namespace DevKit.Entities.Demo.Engine
     /// </remarks>
     public class EntityEngine : Entities.Engine, IEntityEngine
     {
+        // TODO replace with Maestro container
         private readonly IDictionary<Type, Type> _typeMappings = new Dictionary<Type, Type>();
-
-        protected virtual IEntityEngineConfig GetConfig()
-        {
-            return Config as IEntityEngineConfig;
-        }
 
         /// <summary>
         /// Creates instance of new character
@@ -27,14 +24,17 @@ namespace DevKit.Entities.Demo.Engine
         public override T Create<T>()
         {
             var entity = Instantiate<T>();
-            var character = entity as ICharacterEntity;
-            var characterConfig = GetConfig();
-            if (character != null && characterConfig != null)
+            if (entity == null)
             {
-                character.Config = characterConfig.GetEntityConfig<T>();
+                return null;
             }
-
             entity.Init();
+            if (Config == null)
+            {
+                return entity;
+            }
+            var entityConfig = Config.GetEntityConfig<T>();
+            entity.Init(entityConfig);
             return entity;
         }
 

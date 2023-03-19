@@ -8,13 +8,30 @@ namespace DevKit.Entities.Demo.Characters.API
     /// <remarks>
     /// Extends basic <see cref="IEntity{T}"/>
     /// </remarks>
-    public interface ICharacterEntity : IEntity<ICharacterEntity>
+    public interface ICharacterEntity<T>
+        : ICharacterEntity
+            , IEntity<T>
+        where T : class
     {
         /// <summary>
-        /// Character config section
+        /// Returns <code>true</code> in case this character can be attacked by other entity\character
         /// </summary>
-        IEntityConfig Config { get; set; }
+        /// <param name="entity"></param>
+        /// <typeparam name="TT"></typeparam>
+        /// <returns></returns>
+        bool IsTargetableBy<TT>(TT entity) where TT : class, IEntity<TT>;
 
+        /// <summary>
+        /// Returns <code>true</code> in case this character can attack the given entity\character
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <typeparam name="TT"></typeparam>
+        /// <returns></returns>
+        bool CanAttackTarget<TT>(TT entity) where TT : class, IEntity<TT>;
+    }
+
+    public interface ICharacterEntity
+    {
         /// <summary>
         /// Character's Health Value
         /// </summary>
@@ -34,21 +51,5 @@ namespace DevKit.Entities.Demo.Characters.API
         /// Indicates if this character can attack
         /// </summary>
         bool? CanAttack { get; set; }
-
-        /// <summary>
-        /// Returns <code>true</code> in case this character can be attacked by other entity\character
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        bool IsTargetableBy<T>(T entity) where T : class, IEntity<T>;
-
-        /// <summary>
-        /// Returns <code>true</code> in case this character can attack the given entity\character
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        bool CanAttackTarget<T>(T entity) where T : class, IEntity<T>;
     }
 }

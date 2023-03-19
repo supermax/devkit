@@ -11,7 +11,7 @@ namespace DevKit.Entities
     [Serializable]
     public class EntityCollection<TKey, TValue>
         : ObservableDictionary<TKey, TValue>, IEntityCollection<TKey, TValue>
-        where TValue : class, IEntity<TValue>
+        where TValue : class //, IEntity<TValue>
     {
 
     }

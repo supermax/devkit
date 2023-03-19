@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace DevKit.Entities.API
 {
@@ -10,7 +11,7 @@ namespace DevKit.Entities.API
         /// <summary>
         /// Gets initial value for entity property
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="name">The name of the property</param>
         /// <returns></returns>
         PropertyValueHolder GetPropertyInitialValue(string name);
     }

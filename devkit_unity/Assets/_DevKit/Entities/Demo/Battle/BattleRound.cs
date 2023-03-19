@@ -16,9 +16,20 @@ namespace DevKit.Entities.Demo.Battle
     /// </remarks>
     public class BattleRound : Entity<IBattleRound>, IBattleRound
     {
+        /// <inheritdoc />
         public IEntityCollection<string, IBattleTeam> Teams { get; }
 
         /// <inheritdoc />
-        public int RoundCount { get; set; }
+        public int? RoundCount
+        {
+            get { return (int?)GetPropertyValue().Number;}
+            set { SetPropertyValue(value);}
+        }
+
+        /// <inheritdoc />
+        public override void Init(IEntityConfig config)
+        {
+
+        }
     }
 }

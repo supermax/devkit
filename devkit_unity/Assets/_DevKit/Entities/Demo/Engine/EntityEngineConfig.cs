@@ -8,11 +8,11 @@ namespace DevKit.Entities.Demo.Engine
     /// <remarks>
     /// Extends <see cref="EngineConfig"/>
     /// </remarks>
-    public class EntityEngineConfig : EngineConfig, IEntityEngineConfig
+    public class EntityEngineConfig : EngineConfig
     {
         public override void Init()
         {
-            // TODO
+            // TODO load from file or from server
         }
     }
 }

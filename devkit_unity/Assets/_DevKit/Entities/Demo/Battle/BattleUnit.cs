@@ -15,5 +15,10 @@ namespace DevKit.Entities.Demo.Battle
     public class BattleUnit : Entity<IBattleUnit>, IBattleUnit
     {
         public IEntityCollection<string, ICharacterEntity> Characters { get; }
+
+        public override void Init(IEntityConfig config)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

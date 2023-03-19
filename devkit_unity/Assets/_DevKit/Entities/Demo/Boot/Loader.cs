@@ -1,12 +1,16 @@
 using System;
 using System.Collections.Generic;
 using DevKit.Core.Objects;
+using DevKit.Entities.API;
 using DevKit.Entities.Demo.Characters;
 using DevKit.Entities.Demo.Characters.API;
+using DevKit.Entities.Demo.Config;
+using DevKit.Entities.Demo.Config.API;
 using DevKit.Entities.Demo.Engine;
 using DevKit.Logging;
 using DevKit.Logging.Extensions;
 using DevKit.Serialization.Json.Extensions;
+using IEntityEngine = DevKit.Entities.Demo.Engine.API.IEntityEngine;
 
 namespace DevKit.Entities.Demo.Boot
 {
@@ -14,7 +18,9 @@ namespace DevKit.Entities.Demo.Boot
     {
         private IEntityEngine _engine;
 
-        private IEntityEngineConfig _config;
+        private IEngineConfig _config;
+
+        private IEntityEngineConfigManager _configManager;
 
         protected override void OnAwake()
         {
@@ -28,22 +34,28 @@ namespace DevKit.Entities.Demo.Boot
             _engine = new EntityEngine();
             this.LogInfo($"Instantiated {_engine}");
 
-            _engine.Init(_config);
-            this.LogInfo($"{_engine}.{nameof(_engine.Init)}: {_config}");
-
             var values = GetConfig();
             _config.Init(values);
             this.LogInfo($"{_config}.{nameof(_config.Init)}: {values}");
 
+            _engine.Init(_config);
+            this.LogInfo($"{_engine}.{nameof(_engine.Init)}: {_config}");
+
             _engine.Register<IPlayerEntity, PlayerEntity>();
             this.LogInfo($"{_engine}.{nameof(_engine.Register)}: {typeof(IPlayerEntity)}");
 
+            var player = _engine.Create<IPlayerEntity>();
+            var playerJson = player.ToJson();
+            this.LogInfo($"Created {playerJson}");
 
+            _configManager = new EntityEngineConfigManager();
+            _configManager.SaveConfigToFile("engine_config.json", _config);
         }
 
         private Dictionary<Type, EntityConfig> GetConfig()
         {
             var playerConfig = new EntityConfig();
+            playerConfig.PropertyValues["typeId"] = new PropertyValueHolder {Text = nameof(PlayerEntity)};
             playerConfig.PropertyValues["health"] = new PropertyValueHolder {Number = 1000000};
             playerConfig.PropertyValues["damage"] = new PropertyValueHolder {Number = 1000};
             playerConfig.PropertyValues["isTargetable"] = new PropertyValueHolder {Bool = true};
@@ -52,7 +64,7 @@ namespace DevKit.Entities.Demo.Boot
 
             var values = new Dictionary<Type, EntityConfig>
                 {
-                    {typeof(PlayerEntity), playerConfig}
+                    {typeof(IPlayerEntity), playerConfig}
                 };
             return values;
         }

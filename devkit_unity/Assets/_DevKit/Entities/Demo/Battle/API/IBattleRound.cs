@@ -15,6 +15,6 @@ namespace DevKit.Entities.Demo.Battle.API
         /// <summary>
         /// The number of current battle round
         /// </summary>
-        int RoundCount { get; set; }
+        int? RoundCount { get; set; }
     }
 }
