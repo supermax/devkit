@@ -21,12 +21,12 @@ namespace DevKit.Serialization.Json
 	/// <summary>
 	///     Json Mapper
 	/// </summary>
-	public class JsonMapper : IJsonMapper // : Singleton<IJsonMapper, JsonMapper>,
+	public sealed class JsonMapper : IJsonMapper
 	{
 		/// <summary>
 		/// The mapper
 		/// </summary>
-		private static readonly JsonMapper Mapper = new JsonMapper();
+		private static readonly JsonMapper Mapper = new();
 
 		/// <summary>
 		/// Gets the default.
@@ -163,6 +163,7 @@ namespace DevKit.Serialization.Json
 						{
 							Error("Cannot resolve proper value importer for property type '{0}' from value type '{1}'",
 								propType, valueType);
+							return null;
 						}
 					}
 
@@ -275,30 +276,30 @@ namespace DevKit.Serialization.Json
 			var metadata = _metadataHandler.AddArrayMetadata(instType);
 
 			IList list;
-			Type elemType;
+			Type elementType;
 			if (!metadata.IsArray)
 			{
 				list = (IList) Activator.CreateInstance(instType);
-				elemType = metadata.ElementType;
+				elementType = metadata.ElementType;
 			}
 			else
 			{
 				list = new List<object>();
-				elemType = instType.GetElementType();
+				elementType = instType.GetElementType();
 			}
 
 			var array = data.GetArray();
 			foreach (var item in array)
 			{
-				var arrayItem = ReadValue(elemType, item);
+				var arrayItem = ReadValue(elementType, item);
 				list.Add(arrayItem);
 			}
 
 			IList instance;
-			if (metadata.IsArray)
+			if (metadata.IsArray && elementType != null)
 			{
 				var n = list.Count;
-				instance = Array.CreateInstance(elemType, n);
+				instance = Array.CreateInstance(elementType, n);
 				for (var i = 0; i < n; i++)
 				{
 					((Array) instance).SetValue(list[i], i);
@@ -454,26 +455,26 @@ namespace DevKit.Serialization.Json
 			if (!tData.IsArray && !tData.IsList)
 			{
 				Error("Type {0} can't act as an array", instType);
-				return null; // TODO check if need to return default(T)
+				return null;
 			}
 
 			IList list;
-			Type elemType;
+			Type elementType;
 
 			if (!tData.IsArray)
 			{
 				list = (IList) Activator.CreateInstance(instType);
-				elemType = tData.ElementType;
+				elementType = tData.ElementType;
 			}
 			else
 			{
 				list = new List<object>();
-				elemType = instType.GetElementType();
+				elementType = instType.GetElementType();
 			}
 
 			while (true)
 			{
-				var item = ReadValue(elemType, reader, null);
+				var item = ReadValue(elementType, reader);
 				if (reader.Token == JsonToken.ArrayEnd)
 				{
 					break;
@@ -482,10 +483,10 @@ namespace DevKit.Serialization.Json
 			}
 
 			object instance;
-			if (tData.IsArray)
+			if (tData.IsArray && elementType != null)
 			{
 				var n = list.Count;
-				instance = Array.CreateInstance(elemType, n); // TODO ensure 'elemType' is initialized
+				instance = Array.CreateInstance(elementType, n); // TODO ensure 'elemType' is initialized
 
 				for (var i = 0; i < n; i++)
 				{
@@ -542,8 +543,7 @@ namespace DevKit.Serialization.Json
 			}
 
 			// If there's an importer that fits, use it
-			object value;
-			if (GetValueFromConverter(reader.Value, jsonType, instType, out value))
+			if (GetValueFromConverter(reader.Value, jsonType, instType, out var value))
 			{
 				return value;
 			}
@@ -575,7 +575,7 @@ namespace DevKit.Serialization.Json
 		/// <value>
 		///   <c>true</c> if [throw exceptions]; otherwise, <c>false</c>.
 		/// </value>
-		public bool ThrowExceptions { get; set; }
+		public bool ThrowExceptions { get; set; } // TODO expose in interface?
 
 		/// <summary>
 		/// Throws exception or prints error log the specified format.
@@ -584,7 +584,7 @@ namespace DevKit.Serialization.Json
 		/// <param name="args">The arguments.</param>
 		/// <returns></returns>
 		/// <exception cref="JsonException"></exception>
-		protected virtual bool Error(string format, params object[] args)
+		private void Error(string format, params object[] args)
 		{
 			var msg = string.Format(format, args);
 			if (ThrowExceptions)
@@ -592,7 +592,6 @@ namespace DevKit.Serialization.Json
 				throw new JsonException(msg);
 			}
 			Log(format, args);
-			return ThrowExceptions;
 		}
 
 		/// <summary>
@@ -602,7 +601,7 @@ namespace DevKit.Serialization.Json
 		/// <value>
 		///     <c>true</c> if [is debug mode]; otherwise, <c>false</c>.
 		/// </value>
-		public bool IsDebugMode
+		public bool IsDebugMode // TODO expose in interface
 		{
 			get { return _metadataHandler.IsDebugMode; }
 			set { _metadataHandler.IsDebugMode = value; }
@@ -613,12 +612,12 @@ namespace DevKit.Serialization.Json
 		/// </summary>
 		/// <param name="format">The format.</param>
 		/// <param name="args">The arguments.</param>
-		protected virtual void Log(string format, params object[] args)
+		private void Log(string format, params object[] args)
 		{
 			_metadataHandler.Log(format, args);
 		}
 
-		protected virtual void LogError(string format, params object[] args)
+		private void LogError(string format, params object[] args)
 		{
 			_metadataHandler.LogError(format, args);
 		}
@@ -1020,8 +1019,7 @@ namespace DevKit.Serialization.Json
 
 		public string ToJson(object obj)
 		{
-			var jd = obj as JsonData;
-			if (jd != null)
+			if (obj is JsonData jd)
 			{
 				var json = jd.ToJson();
 				return json;
@@ -1030,11 +1028,9 @@ namespace DevKit.Serialization.Json
 			string result;
 			lock (_writerLock)
 			{
-				using (var writer = new JsonWriter())
-				{
-					WriteValue(obj, writer, true, 0);
-					result = writer.ToString();
-				}
+				using var writer = new JsonWriter();
+				WriteValue(obj, writer, true, 0);
+				result = writer.ToString();
 			}
 			return result;
 		}
@@ -1157,7 +1153,7 @@ namespace DevKit.Serialization.Json
 		/// <param name="factory">The factory.</param>
 		/// <param name="reader">The reader.</param>
 		/// <returns></returns>
-		internal IJsonWrapper ToWrapper(WrapperFactory factory,
+		private IJsonWrapper ToWrapper(WrapperFactory factory,
 			JsonReader reader)
 		{
 			return ReadValue(factory, reader);
@@ -1169,7 +1165,7 @@ namespace DevKit.Serialization.Json
 		/// <param name="factory">The factory.</param>
 		/// <param name="json">The json.</param>
 		/// <returns></returns>
-		public IJsonWrapper ToWrapper(WrapperFactory factory, string json)
+		private IJsonWrapper ToWrapper(WrapperFactory factory, string json)
 		{
 			var reader = new JsonReader(json);
 			return ReadValue(factory, reader);
@@ -1182,8 +1178,8 @@ namespace DevKit.Serialization.Json
 		/// <param name="exporter">The exporter.</param>
 		internal void RegisterExporter<T>(ExporterFunc<T> exporter)
 		{
-			ExporterFunc exporterWrapper = (obj, writer) => exporter((T) obj, writer);
-			_customExportersTable[typeof (T)] = exporterWrapper;
+			void ExporterWrapper(object obj, JsonWriter writer) => exporter((T)obj, writer);
+			_customExportersTable[typeof (T)] = ExporterWrapper;
 		}
 
 		/// <summary>
@@ -1194,8 +1190,8 @@ namespace DevKit.Serialization.Json
 		/// <param name="importer">The importer.</param>
 		public void RegisterImporter<TJson, TValue>(ImporterFunc<TJson, TValue> importer)
 		{
-			ImporterFunc importerWrapper = input => importer((TJson) input);
-			RegisterImporter(_customImportersTable, typeof (TJson), typeof (TValue), importerWrapper);
+			object ImporterWrapper(object input) => importer((TJson)input);
+			RegisterImporter(_customImportersTable, typeof (TJson), typeof (TValue), ImporterWrapper);
 		}
 
 		/// <summary>

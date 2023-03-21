@@ -40,6 +40,7 @@ namespace DevKit.Serialization.Json.Extensions
         /// <returns> </returns>
         public static T Clone<T>(this T graph)
         {
+            // TODO use JsonData and not Json String
             var text = JsonMapper.Default.ToJson(graph);
             var result = JsonMapper.Default.ToObject<T>(text);
             return result;

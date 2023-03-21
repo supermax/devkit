@@ -12,14 +12,15 @@ namespace DevKit.Entities.Demo.Config
     public class EntityEngineConfigManager : IEntityEngineConfigManager
     {
         /// <inheritdoc/>
-        public Task<IEngineConfig> LoadConfigFromFile(string filePath)
+        public Task<IEngineConfig> LoadConfigFromFile()
         {
             throw new NotImplementedException();
         }
 
         /// <inheritdoc/>
-        public async void SaveConfigToFile(string filePath, IEngineConfig config)
+        public async void SaveConfigToFile(IEngineConfig config)
         {
+            var filePath = "engine_config.json"; // TODO store in app's local storage
             filePath.ThrowIfNullOrEmpty(nameof(filePath));
             config.ThrowIfNull(nameof(config));
 
@@ -33,7 +34,13 @@ namespace DevKit.Entities.Demo.Config
         }
 
         /// <inheritdoc/>
-        public Task<IEngineConfig> LoadConfigFromServer(Uri endpoint)
+        public Task<IEngineConfig> LoadConfigFromServer()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
+        public void SaveConfigToServer(IEngineConfig config)
         {
             throw new NotImplementedException();
         }

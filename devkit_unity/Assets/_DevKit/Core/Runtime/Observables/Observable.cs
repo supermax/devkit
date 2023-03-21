@@ -49,7 +49,7 @@ namespace DevKit.Core.Observables
         public virtual IObservableObject<T> EndUpdate()
         {
             IsUpdateSuspended = true;
-            // TODO resume events
+            // TODO resume events + check if [] is triggering all props changed event
             InvokePropertyChanged("[]", null, null);
             return this;
         }

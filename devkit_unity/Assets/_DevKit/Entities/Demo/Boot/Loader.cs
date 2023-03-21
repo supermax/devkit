@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DevKit.Core.Extensions;
 using DevKit.Core.Objects;
 using DevKit.Entities.API;
 using DevKit.Entities.Demo.Characters;
@@ -7,8 +8,11 @@ using DevKit.Entities.Demo.Characters.API;
 using DevKit.Entities.Demo.Config;
 using DevKit.Entities.Demo.Config.API;
 using DevKit.Entities.Demo.Engine;
+using DevKit.Entities.Demo.Game;
+using DevKit.Entities.Demo.Game.API;
 using DevKit.Logging;
 using DevKit.Logging.Extensions;
+using DevKit.Serialization.Json;
 using DevKit.Serialization.Json.Extensions;
 using IEntityEngine = DevKit.Entities.Demo.Engine.API.IEntityEngine;
 using Random = UnityEngine.Random;
@@ -29,6 +33,9 @@ namespace DevKit.Entities.Demo.Boot
 
             Logger.Default.Config.IsEnabled = true;
 
+            JsonMapper.Default.RegisterImporter<IGameSettings, GameSettings>(gs =>
+                new GameSettings());
+
             _config = new EntityEngineConfig();
             this.LogInfo($"Instantiated {_config}");
 
@@ -42,10 +49,18 @@ namespace DevKit.Entities.Demo.Boot
             _engine.Init(_config);
             this.LogInfo($"{_engine}.{nameof(_engine.Init)}: {_config}");
 
+            _engine.Register<IGameSettings, GameSettings>();
+            this.LogInfo($"{_engine}.{nameof(_engine.Register)}: {typeof(IGameSettings)}");
+
+            var gameSettings = _engine.Create<IGameSettings>();
+            var gameSettingsJson = gameSettings.ToJson();
+            this.LogInfo($"Created {gameSettingsJson}");
+
             _engine.Register<IPlayerEntity, PlayerEntity>();
             this.LogInfo($"{_engine}.{nameof(_engine.Register)}: {typeof(IPlayerEntity)}");
 
             var player = _engine.Create<IPlayerEntity>();
+            player.GameSettings = gameSettings;
             var playerJson = player.ToJson();
             this.LogInfo($"Created {playerJson}");
 
@@ -60,35 +75,43 @@ namespace DevKit.Entities.Demo.Boot
             }
 
             _configManager = new EntityEngineConfigManager();
-            _configManager.SaveConfigToFile("engine_config.json", _config);
+            _configManager.SaveConfigToFile(_config);
         }
 
-        private Dictionary<Type, EntityConfig> GetConfig()
+        private Dictionary<string, EntityConfig> GetConfig()
         {
             var playerConfig = new EntityConfig();
-            playerConfig.PropertyValues["typeId"] = nameof(PlayerEntity);
-            playerConfig.PropertyValues["health"] = Random.Range(1000, 1000000);
-            playerConfig.PropertyValues["damage"] = Random.Range(1000, 1000000);
-            playerConfig.PropertyValues["isTargetable"] = Random.Range(0, 1) == 1;
-            playerConfig.PropertyValues["canAttack"] = Random.Range(0, 1) == 1;
-            playerConfig.PropertyValues[CharacterEntity<PlayerEntity>.GetCanAttackTargetKey<EnemyEntity>()] = Random.Range(0, 1) == 1;
-            playerConfig.PropertyValues[CharacterEntity<PlayerEntity>.GetIsTargetableByKey<EnemyEntity>()] = Random.Range(0, 1) == 1;
+             playerConfig.PropertyValues["typeId"] = nameof(PlayerEntity);
+             playerConfig.PropertyValues["health"] = Random.Range(1000, 1000000);
+             playerConfig.PropertyValues["damage"] = Random.Range(1000, 1000000);
+             playerConfig.PropertyValues["isTargetable"] = Random.Range(0, 1) == 1;
+             playerConfig.PropertyValues["canAttack"] = Random.Range(0, 1) == 1;
+             playerConfig.PropertyValues[CharacterEntity<PlayerEntity>.GetCanAttackTargetKey<EnemyEntity>()] = Random.Range(0, 1) == 1;
+             playerConfig.PropertyValues[CharacterEntity<PlayerEntity>.GetIsTargetableByKey<EnemyEntity>()] = Random.Range(0, 1) == 1;
             this.LogInfo($"{playerConfig}: {playerConfig.PropertyValues.ToJson()}");
 
             var enemyConfig = new EntityConfig();
-            enemyConfig.PropertyValues["typeId"] = nameof(EnemyEntity);
-            enemyConfig.PropertyValues["health"] = Random.Range(1000, 1000000);
-            enemyConfig.PropertyValues["damage"] = Random.Range(1000, 1000000);
-            enemyConfig.PropertyValues["isTargetable"] = Random.Range(0, 1) == 1;;
-            enemyConfig.PropertyValues["canAttack"] = Random.Range(0, 1) == 1;;
-            enemyConfig.PropertyValues[CharacterEntity<EnemyEntity>.GetCanAttackTargetKey<PlayerEntity>()] = Random.Range(0, 1) == 1;;
-            enemyConfig.PropertyValues[CharacterEntity<EnemyEntity>.GetIsTargetableByKey<PlayerEntity>()] = Random.Range(0, 1) == 1;;
+             enemyConfig.PropertyValues["typeId"] = nameof(EnemyEntity);
+             enemyConfig.PropertyValues["health"] = Random.Range(1000, 1000000);
+             enemyConfig.PropertyValues["damage"] = Random.Range(1000, 1000000);
+             enemyConfig.PropertyValues["isTargetable"] = Random.Range(0, 1) == 1;
+             enemyConfig.PropertyValues["canAttack"] = Random.Range(0, 1) == 1;
+             enemyConfig.PropertyValues[CharacterEntity<EnemyEntity>.GetCanAttackTargetKey<PlayerEntity>()] = Random.Range(0, 1) == 1;
+             enemyConfig.PropertyValues[CharacterEntity<EnemyEntity>.GetIsTargetableByKey<PlayerEntity>()] = Random.Range(0, 1) == 1;
             this.LogInfo($"{enemyConfig}: {enemyConfig.PropertyValues.ToJson()}");
 
-            var values = new Dictionary<Type, EntityConfig>
+            var gameSettingsConfig = new EntityConfig();
+             gameSettingsConfig.PropertyValues["typeId"] = nameof(GameSettings);
+             gameSettingsConfig.PropertyValues["IsMusicEnabled"] = Random.Range(0, 1) == 1;
+             gameSettingsConfig.PropertyValues["IsSfxEnabled"] = Random.Range(0, 1) == 1;
+             gameSettingsConfig.PropertyValues["PushNotificationsEnabled"] = Random.Range(0, 1) == 1;
+            this.LogInfo($"{gameSettingsConfig}: {gameSettingsConfig.PropertyValues.ToJson()}");
+
+            var values = new Dictionary<string, EntityConfig>
                 {
-                    {typeof(IPlayerEntity), playerConfig},
-                    {typeof(IEnemyEntity), enemyConfig}
+                    {nameof(IGameSettings).ToJsonPropName(), gameSettingsConfig},
+                    {nameof(IPlayerEntity).ToJsonPropName(), playerConfig},
+                    {nameof(IEnemyEntity).ToJsonPropName(), enemyConfig}
                 };
             return values;
         }

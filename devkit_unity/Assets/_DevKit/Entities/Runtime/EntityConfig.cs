@@ -31,7 +31,7 @@ namespace DevKit.Entities
             }
             if (!PropertyValues.ContainsKey(name))
             {
-                return default;
+                PropertyValues[name] = new PropertyValueHolder();
             }
             var value = PropertyValues[name];
             return value;

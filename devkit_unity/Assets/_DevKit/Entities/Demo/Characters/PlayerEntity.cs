@@ -1,4 +1,5 @@
 using DevKit.Entities.Demo.Characters.API;
+using DevKit.Entities.Demo.Game.API;
 
 namespace DevKit.Entities.Demo.Characters
 {
@@ -6,6 +7,6 @@ namespace DevKit.Entities.Demo.Characters
         : CharacterEntity<IPlayerEntity>
             , IPlayerEntity
     {
-
+        public IGameSettings GameSettings { get; set; }
     }
 }

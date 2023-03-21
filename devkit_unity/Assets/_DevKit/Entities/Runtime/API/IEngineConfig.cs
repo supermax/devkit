@@ -12,7 +12,7 @@ namespace DevKit.Entities.API
         /// Initialize config values
         /// </summary>
         /// <param name="entitiesConfig"></param>
-        void Init(Dictionary<Type, EntityConfig> entitiesConfig);
+        void Init(Dictionary<string, EntityConfig> entitiesConfig);
 
         /// <summary>
         /// Gets initial value for given property

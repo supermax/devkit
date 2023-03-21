@@ -14,7 +14,7 @@ namespace DevKit.Entities
         /// <summary>
         /// Contains config values for entities
         /// </summary>
-        public Dictionary<Type, EntityConfig> EntitiesConfig { get; set; } = new();
+        public Dictionary<string, EntityConfig> EntitiesConfig { get; set; } = new();
 
         public abstract void Init();
 
@@ -27,7 +27,7 @@ namespace DevKit.Entities
             EntitiesConfig.Clear();
         }
 
-        public void Init(Dictionary<Type, EntityConfig> entitiesConfig)
+        public void Init(Dictionary<string, EntityConfig> entitiesConfig)
         {
             EntitiesConfig = entitiesConfig;
         }
@@ -44,8 +44,9 @@ namespace DevKit.Entities
             type.ThrowIfNull(nameof(type));
             name.ThrowIfNull(nameof(name));
 
-            var entityConfig = EntitiesConfig[type];
-            if (!EntitiesConfig.ContainsKey(type))
+            var typeName = type.Name.ToJsonPropName();
+            var entityConfig = EntitiesConfig[typeName];
+            if (!EntitiesConfig.ContainsKey(typeName))
             {
                 return null;
             }
@@ -62,11 +63,13 @@ namespace DevKit.Entities
         public IEntityConfig GetEntityConfig(Type type)
         {
             type.ThrowIfNull(nameof(type));
-            if (!EntitiesConfig.ContainsKey(type))
+
+            var typeName = type.Name.ToJsonPropName();
+            if (!EntitiesConfig.ContainsKey(typeName))
             {
                 return null;
             }
-            var entityConfig = EntitiesConfig[type];
+            var entityConfig = EntitiesConfig[typeName];
             return entityConfig;
         }
 

@@ -16,7 +16,7 @@ namespace DevKit.Serialization.Tests.Editor.Json.Fixtures
 
 		public DateTime DOB { get; set; }
 
-		[JsonDataMember("age", FallbackValue = 50)]
+		[JsonDataMember("age", FallbackValue = 50, DefaultValue = 5)]
 		public int Age { get; set; }
 
 		[JsonDataMember("child")]
