@@ -1,6 +1,7 @@
 ﻿using System;
 using DevKit.Entities.API;
 using DevKit.Entities.Demo.Characters.API;
+using DevKit.Entities.Extensions;
 
 namespace DevKit.Entities.Demo.Characters
 {
@@ -98,17 +99,11 @@ namespace DevKit.Entities.Demo.Characters
             return isTargetable;
         }
 
-        public static string GetId<TT>(TT entity)
-        {
-            var key = $"{typeof(TT).Name}_{entity.GetHashCode()}";
-            return key;
-        }
-
         public override void Init(IEntityConfig config)
         {
             BeginUpdate();
             Config = config;
-            Id = GetId(this);
+            Id = this.GetId();
             TypeId = config.GetPropertyInitialValue(nameof(TypeId)).Text;
             Damage = config.GetPropertyInitialValue(nameof(Damage)).Number;
             Health = config.GetPropertyInitialValue(nameof(Health)).Number;

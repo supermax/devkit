@@ -1,7 +1,7 @@
-using DevKit.Entities.Demo.Characters.API;
+using DevKit.Entities.Demo.Characters.Players.API;
 using DevKit.Entities.Demo.Game.API;
 
-namespace DevKit.Entities.Demo.Characters
+namespace DevKit.Entities.Demo.Characters.Players
 {
     public class PlayerEntity
         : CharacterEntity<IPlayerEntity>

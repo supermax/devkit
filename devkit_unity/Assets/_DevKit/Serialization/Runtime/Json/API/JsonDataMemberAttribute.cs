@@ -47,7 +47,7 @@ namespace DevKit.Serialization.Json.API
 		public virtual string Name { get; set; }
 
 		/// <summary>
-		/// Gets or sets the fallback value in case of casting or derialization error.
+		/// Gets or sets the fallback value in case of casting or deserialization error.
 		/// </summary>
 		/// <value>
 		/// The fallback value in case of error.
@@ -60,8 +60,13 @@ namespace DevKit.Serialization.Json.API
 		/// <value>
 		/// The default value.
 		/// </value>
-		/// TODO
+		/// TODO implement usage of this prop
 		public virtual object DefaultValue { get; set; }
+
+		/// <summary>
+		/// The type of the converter to use for given member
+		/// </summary>
+		public Type ConverterType { get; set; }
 
 		/// <summary>
 		/// Called before serialization.

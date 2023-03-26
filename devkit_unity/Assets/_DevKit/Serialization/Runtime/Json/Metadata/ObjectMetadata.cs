@@ -56,7 +56,7 @@ namespace DevKit.Serialization.Json.Metadata
 		/// <param name="elementType">Type of the element.</param>
 		internal ObjectMetadata(Type elementType)
 		{
-			ElementType = typeof(JsonData); // elementType ?? typeof(JsonData); // TODO why alsways fallback => JsonData ?
+			ElementType = elementType ?? typeof(JsonData); // TODO why always fallback => JsonData ?
 			if(elementType != null)
 			{
 				IsDictionary = typeof(IDictionary).IsAssignableFrom(elementType);

@@ -30,7 +30,11 @@ namespace DevKit.Serialization.Json.Extensions
         	var attributes = info.GetCustomAttributes(typeof (JsonDataMemberAttribute), true);
         	if (attributes.IsNullOrEmpty())
         	{
-        		return null;
+        		return new JsonDataMemberAttribute[] {
+	                new()
+	                {
+		                Name = info.Name
+	                } };
         	}
         	var jsonAttributes = new JsonDataMemberAttribute[attributes.Length];
         	Array.Copy(attributes, jsonAttributes, attributes.Length);

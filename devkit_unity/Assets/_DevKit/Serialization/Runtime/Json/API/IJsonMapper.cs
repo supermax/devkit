@@ -47,13 +47,12 @@ namespace DevKit.Serialization.Json.API
 		/// <returns></returns>
 		T ToObject<T>(JsonData jsonData);
 
-		// TODO implement
-		///// <summary>
-		/////     Registers the exporter.
-		///// </summary>
-		///// <typeparam name="T"></typeparam>
-		///// <param name="exporter">The exporter.</param>
-		//void RegisterExporter<T>(ExporterFunc<T> exporter);
+		// /// <summary>
+		// ///     Registers the exporter.
+		// /// </summary>
+		// /// <typeparam name="T"></typeparam>
+		// /// <param name="exporter">The exporter.</param>
+		// void RegisterExporter<T>(ExporterFunc<T> exporter);
 
 		/// <summary>
 		///     Registers the importer.

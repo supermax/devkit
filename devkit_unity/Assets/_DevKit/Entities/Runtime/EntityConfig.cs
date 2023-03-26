@@ -11,7 +11,7 @@ namespace DevKit.Entities
     [Serializable]
     public class EntityConfig : IEntityConfig
     {
-        public Dictionary<string, PropertyValueHolder> PropertyValues { get; set; } = new();
+        public Dictionary<string, PropertyValueHolder> PropertyValues { get; set; }
 
         public void Init(Dictionary<string, PropertyValueHolder> propertyValues)
         {

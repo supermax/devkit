@@ -117,7 +117,7 @@ namespace DevKit.Serialization.Json
 			}
 		}
 
-		private object ConvertValue(Type propType, object value, object fallbackValue)
+		private object ConvertValue(Type propType, object value, object fallbackValue, Type converterType)
 		{
 			object result = null;
 			// TODO temp check, need to throw exc?
@@ -157,6 +157,21 @@ namespace DevKit.Serialization.Json
 							{
 								importer = importers[propType];
 							}
+							else if(converterType != null)
+							{
+								var genericConverterType = converterType.MakeGenericType(propType, valueType);
+								importer = (ImporterFunc)Activator.CreateInstance(genericConverterType);
+								importers[propType] = importer;
+							}
+						}
+						else if(converterType != null)
+						{
+							var genericConverterType = converterType.MakeGenericType(propType, valueType);
+							importer = (ImporterFunc)Activator.CreateInstance(genericConverterType);
+							_customImportersTable[valueType] = new Dictionary<Type, ImporterFunc>
+								{
+									{propType, importer}
+								};
 						}
 
 						if (importer == null)
@@ -207,9 +222,11 @@ namespace DevKit.Serialization.Json
 				var value = ReadValue(propType, item.Value);
 				Log("{3}(inside_loop->ReadValue-> propMeta: {0}, propType: {1}, value: {2})"
 					, propMeta, propType, value, nameof(ReadObject));
-				value = ConvertValue(propType, value, propMeta.Attribute?.FallbackValue);
+
+				value = ConvertValue(propType, value, propMeta.Attribute?.FallbackValue, propMeta.Attribute?.ConverterType);
 				Log("{3}(inside_loop->ConvertValue-> propMeta: {0}, propType: {1}, value: {2})"
 					, propMeta, propType, value, nameof(ReadObject));
+
 				if (propMeta.IsField)
 				{
 					var fieldInfo = (FieldInfo) propMeta.Info;
@@ -508,21 +525,20 @@ namespace DevKit.Serialization.Json
 			if (_customImportersTable.ContainsKey(jsonType) &&
 				_customImportersTable[jsonType].ContainsKey(instType))
 			{
-				var importer = _customImportersTable[jsonType][instType];
-				value = importer(srcValue);
+				var customImporter = _customImportersTable[jsonType][instType];
+				value = customImporter(srcValue);
 				return true;
 			}
 
 			// Maybe there's a base importer that works
-			if (_baseImportersTable.ContainsKey(jsonType) &&
-				_baseImportersTable[jsonType].ContainsKey(instType))
+			if (!_baseImportersTable.ContainsKey(jsonType) ||
+			    !_baseImportersTable[jsonType].ContainsKey(instType))
 			{
-				var importer = _baseImportersTable[jsonType][instType];
-				value = importer(srcValue);
-				return true;
+				return false;
 			}
-
-			return false;
+			var importer = _baseImportersTable[jsonType][instType];
+			value = importer(srcValue);
+			return true;
 		}
 
 		/// <summary>
@@ -865,94 +881,86 @@ namespace DevKit.Serialization.Json
 				return;
 			}
 
-			if (obj == null)
+			switch (obj)
 			{
-				writer.Write(null);
-				return;
-			}
-
-			if (obj is IJsonWrapper)
-			{
-				if (writerIsPrivate)
+				case null:
 				{
-					writer.WriteRawValue(((IJsonWrapper) obj).ToJson());
+					writer.Write(null);
+					return;
 				}
-				else if(obj is IJsonWrapperInternal)
+				case IJsonWrapper wrapper:
 				{
-					((IJsonWrapperInternal) obj).ToJson(writer);
+					if (writerIsPrivate)
+					{
+						writer.WriteRawValue(wrapper.ToJson());
+					}
+					else
+					{
+						(wrapper as IJsonWrapperInternal)?.ToJson(writer);
+					}
+					return;
 				}
-				return;
-			}
-
-			if (obj is string)
-			{
-				writer.Write((string) obj);
-				return;
-			}
-
-			if (obj is double)
-			{
-				writer.Write((double) obj);
-				return;
-			}
-
-			if (obj is float)
-			{
-				writer.Write((float)obj);
-				return;
-			}
-
-			if (obj is int)
-			{
-				writer.Write((int) obj);
-				return;
-			}
-
-			if (obj is bool)
-			{
-				writer.Write((bool) obj);
-				return;
-			}
-
-			if (obj is long)
-			{
-				writer.Write((long) obj);
-				return;
-			}
-
-			if (obj is Array)
-			{
-				writer.WriteArrayStart();
-				foreach (var elem in (Array) obj)
+				case string s:
 				{
-					WriteValue(elem, writer, writerIsPrivate, depth + 1);
+					writer.Write(s);
+					return;
 				}
-				writer.WriteArrayEnd();
-				return;
-			}
-
-			if (obj is IList)
-			{
-				writer.WriteArrayStart();
-				foreach (var elem in (IList) obj)
+				case double d:
 				{
-					WriteValue(elem, writer, writerIsPrivate, depth + 1);
+					writer.Write(d);
+					return;
 				}
-				writer.WriteArrayEnd();
-				return;
-			}
-
-			if (obj is IDictionary)
-			{
-				writer.WriteObjectStart();
-				foreach (DictionaryEntry entry in (IDictionary) obj)
+				case float f:
 				{
-					writer.WritePropertyName((string) entry.Key);
-					WriteValue(entry.Value, writer, writerIsPrivate, depth + 1);
+					writer.Write(f);
+					return;
 				}
-				writer.WriteObjectEnd();
-
-				return;
+				case int i:
+				{
+					writer.Write(i);
+					return;
+				}
+				case bool b:
+				{
+					writer.Write(b);
+					return;
+				}
+				case long l:
+				{
+					writer.Write(l);
+					return;
+				}
+				case Array array:
+				{
+					writer.WriteArrayStart();
+					foreach (var elem in array)
+					{
+						WriteValue(elem, writer, writerIsPrivate, depth + 1);
+					}
+					writer.WriteArrayEnd();
+					return;
+				}
+				case IList list:
+				{
+					writer.WriteArrayStart();
+					foreach (var elem in list)
+					{
+						WriteValue(elem, writer, writerIsPrivate, depth + 1);
+					}
+					writer.WriteArrayEnd();
+					return;
+				}
+				case IDictionary dictionary:
+				{
+					writer.WriteObjectStart();
+					foreach (DictionaryEntry entry in dictionary)
+					{
+						writer.WritePropertyName((string) entry.Key);
+						WriteValue(entry.Value, writer, writerIsPrivate, depth + 1);
+					}
+					writer.WriteObjectEnd();
+					return;
+				}
 			}
 
 			var objType = obj.GetType();

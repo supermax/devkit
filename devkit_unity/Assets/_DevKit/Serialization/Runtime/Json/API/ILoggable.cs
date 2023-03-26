@@ -2,7 +2,7 @@ using System;
 
 namespace DevKit.Serialization.Json.API
 {
-    public interface ILoggable
+    internal interface ILoggable
     {
         /// <summary>
         /// Gets or sets a value indicating whether [is debug mode].
