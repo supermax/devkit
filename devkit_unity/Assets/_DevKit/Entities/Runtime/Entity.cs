@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using DevKit.Core.Extensions;
 using DevKit.Core.Observables;
@@ -53,14 +52,15 @@ namespace DevKit.Entities
         }
 
         /// <inheritdoc/>
-        public IEntityConfig Config { get; protected set; }
+        public virtual IEntityConfig Config { get; protected set; }
 
+        /// <inheritdoc/>
         public virtual string Error { get; protected set; }
 
         /// <summary>
         /// Property values container
         /// </summary>
-        public EntityPropertiesContainer PropertyValues { get; } = new ();
+        public virtual EntityPropertiesContainer PropertyValues { get; } = new ();
 
         /// <summary>
         /// Default ctor

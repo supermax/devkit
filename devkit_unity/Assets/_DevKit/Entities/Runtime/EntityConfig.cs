@@ -11,7 +11,7 @@ namespace DevKit.Entities
     [Serializable]
     public class EntityConfig : IEntityConfig
     {
-        public EntityPropertiesContainer PropertyValues { get; set; }
+        public EntityPropertiesContainer PropertyValues { get; set; } = new();
 
         public void Init(EntityPropertiesContainer propertyValues)
         {

@@ -1,7 +1,7 @@
 ﻿using System;
 using DevKit.Entities.API;
 using DevKit.Entities.Demo.Characters.API;
-using DevKit.Entities.Extensions;
+using DevKit.Serialization.Json.API;
 
 namespace DevKit.Entities.Demo.Characters
 {
@@ -12,12 +12,50 @@ namespace DevKit.Entities.Demo.Characters
     /// Extends <see cref="Entity{T}"/> by adding required properties and functions for battle and etc
     /// </remarks>
     [Serializable]
+    [JsonDataContract]
     public abstract class CharacterEntity<T>
         : Entity<T>
             , ICharacterEntity<T>
         where T: class
     {
         /// <inheritdoc />
+        [JsonDataMember("id")]
+        public override string Id
+        {
+            get { return IdValue; }
+            set
+            {
+                IdValue = value;
+                SetPropertyValue(value);
+            }
+        }
+
+        /// <inheritdoc />
+        [JsonDataMember("typeId")]
+        public override string TypeId
+        {
+            get { return TypeIdValue; }
+            set
+            {
+                TypeIdValue = value;
+                SetPropertyValue(value);
+            }
+        }
+
+        /// <inheritdoc />
+        [JsonDataMemberIgnore]
+        public override IEntityConfig Config { get; protected set; }
+
+        /// <inheritdoc />
+        [JsonDataMemberIgnore]
+        public override string Error { get; protected set; }
+
+        /// <inheritdoc />
+        [JsonDataMember("properties")]
+        public override EntityPropertiesContainer PropertyValues { get; } = new ();
+
+        /// <inheritdoc />
+        [JsonDataMember("health")]
         public virtual double? Health
         {
             get
@@ -32,6 +70,7 @@ namespace DevKit.Entities.Demo.Characters
         }
 
         /// <inheritdoc />
+        [JsonDataMember("damage")]
         public virtual double? Damage
         {
             get
@@ -46,12 +85,13 @@ namespace DevKit.Entities.Demo.Characters
         }
 
         /// <inheritdoc />
+        [JsonDataMember("targetable")]
         public virtual bool? IsTargetable
         {
             get
             {
                 var value = GetPropertyValue();
-                return value.Bool.GetValueOrDefault();
+                return value.Bool;
             }
             set
             {
@@ -60,12 +100,13 @@ namespace DevKit.Entities.Demo.Characters
         }
 
         /// <inheritdoc />
+        [JsonDataMember("canAttack")]
         public virtual bool? CanAttack
         {
             get
             {
                 var value = GetPropertyValue();
-                return value.Bool.GetValueOrDefault();
+                return value.Bool;
             }
             set
             {
@@ -103,7 +144,6 @@ namespace DevKit.Entities.Demo.Characters
         {
             BeginUpdate();
             Config = config;
-            Id = this.GetId();
             TypeId = config.GetPropertyInitialValue(nameof(TypeId)).Text;
             Damage = config.GetPropertyInitialValue(nameof(Damage)).Number;
             Health = config.GetPropertyInitialValue(nameof(Health)).Number;

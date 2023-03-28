@@ -93,7 +93,7 @@ namespace DevKit.Entities.Demo.Boot
         private Dictionary<string, EntityConfig> GetConfig()
         {
             var playerConfig = new EntityConfig();
-            playerConfig.PropertyValues["typeId"] = ((PlayerEntity)null).GetTypeId();
+            playerConfig.PropertyValues["typeId"] = EntityExtensions.GetTypeId<PlayerEntity>(null);
             playerConfig.PropertyValues["health"] = Random.Range(1000, 1000000);
             playerConfig.PropertyValues["damage"] = Random.Range(1000, 1000000);
             playerConfig.PropertyValues["isTargetable"] = Random.Range(0, 1) == 1;
@@ -103,7 +103,7 @@ namespace DevKit.Entities.Demo.Boot
             this.LogInfo($"{playerConfig}: {playerConfig.PropertyValues.ToJson()}");
 
             var enemyConfig = new EntityConfig();
-            enemyConfig.PropertyValues["typeId"] = ((EnemyEntity)null).GetTypeId();
+            enemyConfig.PropertyValues["typeId"] = EntityExtensions.GetTypeId<EnemyEntity>(null);
             enemyConfig.PropertyValues["health"] = Random.Range(1000, 1000000);
             enemyConfig.PropertyValues["damage"] = Random.Range(1000, 1000000);
             enemyConfig.PropertyValues["isTargetable"] = Random.Range(0, 1) == 1;
@@ -113,7 +113,7 @@ namespace DevKit.Entities.Demo.Boot
             this.LogInfo($"{enemyConfig}: {enemyConfig.PropertyValues.ToJson()}");
 
             var gameSettingsConfig = new EntityConfig();
-            gameSettingsConfig.PropertyValues["typeId"] = ((GameSettings)null).GetTypeId();
+            gameSettingsConfig.PropertyValues["typeId"] = EntityExtensions.GetTypeId<GameSettings>(null);
             gameSettingsConfig.PropertyValues["isMusicEnabled"] = Random.Range(0, 1) == 1;
             gameSettingsConfig.PropertyValues["isSfxEnabled"] = Random.Range(0, 1) == 1;
             gameSettingsConfig.PropertyValues["pushNotificationsEnabled"] = Random.Range(0, 1) == 1;

@@ -1,5 +1,6 @@
 using DevKit.Entities.API;
 using DevKit.Entities.Demo.Characters.Players.API;
+using DevKit.Entities.Extensions;
 using DevKit.Serialization.Json.API;
 
 namespace DevKit.Entities.Demo.Characters.Players
@@ -133,6 +134,8 @@ namespace DevKit.Entities.Demo.Characters.Players
         public override void Init()
         {
             base.Init();
+
+            Id = this.GetId();
 
             DeviceModel = UnityEngine.Device.SystemInfo.deviceModel;
             DeviceName = UnityEngine.Device.SystemInfo.deviceName;
