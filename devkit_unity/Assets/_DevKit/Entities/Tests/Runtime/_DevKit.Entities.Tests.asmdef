@@ -6,7 +6,8 @@
         "UnityEditor.TestRunner",
         "DevKit.Core",
         "DevKit.Entities",
-        "DevKit.Serialization"
+        "DevKit.Serialization",
+        "DevKit.Entities.Demo"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

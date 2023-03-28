@@ -60,7 +60,7 @@ namespace DevKit.Entities
         /// <summary>
         /// Property values container
         /// </summary>
-        public Dictionary<string, PropertyValueHolder> PropertyValues { get; } = new ();
+        public EntityPropertiesContainer PropertyValues { get; } = new ();
 
         /// <summary>
         /// Default ctor

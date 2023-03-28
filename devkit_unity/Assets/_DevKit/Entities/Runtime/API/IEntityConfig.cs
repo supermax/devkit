@@ -6,7 +6,7 @@ namespace DevKit.Entities.API
 {
     public interface IEntityConfig : IDisposable
     {
-        void Init(Dictionary<string, PropertyValueHolder> propertyValues);
+        void Init(EntityPropertiesContainer propertyValues);
 
         /// <summary>
         /// Gets initial value for entity property

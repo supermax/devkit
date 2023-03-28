@@ -353,13 +353,13 @@ namespace DevKit.Serialization.Json.API
 			get { return EnsureDictionary()[key]; }
 			set
 			{
-				if (!(key is string))
+				if (key is not string str)
 				{
 					throw new ArgumentException("The key has to be a string");
 				}
 
 				var data = ToJsonData(value);
-				this[(string)key] = data;
+				this[str] = data;
 			}
 		}
 
@@ -383,7 +383,7 @@ namespace DevKit.Serialization.Json.API
 		/// <summary>
 		///     Gets or sets a value indicating whether [is debug mode].
 		/// </summary>
-		/// <remarks>DO NOT TURN ON CONSTANTLY! THIS WILL SLOW MAPER'S WORK</remarks>
+		/// <remarks>DO NOT TURN ON CONSTANTLY! THIS WILL SLOW MAPPER'S WORK</remarks>
 		/// <value>
 		///     <c>true</c> if [is debug mode]; otherwise, <c>false</c>.
 		/// </value>
@@ -1356,18 +1356,18 @@ namespace DevKit.Serialization.Json.API
 			return data;
 		}
 
-		// /// <summary>
-		// /// Adds the specified key.
-		// /// </summary>
-		// /// <param name="key">The key.</param>
-		// /// <param name="value">The value.</param>
-		// /// <returns></returns>
-		// public JsonData Add(int key, object value)
-		// {
-		// 	var data = ToJsonData(value);
-		// 	this[key] = data;
-		// 	return data;
-		// }
+		/// <summary>
+		/// Adds the specified key.
+		/// </summary>
+		/// <param name="index">The index.</param>
+		/// <param name="value">The value.</param>
+		/// <returns></returns>
+		public JsonData Add(int index, object value)
+		{
+			var data = ToJsonData(value);
+			((IList)this)[index] = data;
+			return data;
+		}
 
 		/// <summary>
 		///     Removes all items from the <see cref="T:System.Collections.IList" />.
@@ -1459,17 +1459,18 @@ namespace DevKit.Serialization.Json.API
 
 			WriteJson(this, writer);
 
+			const string emptyJson = "{}";
+
 			_json = sw.ToString();
 			if (_json.IsNullOrEmpty())
 			{
-				_json = "{}"; // TODO use const + check if this legal format
+				_json = emptyJson;
 			}
 			_json = _json.Trim();
 			if (_json.IsNullOrEmpty())
 			{
-				_json = "{}"; // TODO use const + check if this legal format
+				_json = emptyJson;
 			}
-
 			return _json;
 		}
 
