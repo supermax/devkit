@@ -1,6 +1,5 @@
 using System.Text;
 using DevKit.Core.Extensions;
-using Palmmedia.ReportGenerator.Core.Parser.Filtering;
 
 namespace DevKit.Entities.Demo.Extensions
 {
