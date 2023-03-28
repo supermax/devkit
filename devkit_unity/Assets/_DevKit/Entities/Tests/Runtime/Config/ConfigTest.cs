@@ -14,6 +14,7 @@ namespace DevKit.Entities.Tests.Config
             Assert.That(entityConfig, Is.Not.Null);
 
             entityConfig.PropertyValues = new EntityPropertiesContainer();
+
             for (var i = 0; i < 100; i++)
             {
                 var holder = new PropertyValueHolder();
@@ -42,9 +43,20 @@ namespace DevKit.Entities.Tests.Config
             Assert.That(json, Is.Not.Empty);
 
             var container = new EntityPropertiesContainer();
-            var deserializedConfig = container.FromJson(json);
-            Assert.That(deserializedConfig, Is.Not.Null);
-            Assert.That(deserializedConfig.Count, Is.EqualTo(entityConfig.PropertyValues.Count));
+            container.FromJson(json);
+            Assert.That(container, Is.Not.Null);
+            Assert.That(container.Count, Is.EqualTo(entityConfig.PropertyValues.Count));
+
+            foreach (var pair in entityConfig.PropertyValues)
+            {
+                Assert.That(pair.Key, Is.Not.Null);
+                Assert.That(pair.Value, Is.Not.Null);
+
+                var value = container[pair.Key];
+                Assert.That(pair.Value.Bool, Is.EqualTo(value.Bool));
+                Assert.That(pair.Value.Number, Is.EqualTo(value.Number));
+                Assert.That(pair.Value.Text, Is.EqualTo(value.Text));
+            }
         }
     }
 }

@@ -19,7 +19,7 @@ namespace DevKit.Entities.Demo.Extensions
     			str.Append('{');
     			if (holder.Bool.HasValue)
     			{
-    				str.AppendFormat(JsonBoolValueFieldName + JsonValueFieldIndex, holder.Bool.Value);
+    				str.AppendFormat(JsonBoolValueFieldName + JsonValueFieldIndex, holder.Bool.Value.ToString().ToLowerInvariant());
     			}
     			else if (holder.Number.HasValue)
     			{
@@ -27,7 +27,7 @@ namespace DevKit.Entities.Demo.Extensions
     			}
     			else if (holder.Text != null)
     			{
-    				str.AppendFormat($"{JsonTextValueFieldName}: \"{JsonValueFieldIndex}\"", holder.Text);
+    				str.AppendFormat($"{JsonTextValueFieldName} \"{JsonValueFieldIndex}\"", holder.Text);
     			}
     			str.Append('}');
     			return str.ToString();
@@ -52,7 +52,7 @@ namespace DevKit.Entities.Demo.Extensions
     			else if (json.StartsWith(JsonTextValueFieldName))
     			{
     				json = json.Replace(JsonTextValueFieldName, string.Empty).Trim();
-                    holder.Text = json;
+                    holder.Text = json.TrimStart('"').TrimEnd('"').Trim();
     			}
                 return holder;
             }

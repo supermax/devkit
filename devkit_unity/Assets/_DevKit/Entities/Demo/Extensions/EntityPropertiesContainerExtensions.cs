@@ -13,7 +13,7 @@ namespace DevKit.Entities.Demo.Extensions
             var i = 0;
             foreach (var pair in container)
             {
-                json.AppendFormat("{{\"{0}\": {1}}}", pair.Key, pair.Value.ToJson());
+                json.AppendFormat("\"{0}\": {1}", pair.Key, pair.Value.ToJson());
 
                 i++;
                 if (i < container.Count)
@@ -51,13 +51,14 @@ namespace DevKit.Entities.Demo.Extensions
                     continue;
                 }
 
-                var value = pair[1];
+                var value = str.Replace($"{key}:", string.Empty).Trim();
                 if (value.IsNullOrEmpty())
                 {
                     continue;
                 }
 
                 var holder = new PropertyValueHolder().FromJson(value);
+                key = key.TrimStart('"').TrimEnd('"');
                 container[key] = holder;
             }
             return container;
