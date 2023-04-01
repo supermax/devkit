@@ -10,6 +10,8 @@ namespace DevKit.Core.Observables.API
 
         public object NewValue { get; }
 
+        public PropertyChangedEventArgs() { }
+
         public PropertyChangedEventArgs(IObservableObject<T> source, string propertyName, object prevValue, object newValue)
         {
             Source = source;

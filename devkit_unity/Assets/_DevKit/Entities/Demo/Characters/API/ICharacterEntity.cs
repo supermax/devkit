@@ -13,21 +13,6 @@ namespace DevKit.Entities.Demo.Characters.API
             , IEntity<T>
         where T : class
     {
-        /// <summary>
-        /// Returns <code>true</code> in case this character can be attacked by other entity\character
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <typeparam name="TT"></typeparam>
-        /// <returns></returns>
-        bool? IsTargetableBy<TT>(TT entity) where TT : class, IEntity<TT>;
-
-        /// <summary>
-        /// Returns <code>true</code> in case this character can attack the given entity\character
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <typeparam name="TT"></typeparam>
-        /// <returns></returns>
-        bool? CanAttackTarget<TT>(TT entity) where TT : class, IEntity<TT>;
     }
 
     public interface ICharacterEntity

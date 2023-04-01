@@ -1,4 +1,4 @@
-﻿namespace DevKit.Entities.API
+﻿namespace DevKit.Core.Objects
 {
     /// <summary>
     /// Interface for initializable class

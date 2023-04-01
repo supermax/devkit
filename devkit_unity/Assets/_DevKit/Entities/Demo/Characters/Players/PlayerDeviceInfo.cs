@@ -8,7 +8,7 @@ namespace DevKit.Entities.Demo.Characters.Players
     [JsonDataContract]
     public class PlayerDeviceInfo : Entity<IPlayerDeviceInfo>, IPlayerDeviceInfo
     {
-        [JsonDataMember(Name = "DID")]
+        [JsonDataMember(Name = "duid")]
         public string DeviceUniqueId { get; set; }
 
         [JsonDataMember(Name = "deviceName")]

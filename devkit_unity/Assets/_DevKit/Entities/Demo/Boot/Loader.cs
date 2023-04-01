@@ -1,12 +1,10 @@
-using System;
 using System.Collections.Generic;
 using DevKit.Core.Extensions;
 using DevKit.Core.Objects;
 using DevKit.Entities.API;
-using DevKit.Entities.Demo.Characters;
-using DevKit.Entities.Demo.Characters.API;
 using DevKit.Entities.Demo.Characters.Enemies;
 using DevKit.Entities.Demo.Characters.Enemies.API;
+using DevKit.Entities.Demo.Characters.Extensions;
 using DevKit.Entities.Demo.Characters.Players;
 using DevKit.Entities.Demo.Characters.Players.API;
 using DevKit.Entities.Demo.Config;
@@ -98,8 +96,8 @@ namespace DevKit.Entities.Demo.Boot
             playerConfig.PropertyValues["damage"] = Random.Range(1000, 1000000);
             playerConfig.PropertyValues["isTargetable"] = Random.Range(0, 1) == 1;
             playerConfig.PropertyValues["canAttack"] = Random.Range(0, 1) == 1;
-            playerConfig.PropertyValues[PlayerEntity.GetCanAttackTargetKey<EnemyEntity>().ToJsonPropName()] = Random.Range(0, 1) == 1;
-            playerConfig.PropertyValues[PlayerEntity.GetIsTargetableByKey<EnemyEntity>().ToJsonPropName()] = Random.Range(0, 1) == 1;
+            playerConfig.PropertyValues[CharacterEntitiesExtensions.GetCanAttackTargetKey<EnemyEntity>(null).ToJsonPropName()] = Random.Range(0, 1) == 1;
+            playerConfig.PropertyValues[CharacterEntitiesExtensions.GetIsTargetableByKey<EnemyEntity>(null).ToJsonPropName()] = Random.Range(0, 1) == 1;
             this.LogInfo($"{playerConfig}: {playerConfig.PropertyValues.ToJson()}");
 
             var enemyConfig = new EntityConfig();
@@ -108,8 +106,8 @@ namespace DevKit.Entities.Demo.Boot
             enemyConfig.PropertyValues["damage"] = Random.Range(1000, 1000000);
             enemyConfig.PropertyValues["isTargetable"] = Random.Range(0, 1) == 1;
             enemyConfig.PropertyValues["canAttack"] = Random.Range(0, 1) == 1;
-            enemyConfig.PropertyValues[EnemyEntity.GetCanAttackTargetKey<PlayerEntity>().ToJsonPropName()] = Random.Range(0, 1) == 1;
-            enemyConfig.PropertyValues[EnemyEntity.GetIsTargetableByKey<PlayerEntity>().ToJsonPropName()] = Random.Range(0, 1) == 1;
+            enemyConfig.PropertyValues[CharacterEntitiesExtensions.GetCanAttackTargetKey<PlayerEntity>(null).ToJsonPropName()] = Random.Range(0, 1) == 1;
+            enemyConfig.PropertyValues[CharacterEntitiesExtensions.GetIsTargetableByKey<PlayerEntity>(null).ToJsonPropName()] = Random.Range(0, 1) == 1;
             this.LogInfo($"{enemyConfig}: {enemyConfig.PropertyValues.ToJson()}");
 
             var gameSettingsConfig = new EntityConfig();

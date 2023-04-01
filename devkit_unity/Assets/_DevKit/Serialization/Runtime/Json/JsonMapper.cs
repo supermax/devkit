@@ -38,7 +38,7 @@ namespace DevKit.Serialization.Json
 
 		#region Fields
 
-		private readonly MetadataHandler _metadataHandler = new MetadataHandler();
+		private readonly MetadataHandler _metadataHandler = new();
 
 		private readonly IDictionary<Type, ExporterFunc> _baseExportersTable;
 		private readonly IDictionary<Type, IDictionary<Type, ImporterFunc>> _baseImportersTable;
@@ -49,8 +49,8 @@ namespace DevKit.Serialization.Json
 		private readonly int _maxNestingDepth;
 
 		#region Lockers
-		private readonly object _convOpsLock = new object();
-		private readonly object _writerLock = new object();
+		private readonly object _convOpsLock = new();
+		private readonly object _writerLock = new();
 		#endregion
 
 		#endregion
@@ -1177,6 +1177,12 @@ namespace DevKit.Serialization.Json
 		{
 			var reader = new JsonReader(json);
 			return ReadValue(factory, reader);
+		}
+
+		public void RegisterExporter<TValue, TJson>(Func<TValue, TJson> converter)
+		{
+			_customExportersTable[typeof (TValue)] =
+				(obj, writer) => writer.Write(converter((TValue) obj));
 		}
 
 		/// <summary>

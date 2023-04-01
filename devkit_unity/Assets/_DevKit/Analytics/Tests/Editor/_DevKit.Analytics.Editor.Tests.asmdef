@@ -1,0 +1,24 @@
+{
+    "name": "DevKit.Analytics.Editor.Tests",
+    "rootNamespace": "DevKit",
+    "references": [
+        "GUID:0acc523941302664db1f4e527237feb3",
+        "GUID:27619889b8ba8c24980f49ee34dbb44a",
+        "GUID:189092fc0a61b4360931e9f8819b9ac2",
+        "GUID:5667eaf776092417d984f0d642785a98",
+        "GUID:b2d0d050fc38d4ef0a69cc50d895e29e"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

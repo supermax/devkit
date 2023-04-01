@@ -530,6 +530,44 @@ namespace DevKit.Serialization.Json.Interpreters
 			_context.ExpectingValue = false;
 		}
 
+		public void Write<T>(T value)
+		{
+			switch (value)
+			{
+				case string str:
+					Write(str);
+					return;
+
+				case int num:
+					Write(num);
+					return;
+
+				case long lng:
+					Write(lng);
+					return;
+
+				case ulong ulg:
+					Write(ulg);
+					return;
+
+				case double dbl:
+					Write(dbl);
+					return;
+
+				case bool boo:
+					Write(boo);
+					return;
+
+				case float flt:
+					Write(flt);
+					return;
+
+				case decimal dec:
+					Write(dec);
+					break;
+			}
+		}
+
 		/// <summary>
 		///     Writes the array end.
 		/// </summary>

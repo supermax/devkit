@@ -10,6 +10,18 @@ namespace DevKit.Entities.Demo.Characters.Players
     [JsonDataContract]
     public class PlayerLoginProfile : Entity<IPlayerLoginProfile>, IPlayerLoginProfile
     {
+        /// <inheritdoc />
+        [JsonDataMemberIgnore]
+        public override IEntityConfig Config { get; protected set; }
+
+        /// <inheritdoc />
+        [JsonDataMemberIgnore]
+        public override string Error { get; protected set; }
+
+        /// <inheritdoc />
+        [JsonDataMemberIgnore]
+        public override EntityPropertiesContainer PropertyValues { get; } = new();
+
         /// <summary>
         /// Game Session ID
         /// <remarks>
@@ -39,7 +51,7 @@ namespace DevKit.Entities.Demo.Characters.Players
         public string Username { get; set; }
 
         [JsonDataMember(Name = "tz", FallbackValue = 1, DefaultValue = 1)]
-        public string Timezone { get; set; }
+        public string TimeZone { get; set; }
 
         [JsonDataMember(Name = "isFirstLogin")]
         public bool IsFirstLogin { get; set; }
@@ -59,9 +71,11 @@ namespace DevKit.Entities.Demo.Characters.Players
 
             Id = this.GetId();
             TypeId = this.GetTypeId();
-            Timezone = TimeZone.CurrentTimeZone.ToString();
             LoginType = LoginType.Guest;
             LoginTime = DateTime.UtcNow;
+            TimeZone = System.TimeZone.CurrentTimeZone.IsDaylightSavingTime(DateTime.Now)
+                ? System.TimeZone.CurrentTimeZone.DaylightName
+                : System.TimeZone.CurrentTimeZone.StandardName;
 
             if (DeviceInfo != null)
             {
@@ -78,6 +92,7 @@ namespace DevKit.Entities.Demo.Characters.Players
 
         static PlayerLoginProfile()
         {
+            JsonMapper.Default.RegisterExporter<LoginType, string>(val => val.ToString());
             JsonMapper.Default.RegisterImporter<int, LoginType>(jVal => (LoginType)jVal);
         }
     }

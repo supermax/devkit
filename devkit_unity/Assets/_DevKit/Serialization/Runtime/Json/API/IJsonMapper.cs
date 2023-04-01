@@ -54,6 +54,8 @@ namespace DevKit.Serialization.Json.API
 		// /// <param name="exporter">The exporter.</param>
 		// void RegisterExporter<T>(ExporterFunc<T> exporter);
 
+		void RegisterExporter<TValue, TJson>(Func<TValue, TJson> converter);
+
 		/// <summary>
 		///     Registers the importer.
 		/// </summary>

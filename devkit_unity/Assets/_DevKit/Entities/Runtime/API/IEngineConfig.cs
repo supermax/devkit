@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DevKit.Core.Objects;
 
 namespace DevKit.Entities.API
 {

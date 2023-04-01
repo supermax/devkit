@@ -1,6 +1,7 @@
 ﻿using System;
 using DevKit.Entities.API;
 using DevKit.Entities.Demo.Characters.API;
+using DevKit.Entities.Extensions;
 using DevKit.Serialization.Json.API;
 
 namespace DevKit.Entities.Demo.Characters
@@ -19,7 +20,7 @@ namespace DevKit.Entities.Demo.Characters
         where T: class
     {
         /// <inheritdoc />
-        [JsonDataMember("id")]
+        [JsonDataMemberIgnore]
         public override string Id
         {
             get { return IdValue; }
@@ -31,7 +32,7 @@ namespace DevKit.Entities.Demo.Characters
         }
 
         /// <inheritdoc />
-        [JsonDataMember("typeId")]
+        [JsonDataMemberIgnore]
         public override string TypeId
         {
             get { return TypeIdValue; }
@@ -55,7 +56,7 @@ namespace DevKit.Entities.Demo.Characters
         public override EntityPropertiesContainer PropertyValues { get; } = new ();
 
         /// <inheritdoc />
-        [JsonDataMember("health")]
+        [JsonDataMemberIgnore]
         public virtual double? Health
         {
             get
@@ -70,7 +71,7 @@ namespace DevKit.Entities.Demo.Characters
         }
 
         /// <inheritdoc />
-        [JsonDataMember("damage")]
+        [JsonDataMemberIgnore]
         public virtual double? Damage
         {
             get
@@ -85,7 +86,7 @@ namespace DevKit.Entities.Demo.Characters
         }
 
         /// <inheritdoc />
-        [JsonDataMember("targetable")]
+        [JsonDataMemberIgnore]
         public virtual bool? IsTargetable
         {
             get
@@ -100,7 +101,7 @@ namespace DevKit.Entities.Demo.Characters
         }
 
         /// <inheritdoc />
-        [JsonDataMember("canAttack")]
+        [JsonDataMemberIgnore]
         public virtual bool? CanAttack
         {
             get
@@ -114,30 +115,10 @@ namespace DevKit.Entities.Demo.Characters
             }
         }
 
-        public static string GetIsTargetableByKey<TT>()
+        public override void Init()
         {
-            var key = $"{nameof(IsTargetableBy)}_{typeof(TT).Name}";
-            return key;
-        }
-
-        /// <inheritdoc />
-        public virtual bool? IsTargetableBy<TT>(TT entity) where TT : class, IEntity<TT>
-        {
-            var isTargetable = Config.GetPropertyInitialValue(GetIsTargetableByKey<TT>()).Bool;
-            return isTargetable;
-        }
-
-        public static string GetCanAttackTargetKey<TT>()
-        {
-            var key = $"{nameof(CanAttackTarget)}_{typeof(TT).Name}";
-            return key;
-        }
-
-        /// <inheritdoc />
-        public virtual bool? CanAttackTarget<TT>(TT entity) where TT : class, IEntity<TT>
-        {
-            var isTargetable = Config.GetPropertyInitialValue(GetCanAttackTargetKey<TT>()).Bool;
-            return isTargetable;
+            base.Init();
+            Id = this.GetId();
         }
 
         public override void Init(IEntityConfig config)

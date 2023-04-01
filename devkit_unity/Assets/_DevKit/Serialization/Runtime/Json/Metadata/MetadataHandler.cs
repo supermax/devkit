@@ -199,6 +199,10 @@ namespace DevKit.Serialization.Json.Metadata
 			foreach (var attr in attributes)
 			{
 				var attrName = attr?.Name ?? pInfo.Name;
+				if (data.Properties.ContainsKey(attrName))
+				{
+					continue;
+				}
 				var pData = new PropertyMetadata(pInfo.PropertyType, pInfo, false, attr);
 				data.Properties.Add(attrName, pData);
 			}

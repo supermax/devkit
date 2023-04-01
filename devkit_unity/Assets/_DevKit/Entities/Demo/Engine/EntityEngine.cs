@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using DevKit.Entities.Demo.Characters.API;
+using DevKit.Core.Observables.API;
+using DevKit.Entities.API;
+using DevKit.PubSub;
 using IEntityEngine = DevKit.Entities.Demo.Engine.API.IEntityEngine;
 
 namespace DevKit.Entities.Demo.Engine
@@ -28,13 +30,15 @@ namespace DevKit.Entities.Demo.Engine
             {
                 return null;
             }
+
             entity.Init();
-            if (Config == null)
+            if (Config != null)
             {
-                return entity;
+                var entityConfig = Config.GetEntityConfig<T>();
+                entity.Init(entityConfig);
             }
-            var entityConfig = Config.GetEntityConfig<T>();
-            entity.Init(entityConfig);
+
+            entity.PropertyChanged += OnEntityPropertyChanged;
             return entity;
         }
 
@@ -50,6 +54,11 @@ namespace DevKit.Entities.Demo.Engine
         public override void Register<TInterface, TImplementation>()
         {
             _typeMappings[typeof (TInterface)] = typeof (TImplementation);
+        }
+
+        private static void OnEntityPropertyChanged<T>(IObservableObject<T> sender, PropertyChangedEventArgs<T> args) where T : class, IEntity<T>
+        {
+            Messenger.Default.Publish(args);
         }
     }
 }
