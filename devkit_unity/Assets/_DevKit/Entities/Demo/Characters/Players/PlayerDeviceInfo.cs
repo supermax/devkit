@@ -1,12 +1,10 @@
-using DevKit.Entities.API;
 using DevKit.Entities.Demo.Characters.Players.API;
-using DevKit.Entities.Extensions;
 using DevKit.Serialization.Json.API;
 
 namespace DevKit.Entities.Demo.Characters.Players
 {
     [JsonDataContract]
-    public class PlayerDeviceInfo : Entity<IPlayerDeviceInfo>, IPlayerDeviceInfo
+    public class PlayerDeviceInfo : IPlayerDeviceInfo
     {
         [JsonDataMember(Name = "duid")]
         public string DeviceUniqueId { get; set; }
@@ -131,12 +129,8 @@ namespace DevKit.Entities.Demo.Characters.Players
         [JsonDataMember(Name = "appId")]
         public string AppId { get; set; }
 
-        public override void Init()
+        public void Init()
         {
-            base.Init();
-
-            Id = this.GetId();
-
             DeviceModel = UnityEngine.Device.SystemInfo.deviceModel;
             DeviceName = UnityEngine.Device.SystemInfo.deviceName;
             OperatingSystem = UnityEngine.Device.SystemInfo.operatingSystem;
@@ -195,11 +189,6 @@ namespace DevKit.Entities.Demo.Characters.Players
             ScreenHeight = UnityEngine.Device.Screen.height;
             ScreenOrientation = UnityEngine.Device.Screen.orientation.ToString();
             CurrentResolution = UnityEngine.Device.Screen.currentResolution.ToString();
-        }
-
-        public override void Init(IEntityConfig config)
-        {
-            Config = config;
         }
     }
 }

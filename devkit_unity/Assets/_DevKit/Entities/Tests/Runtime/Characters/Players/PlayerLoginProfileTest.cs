@@ -1,6 +1,7 @@
 using DevKit.Entities.Demo.Characters.Players;
 using DevKit.Serialization.Json.Extensions;
 using NUnit.Framework;
+using UnityEngine;
 
 namespace DevKit.Entities.Tests.Characters.Players
 {
@@ -15,17 +16,20 @@ namespace DevKit.Entities.Tests.Characters.Players
             Assert.DoesNotThrow(() => profile.Init());
 
             var json = profile.ToJson();
+            Debug.LogFormat("Original '{0}': {1}", profile.GetType().Name, json);
             Assert.That(json, Is.Not.Null);
 
             var profile1 = json.ToObject<PlayerLoginProfile>();
             Assert.That(profile1, Is.Not.Null);
-            Assert.That(profile1.Id, Is.EqualTo(profile.Id));
-            Assert.That(profile1.TypeId, Is.EqualTo(profile.TypeId));
+
+            var json1 = profile1.ToJson();
+            Debug.LogFormat("Clone '{0}': {1}", profile1.GetType().Name, json1);
             Assert.That(profile1.SessionId, Is.EqualTo(profile.SessionId));
             Assert.That(profile1.LoginType, Is.EqualTo(profile.LoginType));
-            
+
             Assert.That(profile1.DeviceInfo, Is.Not.Null);
-            Assert.That(profile1.DeviceInfo.Id, Is.EqualTo(profile.DeviceInfo.Id));
+            Assert.That(profile1.DeviceInfo.Platform, Is.EqualTo(profile.DeviceInfo.Platform));
+            Assert.That(profile1.DeviceInfo.DeviceModel, Is.EqualTo(profile.DeviceInfo.DeviceModel));
         }
     }
 }

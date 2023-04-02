@@ -77,10 +77,7 @@ namespace DevKit.Entities.Demo.Boot
                 this.LogInfo($"Created {nameof(EnemyEntity)}: {enemyJson}");
             }
 
-            _engine.Register<IPlayerLoginProfile, PlayerLoginProfile>();
-            this.LogInfo($"{_engine}.{nameof(_engine.Register)}: {typeof(IPlayerLoginProfile)}");
-
-            var loginProfile = _engine.Create<IPlayerLoginProfile>();
+            var loginProfile = new PlayerLoginProfile();
             var jsonLoginProfile = loginProfile.ToJson();
             this.LogInfo($"Created {nameof(PlayerLoginProfile)}: {jsonLoginProfile}");
 

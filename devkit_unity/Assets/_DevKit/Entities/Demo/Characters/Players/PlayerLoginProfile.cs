@@ -8,20 +8,8 @@ using DevKit.Serialization.Json.API;
 namespace DevKit.Entities.Demo.Characters.Players
 {
     [JsonDataContract]
-    public class PlayerLoginProfile : Entity<IPlayerLoginProfile>, IPlayerLoginProfile
+    public class PlayerLoginProfile : IPlayerLoginProfile
     {
-        /// <inheritdoc />
-        [JsonDataMemberIgnore]
-        public override IEntityConfig Config { get; protected set; }
-
-        /// <inheritdoc />
-        [JsonDataMemberIgnore]
-        public override string Error { get; protected set; }
-
-        /// <inheritdoc />
-        [JsonDataMemberIgnore]
-        public override EntityPropertiesContainer PropertyValues { get; } = new();
-
         /// <summary>
         /// Game Session ID
         /// <remarks>
@@ -65,12 +53,8 @@ namespace DevKit.Entities.Demo.Characters.Players
         [JsonDataMember(Name = "loginType")]
         public LoginType LoginType { get; set; }
 
-        public override void Init()
+        public void Init()
         {
-            base.Init();
-
-            Id = this.GetId();
-            TypeId = this.GetTypeId();
             LoginType = LoginType.Guest;
             LoginTime = DateTime.UtcNow;
             TimeZone = System.TimeZone.CurrentTimeZone.IsDaylightSavingTime(DateTime.Now)
@@ -85,14 +69,10 @@ namespace DevKit.Entities.Demo.Characters.Players
             DeviceInfo.Init();
         }
 
-        public override void Init(IEntityConfig config)
-        {
-            Config = config;
-        }
-
         static PlayerLoginProfile()
         {
             JsonMapper.Default.RegisterExporter<LoginType, string>(val => val.ToString());
+            JsonMapper.Default.RegisterImporter<string, LoginType>(Enum.Parse<LoginType>);
             JsonMapper.Default.RegisterImporter<int, LoginType>(jVal => (LoginType)jVal);
         }
     }
