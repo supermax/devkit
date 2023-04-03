@@ -32,6 +32,19 @@ namespace DevKit.PubSub.Extensions
             return subscriber;
         }
 
+        public static TS Unsubscribe<TS, TP>(
+            this TS subscriber
+            , Action<TP> callback
+            , Predicate<TP> predicate = null)
+            where TS : IMessengerSubscriber
+            where TP : class, new()
+        {
+            subscriber.ThrowIfDefault(nameof(subscriber));
+
+            subscriber.Messenger.Unsubscribe(callback);
+            return subscriber;
+        }
+
         /// <summary>
         /// Subscribe given callback to receive payload with state object
         /// </summary>

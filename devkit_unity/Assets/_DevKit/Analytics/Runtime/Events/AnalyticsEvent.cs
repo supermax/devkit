@@ -23,6 +23,15 @@ namespace DevKit.Analytics.Events
         [JsonDataMember(Name = "tz")]
         public string TimeZone { get; set; }
 
+        [JsonDataMember(Name = "namespace")]
+        public string Namespace { get; set; }
+
+        [JsonDataMember(Name = "entityId")]
+        public string EntityId { get; set; }
+
+        [JsonDataMember(Name = "entityType")]
+        public string EntityType { get; set; }
+
         [JsonDataMember("eventTime")]
         public DateTime EventTime { get; set; }
 

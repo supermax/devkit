@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using DevKit.Core.Objects;
 using DevKit.Core.Observables.API;
 
@@ -8,11 +7,10 @@ namespace DevKit.Entities.API
     /// <summary>
     /// Interface for base entity class
     /// </summary>
-    public interface IEntity<T>
-        : IObservableObject<T>
+    public interface IEntity
+        : IObservableObject
             , IInitializable
             , IDataErrorInfo
-        where T : class
     {
         /// <summary>
         /// Gets Entity ID (normally will be same as class's name + hashcode)
@@ -77,5 +75,16 @@ namespace DevKit.Entities.API
         /// </summary>
         /// <param name="config">The entity config instance</param>
         void Init(IEntityConfig config);
+    }
+
+    /// <summary>
+    /// Interface for base entity class
+    /// </summary>
+    public interface IEntity<T>
+        : IObservableObject<T>
+            , IEntity
+        where T : class
+    {
+
     }
 }

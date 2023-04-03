@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
+using DevKit.Analytics.Events;
 using DevKit.Analytics.Events.API;
 using DevKit.Analytics.Services.API;
 
@@ -16,6 +17,8 @@ namespace DevKit.Analytics.Services
         private Timer _timer;
 
         private bool _isProcessing;
+
+        public AnalyticsServiceConfig Config { get; } = new();
 
         public virtual void SendEvent(IAnalyticsEvent analyticsEvent)
         {
@@ -41,7 +44,7 @@ namespace DevKit.Analytics.Services
             EnableTimer();
         }
 
-        public void Init()
+        public virtual void Init()
         {
 
         }
@@ -68,8 +71,13 @@ namespace DevKit.Analytics.Services
             try
             {
                 _isProcessing = true;
-                _eventsQueue.TryDequeue(out var analyticsEvent);
-                SendEventToService(analyticsEvent);
+                var analyticsEvents = new IAnalyticsEvent[Config.EventsPerWriteRequest];
+                for (var i = 0; i < analyticsEvents.Length; i++)
+                {
+                    _eventsQueue.TryDequeue(out var analyticsEvent);
+                    analyticsEvents[i] = analyticsEvent;
+                }
+                SendEventsToService(analyticsEvents);
             }
             finally
             {
@@ -78,19 +86,22 @@ namespace DevKit.Analytics.Services
             }
         }
 
-        protected virtual void SendEventToService(IAnalyticsEvent analyticsEvent)
+        protected virtual void SendEventsToService(IEnumerable<IAnalyticsEvent> analyticsEvents)
         {
             // TODO
         }
 
-        protected virtual void OnEventSendFailed(IAnalyticsEvent analyticsEvent)
+        protected virtual void OnEventSendFailed(IEnumerable<IAnalyticsEvent> analyticsEvents)
         {
-            _unprocessedEventsQueue.Enqueue(analyticsEvent);
+            foreach (var analyticsEvent in analyticsEvents)
+            {
+                _unprocessedEventsQueue.Enqueue(analyticsEvent);
+            }
         }
 
         public virtual void Reset()
         {
-            throw new System.NotImplementedException();
+
         }
 
         protected virtual void Dispose(bool disposing)
