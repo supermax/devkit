@@ -2,13 +2,12 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
-using DevKit.Analytics.Events;
 using DevKit.Analytics.Events.API;
 using DevKit.Analytics.Services.API;
 
 namespace DevKit.Analytics.Services
 {
-    public class AnalyticsService : IAnalyticsService, IDisposable
+    public abstract class AnalyticsService : IAnalyticsService, IDisposable
     {
         private readonly ConcurrentQueue<IAnalyticsEvent> _eventsQueue = new();
 
@@ -62,6 +61,15 @@ namespace DevKit.Analytics.Services
 
         protected virtual void OnTimerTick(object state)
         {
+            if (!_isProcessing && _eventsQueue.IsEmpty && !_unprocessedEventsQueue.IsEmpty)
+            {
+                foreach (var analyticsEvent in _unprocessedEventsQueue)
+                {
+                    _eventsQueue.Enqueue(analyticsEvent);
+                }
+                return;
+            }
+
             if (_eventsQueue.IsEmpty)
             {
                 DisableTimer();
@@ -86,12 +94,9 @@ namespace DevKit.Analytics.Services
             }
         }
 
-        protected virtual void SendEventsToService(IEnumerable<IAnalyticsEvent> analyticsEvents)
-        {
-            // TODO
-        }
+        protected abstract void SendEventsToService(IEnumerable<IAnalyticsEvent> analyticsEvents);
 
-        protected virtual void OnEventSendFailed(IEnumerable<IAnalyticsEvent> analyticsEvents)
+        protected virtual void OnEventsSendFailed(IEnumerable<IAnalyticsEvent> analyticsEvents)
         {
             foreach (var analyticsEvent in analyticsEvents)
             {
@@ -101,14 +106,30 @@ namespace DevKit.Analytics.Services
 
         public virtual void Reset()
         {
+            DisableTimer();
 
+            try
+            {
+                _isProcessing = true;
+                _eventsQueue.Clear();
+                _unprocessedEventsQueue.Clear();
+            }
+            finally
+            {
+                _isProcessing = false;
+            }
+        }
+
+        public virtual void SaveUnprocessedEvents()
+        {
+            // TODO store unprocessed events in local file(s)
         }
 
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
             {
-                _timer?.Dispose();
+                Reset();
             }
         }
 

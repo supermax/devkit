@@ -112,14 +112,14 @@ namespace DevKit.DIoC.Container
         public ITypeMap<T> Singleton<TM>(TM instance, string key = null) where TM : class, T
         {
             var type = typeof(TM);
-            // if (!type.IsClass)
-            // {
-            //     throw new OperationCanceledException($"The type {type} is not a class!");
-            // }
-            // if (type == GetType())
-            // {
-            //     throw new InvalidOperationException($"The type {type} cannot be {GetType()}!");
-            // }
+            if (!type.IsClass)
+            {
+                throw new OperationCanceledException($"The type {type} is not a class!");
+            }
+            if (type == GetType())
+            {
+                throw new InvalidOperationException($"The type {type} cannot be {GetType()}!");
+            }
 
             key ??= type.FullName;
             key.ThrowIfNullOrEmpty(nameof(type.FullName));

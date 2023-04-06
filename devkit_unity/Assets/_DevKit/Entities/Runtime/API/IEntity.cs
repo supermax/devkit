@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 using DevKit.Core.Objects;
 using DevKit.Core.Observables.API;
 
@@ -23,30 +24,46 @@ namespace DevKit.Entities.API
         string TypeId { get; }
 
         /// <summary>
+        /// Gets Entity's Update Time (normally auto-updated on any property change)
+        /// </summary>
+        DateTime? UpdateTime { get; }
+
+        /// <summary>
         /// Gets Entity Config
         /// </summary>
         IEntityConfig Config { get; }
 
         /// <summary>
+        /// Sets the date property value
+        /// </summary>
+        /// <param name="value">The date value</param>
+        /// <param name="firePropertyChangedEvent">If set 'true' then fires `PropertyChangedEvent'</param>
+        /// <param name="name">The name of the property</param>
+        void SetPropertyValue(DateTime? value, bool firePropertyChangedEvent = true, [CallerMemberName] string name = "");
+
+        /// <summary>
         /// Sets the boolean property value
         /// </summary>
         /// <param name="value">The boolean value</param>
+        /// <param name="firePropertyChangedEvent">If set 'true' then fires `PropertyChangedEvent'</param>
         /// <param name="name">The name of the property</param>
-        void SetPropertyValue(bool? value, [CallerMemberName] string name = "");
+        void SetPropertyValue(bool? value, bool firePropertyChangedEvent = true, [CallerMemberName] string name = "");
 
         /// <summary>
         /// Sets the numeric property value
         /// </summary>
         /// <param name="value">The numeric value</param>
+        /// <param name="firePropertyChangedEvent">If set 'true' then fires `PropertyChangedEvent'</param>
         /// <param name="name">The name of the property</param>
-        void SetPropertyValue(double? value, [CallerMemberName] string name = "");
+        void SetPropertyValue(double? value, bool firePropertyChangedEvent = true, [CallerMemberName] string name = "");
 
         /// <summary>
         /// Set the textual property value
         /// </summary>
         /// <param name="value">The textual value</param>
+        /// <param name="firePropertyChangedEvent">If set 'true' then fires `PropertyChangedEvent'</param>
         /// <param name="name">The name of the property</param>
-        void SetPropertyValue(string value, [CallerMemberName] string name = "");
+        void SetPropertyValue(string value, bool firePropertyChangedEvent = true, [CallerMemberName] string name = "");
 
         /// <summary>
         /// Get the property value

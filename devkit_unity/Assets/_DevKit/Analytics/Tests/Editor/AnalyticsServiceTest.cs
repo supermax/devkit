@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using DevKit.Analytics.Events;
 using DevKit.Analytics.Events.API;
-using DevKit.Analytics.Services;
 using DevKit.Serialization.Json.Extensions;
 using NUnit.Framework;
 using UnityEngine;
@@ -16,7 +15,7 @@ namespace DevKit.Analytics.Tests.Editor
         [Test]
         public void AnalyticsService_SendEvent_Test()
         {
-            var service = new AnalyticsService();
+            var service = new AnalyticsServiceImplementation();
             var analyticsEvent = new AnalyticsEvent(AnalyticsEventType.Gameplay
                 , "enemyKill"
                 , new Dictionary<string, object>
@@ -37,7 +36,7 @@ namespace DevKit.Analytics.Tests.Editor
         [Test]
         public void AnalyticsService_SendEvents_Test()
         {
-            var service = new AnalyticsService();
+            var service = new AnalyticsServiceImplementation();
 
             var analyticsEvents = new IAnalyticsEvent[100];
             for (var i = 0; i < analyticsEvents.Length; i++)

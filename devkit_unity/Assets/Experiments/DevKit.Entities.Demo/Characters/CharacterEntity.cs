@@ -23,24 +23,16 @@ namespace DevKit.Entities.Demo.Characters
         [JsonDataMemberIgnore]
         public override string Id
         {
-            get { return IdValue; }
-            set
-            {
-                IdValue = value;
-                SetPropertyValue(value);
-            }
+            get { return GetPropertyValue().Text; }
+            set { SetPropertyValue(value); }
         }
 
         /// <inheritdoc />
         [JsonDataMemberIgnore]
         public override string TypeId
         {
-            get { return TypeIdValue; }
-            set
-            {
-                TypeIdValue = value;
-                SetPropertyValue(value);
-            }
+            get { return GetPropertyValue().Text; }
+            set { SetPropertyValue(value); }
         }
 
         /// <inheritdoc />
@@ -133,14 +125,14 @@ namespace DevKit.Entities.Demo.Characters
             EndUpdate();
         }
 
-        public CharacterEntity()
+        protected CharacterEntity()
         {
 
         }
 
-        public CharacterEntity(string id)
+        protected CharacterEntity(string id) : base(id)
         {
-            Id = id;
+
         }
     }
 }

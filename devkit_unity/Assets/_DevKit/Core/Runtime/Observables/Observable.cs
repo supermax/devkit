@@ -13,12 +13,46 @@ namespace DevKit.Core.Observables
     /// </remarks>
     [Serializable]
     [DataContract]
-    public abstract class Observable<T> : IObservableObject<T> where T : class
+    public abstract class Observable : IObservableObject
     {
         protected bool IsDisposing;
 
         protected bool IsDisposed;
 
+        public virtual void Dispose()
+        {
+            if (IsDisposed || IsDisposing)
+            {
+                // TODO
+                return;
+            }
+            try
+            {
+                IsDisposing = true;
+                Dispose(true);
+            }
+            finally
+            {
+                IsDisposed = true;
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+
+        }
+    }
+
+    /// <summary>
+    /// Base observable class
+    /// </summary>
+    /// <remarks>
+    /// Used for objects that have observers like UI elements or any Game Objects or other simple objects
+    /// </remarks>
+    [Serializable]
+    [DataContract]
+    public abstract class Observable<T> : Observable, IObservableObject<T> where T : class
+    {
         protected bool IsUpdateSuspended;
 
         // TODO consider using weak ref delegate
@@ -70,29 +104,12 @@ namespace DevKit.Core.Observables
             PropertyChanged.Invoke(this, args);
         }
 
-        public virtual void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            if (IsDisposed || IsDisposing)
+            if (disposing)
             {
-                // TODO
-                return;
-            }
-            try
-            {
-                IsDisposing = true;
-
                 PropertyChanged = null;
-                Dispose(true);
             }
-            finally
-            {
-                IsDisposed = true;
-            }
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-
         }
     }
 }

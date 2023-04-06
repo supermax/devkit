@@ -19,11 +19,10 @@ namespace DevKit.PubSub.Extensions
         /// <typeparam name="TP">The type of payload to receive</typeparam>
         /// <exception cref="ArgumentNullException">Thrown in case <param name="subscriber"/> or <param name="callback"/> is null</exception>
         /// <returns>Instance of the subscriber</returns>
-        public static TS Subscribe<TS, TP>(
-            this TS subscriber
+        public static IMessengerSubscriber Subscribe<TP>(
+            this IMessengerSubscriber subscriber
             , Action<TP> callback
             , Predicate<TP> predicate = null)
-            where TS : IMessengerSubscriber
             where TP : class, new()
         {
             subscriber.ThrowIfDefault(nameof(subscriber));
@@ -32,11 +31,10 @@ namespace DevKit.PubSub.Extensions
             return subscriber;
         }
 
-        public static TS Unsubscribe<TS, TP>(
-            this TS subscriber
+        public static IMessengerSubscriber Unsubscribe<TP>(
+            this IMessengerSubscriber subscriber
             , Action<TP> callback
             , Predicate<TP> predicate = null)
-            where TS : IMessengerSubscriber
             where TP : class, new()
         {
             subscriber.ThrowIfDefault(nameof(subscriber));
@@ -57,12 +55,11 @@ namespace DevKit.PubSub.Extensions
         /// <typeparam name="TO">The type of state object to receive for the given callback</typeparam>
         /// <exception cref="ArgumentNullException">Thrown in case <param name="subscriber"/> or <param name="callback"/> is null</exception>
         /// <returns>Instance of the subscriber</returns>
-        public static TS Subscribe<TS, TC, TO>(
-            this TS subscriber
+        public static IMessengerSubscriber Subscribe<TC, TO>(
+            this IMessengerSubscriber subscriber
             , Action<TC, TO> callback
             , Func<TC, TO, bool> predicate = null
             , TO stateObj = default)
-            where TS : IMessengerSubscriber
             where TC : class, new()
         {
             subscriber.ThrowIfDefault(nameof(subscriber));
@@ -80,10 +77,9 @@ namespace DevKit.PubSub.Extensions
         /// <typeparam name="TP">The type of payload to receive</typeparam>
         /// <exception cref="ArgumentNullException">Thrown in case <param name="subscriber"/> or <param name="predicate"/> is null</exception>
         /// <returns>Instance of the subscriber</returns>
-        public static TS Subscribe<TS, TP>(
-            this TS subscriber
+        public static IMessengerSubscriber Subscribe<TP>(
+            this IMessengerSubscriber subscriber
             , Predicate<TP> predicate)
-            where TS : IMessengerSubscriber
             where TP : class, new()
         {
             subscriber.ThrowIfDefault(nameof(subscriber));
@@ -103,11 +99,10 @@ namespace DevKit.PubSub.Extensions
         /// <typeparam name="TO">The type of state object to receive for the given callback</typeparam>
         /// <exception cref="ArgumentNullException">Thrown in case <param name="subscriber"/> or <param name="predicate"/> is null</exception>
         /// <returns>Instance of the subscriber</returns>
-        public static TS Subscribe<TS, TC, TO>(
-            this TS subscriber
+        public static IMessengerSubscriber Subscribe<TC, TO>(
+            this IMessengerSubscriber subscriber
             , Func<TC, TO, bool> predicate
             , TO stateObj = default)
-            where TS : IMessengerSubscriber
             where TC : class, new()
         {
             subscriber.ThrowIfDefault(nameof(subscriber));

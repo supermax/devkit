@@ -14,27 +14,13 @@ namespace DevKit.Entities
         where T : class
     {
         /// <summary>
-        /// ID's value holder
-        /// </summary>
-        protected string IdValue;
-
-        /// <summary>
-        /// Type ID's value holder
-        /// </summary>
-        protected string TypeIdValue;
-
-        /// <summary>
         ///     Gets or sets the id.
         /// </summary>
         /// <value>The id.</value>
         public virtual string Id
         {
-            get { return IdValue; }
-            set
-            {
-                IdValue = value;
-                SetPropertyValue(value);
-            }
+            get { return GetPropertyValue().Text; }
+            set { SetPropertyValue(value); }
         }
 
         /// <summary>
@@ -43,12 +29,8 @@ namespace DevKit.Entities
         /// <value>The id.</value>
         public virtual string TypeId
         {
-            get { return TypeIdValue; }
-            set
-            {
-                TypeIdValue = value;
-                SetPropertyValue(value);
-            }
+            get { return GetPropertyValue().Text; }
+            set { SetPropertyValue(value); }
         }
 
         /// <inheritdoc/>
@@ -56,6 +38,15 @@ namespace DevKit.Entities
 
         /// <inheritdoc/>
         public virtual string Error { get; protected set; }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        public virtual DateTime? UpdateTime
+        {
+            get { return GetPropertyValue().Time; }
+            set { SetPropertyValue(value); }
+        }
 
         /// <summary>
         /// Property values container
@@ -75,7 +66,7 @@ namespace DevKit.Entities
         /// <param name="id">entity's id</param>
         protected Entity(string id)
         {
-            Id = id;
+            SetPropertyValue(id, false, nameof(Id));
         }
 
         /// <summary>
@@ -102,7 +93,7 @@ namespace DevKit.Entities
         }
 
         /// <inheritdoc/>
-        public void SetPropertyValue(bool? value, [CallerMemberName] string name = "")
+        public void SetPropertyValue(bool? value, bool firePropertyChangedEvent = true, [CallerMemberName] string name = "")
         {
             var holder = GetValueHolder(name);
             var oldValue = holder.Bool;
@@ -111,11 +102,15 @@ namespace DevKit.Entities
                 return;
             }
             holder.SetValue(value);
+            if (!firePropertyChangedEvent)
+            {
+                return;
+            }
             InvokePropertyChanged(name, oldValue, value);
         }
 
         /// <inheritdoc/>
-        public virtual void SetPropertyValue(double? value, [CallerMemberName] string name = "")
+        public virtual void SetPropertyValue(double? value, bool firePropertyChangedEvent = true, [CallerMemberName] string name = "")
         {
             var holder = GetValueHolder(name);
             var oldValue = holder.Number;
@@ -124,11 +119,15 @@ namespace DevKit.Entities
                 return;
             }
             holder.SetValue(value);
+            if (!firePropertyChangedEvent)
+            {
+                return;
+            }
             InvokePropertyChanged(name, oldValue, value);
         }
 
         /// <inheritdoc/>
-        public void SetPropertyValue(string value, [CallerMemberName] string name = "")
+        public void SetPropertyValue(string value, bool firePropertyChangedEvent = true, [CallerMemberName] string name = "")
         {
             var holder = GetValueHolder(name);
             var oldValue = holder.Text;
@@ -137,6 +136,27 @@ namespace DevKit.Entities
                 return;
             }
             holder.SetValue(value);
+            if (!firePropertyChangedEvent)
+            {
+                return;
+            }
+            InvokePropertyChanged(name, oldValue, value);
+        }
+
+        /// <inheritdoc/>
+        public virtual void SetPropertyValue(DateTime? value, bool firePropertyChangedEvent = true, [CallerMemberName] string name = "")
+        {
+            var holder = GetValueHolder(name);
+            var oldValue = holder.Time;
+            if (oldValue == value)
+            {
+                return;
+            }
+            holder.SetValue(value);
+            if (!firePropertyChangedEvent)
+            {
+                return;
+            }
             InvokePropertyChanged(name, oldValue, value);
         }
 
@@ -184,19 +204,19 @@ namespace DevKit.Entities
             switch (modifier)
             {
                 case PropertyModifierType.Multiplication:
-                    SetPropertyValue(propValue.Number.Value*value, name);
+                    SetPropertyValue(propValue.Number.Value*value, true, name);
                     break;
 
                 case PropertyModifierType.Division:
-                    SetPropertyValue(propValue.Number.Value/value, name);
+                    SetPropertyValue(propValue.Number.Value/value, true, name);
                     break;
 
                 case PropertyModifierType.Addition:
-                    SetPropertyValue(propValue.Number.Value+value, name);
+                    SetPropertyValue(propValue.Number.Value+value, true, name);
                     break;
 
                 case PropertyModifierType.Subtraction:
-                    SetPropertyValue(propValue.Number.Value-value, name);
+                    SetPropertyValue(propValue.Number.Value-value, true, name);
                     break;
 
                 default:
@@ -237,6 +257,15 @@ namespace DevKit.Entities
                 return;
             }
             Reset();
+        }
+
+        protected override void InvokePropertyChanged(string name, object prevValue, object newValue)
+        {
+            if (name != nameof(UpdateTime))
+            {
+                SetPropertyValue(DateTime.UtcNow, false, nameof(UpdateTime));
+            }
+            base.InvokePropertyChanged(name, prevValue, newValue);
         }
     }
 }

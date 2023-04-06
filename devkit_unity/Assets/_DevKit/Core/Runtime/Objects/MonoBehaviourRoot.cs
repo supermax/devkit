@@ -5,7 +5,7 @@ namespace DevKit.Core.Objects
     internal static class MonoBehaviourRoot
     {
         private const string SingletonsRootName = "[SINGLETONS]";
-        
+
         private static GameObject _root;
 
         internal static GameObject GetRoot()
@@ -15,11 +15,15 @@ namespace DevKit.Core.Objects
             {
                 return _root;
             }
-            
+
             var root = GameObject.Find(SingletonsRootName);
             if(root == null)
             {
-                root = new GameObject(SingletonsRootName);
+                root = new GameObject(SingletonsRootName)
+                    {
+                        isStatic = true
+                    };
+                Object.DontDestroyOnLoad(root);
             }
             _root = root;
             return _root;

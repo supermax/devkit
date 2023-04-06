@@ -28,6 +28,11 @@ namespace DevKit.Entities
         public string Text { get; set; }
 
         /// <summary>
+        /// Holds <see cref="DateTime"/> value
+        /// </summary>
+        public DateTime? Time { get; set; }
+
+        /// <summary>
         /// Default ctor
         /// </summary>
         public PropertyValueHolder()
@@ -59,6 +64,15 @@ namespace DevKit.Entities
         public PropertyValueHolder(string value)
         {
             SetValue(value);
+        }
+
+        /// <summary>
+        /// Ctor accepting <see cref="DateTime"/> value
+        /// </summary>
+        /// <param name="value"><see cref="DateTime"/> value</param>
+        public PropertyValueHolder(DateTime value)
+        {
+	        SetValue(value);
         }
 
         /// <summary>
@@ -94,13 +108,26 @@ namespace DevKit.Entities
             return this;
         }
 
+        /// <summary>
+        /// Sets <see cref="DateTime"/> value
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public PropertyValueHolder SetValue(DateTime? value)
+        {
+	        Time = value;
+	        return this;
+        }
+
+        /// <inheritdoc/>
         public override string ToString()
         {
             var str = new StringBuilder();
             str.Append('{')
                .AppendFormat("\"bool:\" {0}", Bool)
-               .AppendFormat("\", number:\" {0}", Number)
-               .AppendFormat("\", text:\" \"{0}\"", Text)
+               .AppendFormat(", \"num:\" {0}", Number)
+               .AppendFormat(", \"time:\" \"{0}\"", Time)
+               .AppendFormat(", \"txt:\" \"{0}\"", Text)
                .Append('}');
             return str.ToString();
         }
@@ -139,6 +166,15 @@ namespace DevKit.Entities
 		/// <param name="data">The data.</param>
 		/// <returns></returns>
 		public static implicit operator PropertyValueHolder(string data)
+		{
+			return new PropertyValueHolder(data);
+		}
+
+		/// <summary>
+		/// </summary>
+		/// <param name="data">The data.</param>
+		/// <returns></returns>
+		public static implicit operator PropertyValueHolder(DateTime data)
 		{
 			return new PropertyValueHolder(data);
 		}
@@ -220,6 +256,21 @@ namespace DevKit.Entities
 					$"Instance of {nameof(PropertyValueHolder)} doesn't hold a {typeof(string)}");
 			}
 			return data.Text;
+		}
+
+		/// <summary>
+		/// </summary>
+		/// <param name="data">The data.</param>
+		/// <returns></returns>
+		/// <exception cref="System.InvalidCastException">Instance of JsonData doesn't hold a string</exception>
+		public static explicit operator DateTime(PropertyValueHolder data)
+		{
+			if (data.Text != null)
+			{
+				throw new InvalidCastException(
+					$"Instance of {nameof(PropertyValueHolder)} doesn't hold a {typeof(DateTime)}");
+			}
+			return data.Time.GetValueOrDefault();
 		}
 
 		#endregion
