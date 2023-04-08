@@ -7,26 +7,31 @@ namespace DevKit.Entities
     /// </summary>
     public abstract class Engine : IEngine
     {
-        protected IEngineConfig Config;
+        /// <inheritdoc/>
+        public IEngineConfig Config { get; private set; }
 
         public void Init(IEngineConfig config)
         {
             Config = config;
         }
 
-        /// <summary>
-        /// Create entity instance
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public abstract T Create<T>() where T : class, IEntity<T>;
+        /// <inheritdoc/>
+        public abstract T GetInstance<T>() where T : class, IEntity<T>;
 
+        /// <summary>
+        /// Instantiates entity's instance based on given type <see cref="T"/>
+        /// </summary>
+        /// <remarks>If entity is registered as singleton, then first instance will be returned</remarks>
+        /// <typeparam name="T">Entity type</typeparam>
+        /// <returns>Entity's instance</returns>
         protected abstract T Instantiate<T>() where T: class, IEntity<T>;
 
-        public abstract void Register<TInterface, TImplementation>()
+        /// <inheritdoc/>
+        public abstract void Register<TInterface, TImplementation>(bool singleton)
             where TInterface : class
             where TImplementation : class, TInterface;
 
+        /// <inheritdoc/>
         public virtual void Dispose()
         {
             Config = null;

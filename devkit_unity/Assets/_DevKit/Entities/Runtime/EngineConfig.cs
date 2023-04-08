@@ -14,7 +14,7 @@ namespace DevKit.Entities
         /// <summary>
         /// Contains config values for entities
         /// </summary>
-        public Dictionary<string, EntityConfig> EntitiesConfig { get; set; } = new();
+        public IDictionary<string, EntityConfig> EntitiesConfig { get; set; } = new Dictionary<string, EntityConfig>();
 
         public abstract void Init();
 
@@ -27,7 +27,7 @@ namespace DevKit.Entities
             EntitiesConfig.Clear();
         }
 
-        public void Init(Dictionary<string, EntityConfig> entitiesConfig)
+        public void Init(IDictionary<string, EntityConfig> entitiesConfig)
         {
             EntitiesConfig = entitiesConfig;
         }

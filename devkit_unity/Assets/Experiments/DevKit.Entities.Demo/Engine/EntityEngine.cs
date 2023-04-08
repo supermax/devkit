@@ -23,7 +23,7 @@ namespace DevKit.Entities.Demo.Engine
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns>new instance of <para>T</para> with injected config</returns>
-        public override T Create<T>()
+        public override T GetInstance<T>()
         {
             var entity = Instantiate<T>();
             if (entity == null)
@@ -51,7 +51,7 @@ namespace DevKit.Entities.Demo.Engine
             return entity;
         }
 
-        public override void Register<TInterface, TImplementation>()
+        public override void Register<TInterface, TImplementation>(bool singleton)
         {
             _typeMappings[typeof (TInterface)] = typeof (TImplementation);
         }

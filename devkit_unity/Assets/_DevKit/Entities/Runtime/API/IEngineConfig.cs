@@ -9,11 +9,13 @@ namespace DevKit.Entities.API
     /// </summary>
     public interface IEngineConfig : IInitializable
     {
+        IDictionary<string, EntityConfig> EntitiesConfig { get; }
+
         /// <summary>
         /// Initialize config values
         /// </summary>
         /// <param name="entitiesConfig"></param>
-        void Init(Dictionary<string, EntityConfig> entitiesConfig);
+        void Init(IDictionary<string, EntityConfig> entitiesConfig);
 
         /// <summary>
         /// Gets initial value for given property

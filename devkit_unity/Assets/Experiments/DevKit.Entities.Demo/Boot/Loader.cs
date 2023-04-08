@@ -52,27 +52,27 @@ namespace DevKit.Entities.Demo.Boot
             _engine.Init(_config);
             this.LogInfo($"{_engine}.{nameof(_engine.Init)}: {_config}");
 
-            _engine.Register<IGameSettings, GameSettings>();
+            _engine.Register<IGameSettings, GameSettings>(true);
             this.LogInfo($"{_engine}.{nameof(_engine.Register)}: {typeof(IGameSettings)}");
 
-            var gameSettings = _engine.Create<IGameSettings>();
+            var gameSettings = _engine.GetInstance<IGameSettings>();
             var gameSettingsJson = gameSettings.ToJson();
             this.LogInfo($"Created {nameof(GameSettings)}: {gameSettingsJson}");
 
-            _engine.Register<IPlayerEntity, PlayerEntity>();
+            _engine.Register<IPlayerEntity, PlayerEntity>(true);
             this.LogInfo($"{_engine}.{nameof(_engine.Register)}: {typeof(IPlayerEntity)}");
 
-            var player = _engine.Create<IPlayerEntity>();
+            var player = _engine.GetInstance<IPlayerEntity>();
             player.GameSettings = gameSettings;
             var playerJson = player.ToJson();
             this.LogInfo($"Created {nameof(PlayerEntity)}: {playerJson}");
 
-            _engine.Register<IEnemyEntity, EnemyEntity>();
+            _engine.Register<IEnemyEntity, EnemyEntity>(false);
             this.LogInfo($"{_engine}.{nameof(_engine.Register)}: {typeof(IEnemyEntity)}");
 
             for (var i = 0; i < 5; i++)
             {
-                var enemy = _engine.Create<IEnemyEntity>();
+                var enemy = _engine.GetInstance<IEnemyEntity>();
                 var enemyJson = enemy.ToJson();
                 this.LogInfo($"Created {nameof(EnemyEntity)}: {enemyJson}");
             }
