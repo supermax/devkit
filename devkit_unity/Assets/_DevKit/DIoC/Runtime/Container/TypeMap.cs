@@ -49,7 +49,7 @@ namespace DevKit.DIoC.Container
             _defaultMapTypeKey ??= typeKey;
 
             var mapAtt = type.GetCustomAttribute<TypeMapAttribute>();
-            if (mapAtt != null && mapAtt.IsSingleton)
+            if (mapAtt is {IsSingleton: true})
             {
                 isSingleton = true;
                 //mapAtt.MapTypes // TODO map subtypes
@@ -165,7 +165,7 @@ namespace DevKit.DIoC.Container
         public T Inject(T instance, params object[] args)
         {
             // TODO implement
-            return default;
+            throw new NotImplementedException();
         }
 
         public void Dispose()
@@ -193,7 +193,6 @@ namespace DevKit.DIoC.Container
 
         // TODO split into short methods
         // TODO use args param
-        // TODO move back to TypeMap?
         private object Resolve(Type src, object[] args)
         {
             if (src == null)
@@ -242,6 +241,7 @@ namespace DevKit.DIoC.Container
             }
             else
             {
+                // TODO use args param
                 var ctorParamValues = new object[ctorParams.Length];
                 for (var  i = 0; i < ctorParams.Length; i++)
                 {

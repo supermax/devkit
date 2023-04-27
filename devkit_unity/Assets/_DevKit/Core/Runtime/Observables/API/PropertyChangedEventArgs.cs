@@ -19,34 +19,22 @@ namespace DevKit.Core.Observables.API
             PrevValue = prevValue;
             NewValue = newValue;
         }
-
-        public static PropertyChangedEventArgs Create(object source, string propertyName, object prevValue, object newValue)
-        {
-            var args = new PropertyChangedEventArgs(source, propertyName, prevValue, newValue);
-            return args;
-        }
     }
 
     public class PropertyChangedEventArgs<T> : PropertyChangedEventArgs where T : class
     {
-        public new IObservableObject<T> Source { get; }
+        public new T Source { get; }
 
         public PropertyChangedEventArgs() { }
 
         public PropertyChangedEventArgs(
-            IObservableObject<T> source
+            T source
             , string propertyName
             , object prevValue
             , object newValue)
             : base(source, propertyName, prevValue, newValue)
         {
             Source = source;
-        }
-
-        public static PropertyChangedEventArgs<T> Create(IObservableObject<T> source, string propertyName, object prevValue, object newValue)
-        {
-            var args = new PropertyChangedEventArgs<T>(source, propertyName, prevValue, newValue);
-            return args;
         }
     }
 }

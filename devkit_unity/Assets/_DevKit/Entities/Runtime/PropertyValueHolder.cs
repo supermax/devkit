@@ -20,7 +20,7 @@ namespace DevKit.Entities
         /// <summary>
         /// Holds <see cref="double"/> value
         /// </summary>
-        public double? Number { get; set; }
+        public float? Number { get; set; }
 
         /// <summary>
         /// Holds <see cref="string"/> value
@@ -52,7 +52,7 @@ namespace DevKit.Entities
         /// Ctor accepting <see cref="double"/> value
         /// </summary>
         /// <param name="value"><see cref="double"/> value</param>
-        public PropertyValueHolder(double value)
+        public PropertyValueHolder(float value)
         {
             SetValue(value);
         }
@@ -80,7 +80,7 @@ namespace DevKit.Entities
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public PropertyValueHolder SetValue(double? value)
+        public PropertyValueHolder SetValue(float? value)
         {
             Number = value;
             return this;
@@ -149,6 +149,15 @@ namespace DevKit.Entities
 		/// <returns></returns>
 		public static implicit operator PropertyValueHolder(double data)
 		{
+			return new PropertyValueHolder((float)data);
+		}
+
+		/// <summary>
+		/// </summary>
+		/// <param name="data">The data.</param>
+		/// <returns></returns>
+		public static implicit operator PropertyValueHolder(float data)
+		{
 			return new PropertyValueHolder(data);
 		}
 
@@ -187,7 +196,7 @@ namespace DevKit.Entities
 		/// </summary>
 		/// <param name="data">The data.</param>
 		/// <returns></returns>
-		/// <exception cref="System.InvalidCastException">Instance of JsonData doesn't hold a double</exception>
+		/// <exception cref="System.InvalidCastException">Instance of holder doesn't hold a double</exception>
 		public static explicit operator bool(PropertyValueHolder data)
 		{
 			if (!data.Bool.HasValue)
@@ -202,7 +211,7 @@ namespace DevKit.Entities
 		/// </summary>
 		/// <param name="data">The data.</param>
 		/// <returns></returns>
-		/// <exception cref="System.InvalidCastException">Instance of JsonData doesn't hold a double</exception>
+		/// <exception cref="System.InvalidCastException">Instance of holder doesn't hold a double</exception>
 		public static explicit operator double(PropertyValueHolder data)
 		{
 			if (!data.Number.HasValue)
@@ -217,7 +226,22 @@ namespace DevKit.Entities
 		/// </summary>
 		/// <param name="data">The data.</param>
 		/// <returns></returns>
-		/// <exception cref="System.InvalidCastException">Instance of JsonData doesn't hold an int</exception>
+		/// <exception cref="System.InvalidCastException">Instance of holder doesn't hold a float</exception>
+		public static explicit operator float(PropertyValueHolder data)
+		{
+			if (!data.Number.HasValue)
+			{
+				throw new InvalidCastException(
+					$"Instance of {nameof(PropertyValueHolder)} doesn't hold a {typeof(float)}");
+			}
+			return data.Number.GetValueOrDefault();
+		}
+
+		/// <summary>
+		/// </summary>
+		/// <param name="data">The data.</param>
+		/// <returns></returns>
+		/// <exception cref="System.InvalidCastException">Instance of holder doesn't hold an int</exception>
 		public static explicit operator int(PropertyValueHolder data)
 		{
 			if (!data.Number.HasValue)
@@ -232,7 +256,7 @@ namespace DevKit.Entities
 		/// </summary>
 		/// <param name="data">The data.</param>
 		/// <returns></returns>
-		/// <exception cref="System.InvalidCastException">Instance of JsonData doesn't hold an long</exception>
+		/// <exception cref="System.InvalidCastException">Instance of holder doesn't hold an long</exception>
 		public static explicit operator long(PropertyValueHolder data)
 		{
 			if (!data.Number.HasValue)
@@ -247,7 +271,7 @@ namespace DevKit.Entities
 		/// </summary>
 		/// <param name="data">The data.</param>
 		/// <returns></returns>
-		/// <exception cref="System.InvalidCastException">Instance of JsonData doesn't hold a string</exception>
+		/// <exception cref="System.InvalidCastException">Instance of holder doesn't hold a string</exception>
 		public static explicit operator string(PropertyValueHolder data)
 		{
 			if (data.Text != null)
@@ -262,7 +286,7 @@ namespace DevKit.Entities
 		/// </summary>
 		/// <param name="data">The data.</param>
 		/// <returns></returns>
-		/// <exception cref="System.InvalidCastException">Instance of JsonData doesn't hold a string</exception>
+		/// <exception cref="System.InvalidCastException">Instance of holder doesn't hold a string</exception>
 		public static explicit operator DateTime(PropertyValueHolder data)
 		{
 			if (data.Text != null)

@@ -27,7 +27,7 @@ namespace DevKit.PubSub.Extensions
         {
             subscriber.ThrowIfDefault(nameof(subscriber));
 
-            subscriber.Messenger.Subscribe(callback, predicate);
+            Messenger.Default.Subscribe(callback, predicate);
             return subscriber;
         }
 
@@ -39,7 +39,7 @@ namespace DevKit.PubSub.Extensions
         {
             subscriber.ThrowIfDefault(nameof(subscriber));
 
-            subscriber.Messenger.Unsubscribe(callback);
+            Messenger.Default.Unsubscribe(callback);
             return subscriber;
         }
 
@@ -64,7 +64,7 @@ namespace DevKit.PubSub.Extensions
         {
             subscriber.ThrowIfDefault(nameof(subscriber));
 
-            subscriber.Messenger.Subscribe(callback, predicate, stateObj);
+            Messenger.Default.Subscribe(callback, predicate, stateObj);
             return subscriber;
         }
 
@@ -84,7 +84,7 @@ namespace DevKit.PubSub.Extensions
         {
             subscriber.ThrowIfDefault(nameof(subscriber));
 
-            subscriber.Messenger.Subscribe(predicate);
+            Messenger.Default.Subscribe(predicate);
             return subscriber;
         }
 
@@ -107,7 +107,7 @@ namespace DevKit.PubSub.Extensions
         {
             subscriber.ThrowIfDefault(nameof(subscriber));
 
-            subscriber.Messenger.Subscribe(predicate, stateObj);
+            Messenger.Default.Subscribe(predicate, stateObj);
             return subscriber;
         }
 
@@ -127,7 +127,7 @@ namespace DevKit.PubSub.Extensions
         {
             subscriber.ThrowIfDefault(nameof(subscriber));
 
-            subscriber.Messenger.Publish(payload);
+            Messenger.Default.Publish(payload);
             return subscriber;
         }
 
@@ -148,7 +148,7 @@ namespace DevKit.PubSub.Extensions
         {
             subscriber.ThrowIfDefault(nameof(subscriber));
 
-            subscriber.Messenger.Publish(payloadType, payload);
+            Messenger.Default.Publish(payloadType, payload);
             return subscriber;
         }
     }

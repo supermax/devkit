@@ -17,6 +17,8 @@ namespace DevKit.Analytics.Services
 
         private bool _isProcessing;
 
+        protected bool IsInitialized { get; set; }
+
         public AnalyticsServiceConfig Config { get; } = new();
 
         public virtual void SendEvent(IAnalyticsEvent analyticsEvent)

@@ -7,7 +7,7 @@ namespace DevKit.Core.Observables
 	/// </summary>
 	/// <typeparam name="T">Type of Singleton</typeparam>
 	public class ObservableSingleton<T>
-		: Observable<T>
+		: Observable
 		where T : class
 		, IObservable<T>
 		, new()

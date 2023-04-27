@@ -16,7 +16,7 @@ namespace DevKit.Entities
         }
 
         /// <inheritdoc/>
-        public abstract T GetInstance<T>() where T : class, IEntity<T>;
+        public abstract T GetInstance<T>() where T : class, IEntity;
 
         /// <summary>
         /// Instantiates entity's instance based on given type <see cref="T"/>
@@ -24,7 +24,7 @@ namespace DevKit.Entities
         /// <remarks>If entity is registered as singleton, then first instance will be returned</remarks>
         /// <typeparam name="T">Entity type</typeparam>
         /// <returns>Entity's instance</returns>
-        protected abstract T Instantiate<T>() where T: class, IEntity<T>;
+        protected abstract T Instantiate<T>() where T: class, IEntity;
 
         /// <inheritdoc/>
         public abstract void Register<TInterface, TImplementation>(bool singleton)

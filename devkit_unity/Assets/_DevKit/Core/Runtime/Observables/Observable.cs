@@ -5,7 +5,7 @@ using DevKit.Core.Observables.API;
 
 namespace DevKit.Core.Observables
 {
-    /// <summary>
+     /// <summary>
     /// Base observable class
     /// </summary>
     /// <remarks>
@@ -15,72 +15,38 @@ namespace DevKit.Core.Observables
     [DataContract]
     public abstract class Observable : IObservableObject
     {
+        protected bool IsUpdateSuspended;
+
         protected bool IsDisposing;
 
         protected bool IsDisposed;
 
-        public virtual void Dispose()
-        {
-            if (IsDisposed || IsDisposing)
-            {
-                // TODO
-                return;
-            }
-            try
-            {
-                IsDisposing = true;
-                Dispose(true);
-            }
-            finally
-            {
-                IsDisposed = true;
-            }
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-
-        }
-    }
-
-    /// <summary>
-    /// Base observable class
-    /// </summary>
-    /// <remarks>
-    /// Used for objects that have observers like UI elements or any Game Objects or other simple objects
-    /// </remarks>
-    [Serializable]
-    [DataContract]
-    public abstract class Observable<T> : Observable, IObservableObject<T> where T : class
-    {
-        protected bool IsUpdateSuspended;
-
         // TODO consider using weak ref delegate
         [field: NonSerialized]
-        public event PropertyChangedEventHandler<T> PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        public IObservableObject<T> Subscribe(API.IObserver<T> observer)
+        public IObservableObject Subscribe(IObserver observer)
         {
             observer.ThrowIfNull(nameof(observer));
             PropertyChanged += observer.OnPropertyChanged;
             return this;
         }
 
-        public IObservableObject<T> Unsubscribe(API.IObserver<T> observer)
+        public IObservableObject Unsubscribe(IObserver observer)
         {
             observer.ThrowIfNull(nameof(observer));
             PropertyChanged -= observer.OnPropertyChanged;
             return this;
         }
 
-        public virtual IObservableObject<T> BeginUpdate()
+        public virtual IObservableObject BeginUpdate()
         {
             IsUpdateSuspended = true;
             // TODO suspend events
             return this;
         }
 
-        public virtual IObservableObject<T> EndUpdate()
+        public virtual IObservableObject EndUpdate()
         {
             IsUpdateSuspended = true;
             // TODO resume events + check if [] is triggering all props changed event
@@ -100,11 +66,28 @@ namespace DevKit.Core.Observables
             {
                 return;
             }
-            var args = PropertyChangedEventArgs<T>.Create(this, name, prevValue, newValue);
+            var args = new PropertyChangedEventArgs(this, name, prevValue, newValue);
             PropertyChanged.Invoke(this, args);
         }
 
-        protected override void Dispose(bool disposing)
+        public virtual void Dispose()
+        {
+            if (IsDisposed || IsDisposing)
+            {
+                return;
+            }
+            try
+            {
+                IsDisposing = true;
+                Dispose(true);
+            }
+            finally
+            {
+                IsDisposed = true;
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
         {
             if (disposing)
             {

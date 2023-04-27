@@ -23,7 +23,7 @@ namespace DevKit.Entities.API
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        T GetInstance<T>() where T : class, IEntity<T>;
+        T GetInstance<T>() where T : class, IEntity;
 
         /// <summary>
         /// Registers entity type and maps it to implementation

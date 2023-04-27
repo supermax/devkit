@@ -953,10 +953,12 @@ namespace DevKit.Serialization.Json
 				case IDictionary dictionary:
 				{
 					writer.WriteObjectStart();
-					foreach (DictionaryEntry entry in dictionary)
+					var e = dictionary.GetEnumerator();
+					e.Reset();
+					while (e.MoveNext())
 					{
-						writer.WritePropertyName((string) entry.Key);
-						WriteValue(entry.Value, writer, writerIsPrivate, depth + 1);
+						writer.WritePropertyName((string) e.Key);
+						WriteValue(e.Value, writer, writerIsPrivate, depth + 1);
 					}
 					writer.WriteObjectEnd();
 					return;
@@ -966,18 +968,16 @@ namespace DevKit.Serialization.Json
 			var objType = obj.GetType();
 
 			// See if there's a custom exporter for the object
-			if (_customExportersTable.ContainsKey(objType))
+			if (_customExportersTable.TryGetValue(objType, out var customExporter))
 			{
-				var exporter = _customExportersTable[objType];
-				exporter(obj, writer);
+				customExporter(obj, writer);
 				return;
 			}
 
 			// If not, maybe there's a base exporter
-			if (_baseExportersTable.ContainsKey(objType))
+			if (_baseExportersTable.TryGetValue(objType, out var baseExporter))
 			{
-				var exporter = _baseExportersTable[objType];
-				exporter(obj, writer);
+				baseExporter(obj, writer);
 				return;
 			}
 

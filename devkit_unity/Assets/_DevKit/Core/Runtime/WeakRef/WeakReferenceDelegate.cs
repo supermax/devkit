@@ -38,7 +38,7 @@ namespace DevKit.Core.WeakRef
                 {
                     return true;
                 }
-                var isAlive = _ref is {IsAlive: true, Target: { }};
+                var isAlive = _ref is {IsAlive: true, Target: not null};
                 return isAlive;
             }
         }

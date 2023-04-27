@@ -2,7 +2,7 @@ namespace DevKit.PubSub.API
 {
     public interface IMessengerSubscriber
     {
-        IMessenger Messenger { get; }
+        //IMessenger Messenger { get; }
 
         IMessengerSubscriber SubscribeAll();
 

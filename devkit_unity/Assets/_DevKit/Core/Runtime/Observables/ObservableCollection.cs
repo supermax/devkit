@@ -9,7 +9,7 @@ namespace DevKit.Core.Observables
     [Serializable]
     [DataContract]
     public class ObservableCollection<T> :
-        Observable<IObservableCollection<T>>
+        Observable
         , IObservableCollection<T>
         , ISerializable
     {
@@ -66,10 +66,38 @@ namespace DevKit.Core.Observables
             return e;
         }
 
+        int IList.Add(object value)
+        {
+            var item = (T)value;
+            Add(item);
+            var index = InnerList.IndexOf(item);
+            return index;
+        }
+
         public void Clear()
         {
             InnerList.Clear();
             InvokeCollectionChanged(CollectionChangedEventAction.Reset, default, default, default, default);
+        }
+
+        bool IList.Contains(object value)
+        {
+            return Contains((T)value);
+        }
+
+        int IList.IndexOf(object value)
+        {
+            return IndexOf((T)value);
+        }
+
+        void IList.Insert(int index, object value)
+        {
+            Insert(index, (T)value);
+        }
+
+        void IList.Remove(object value)
+        {
+            Remove((T)value);
         }
 
         public bool Contains(T item)
@@ -86,6 +114,14 @@ namespace DevKit.Core.Observables
             }
         }
 
+        void ICollection.CopyTo(Array array, int index)
+        {
+            for (var i = index; i < InnerList.Count && i < array.Length; i++)
+            {
+                array.SetValue(InnerList[i], i);
+            }
+        }
+
         public int Count
         {
             get
@@ -95,11 +131,39 @@ namespace DevKit.Core.Observables
             }
         }
 
+        bool ICollection.IsSynchronized
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        object ICollection.SyncRoot
+        {
+            get
+            {
+                return InnerList;
+            }
+        }
+
         public bool IsReadOnly
         {
             get
             {
                 return false;
+            }
+        }
+
+        object IList.this[int index]
+        {
+            get
+            {
+                return this[index];
+            }
+            set
+            {
+                this[index] = (T)value;
             }
         }
 
@@ -116,6 +180,34 @@ namespace DevKit.Core.Observables
             var success = InnerList.Remove(item);
             InvokeCollectionChanged(CollectionChangedEventAction.Remove, index, default, item, default);
             return success;
+        }
+
+        public int IndexOf(T item)
+        {
+            var index = InnerList.IndexOf(item);
+            return index;
+        }
+
+        public void Insert(int index, T item)
+        {
+            var prevItem = this[index];
+            InnerList.Insert(index, item);
+            InvokeCollectionChanged(CollectionChangedEventAction.Replace, index, index, prevItem, item);
+        }
+
+        public void RemoveAt(int index)
+        {
+            var prevItem = this[index];
+            InnerList.RemoveAt(index);
+            InvokeCollectionChanged(CollectionChangedEventAction.Remove, index, index, prevItem, default);
+        }
+
+        bool IList.IsFixedSize
+        {
+            get
+            {
+                return false;
+            }
         }
 
         public T this[int index]
