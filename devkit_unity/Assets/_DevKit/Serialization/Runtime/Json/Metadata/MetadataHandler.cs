@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using DevKit.Core.Extensions;
+using DevKit.Serialization.Json.API;
 using DevKit.Serialization.Json.Extensions;
 using UnityEngine;
 
@@ -14,13 +16,14 @@ namespace DevKit.Serialization.Json.Metadata
 
         private readonly IDictionary<Type, ObjectMetadata> _objectMetadata = new Dictionary<Type, ObjectMetadata>();
 
+        // TODO change IList<PropertyMetadata> to IDictionary<string, PropertyMetadata>
 		private readonly IDictionary<Type, IList<PropertyMetadata>> _typeProperties = new Dictionary<Type, IList<PropertyMetadata>>();
 
-		private readonly object _arrayMetadataLock = new object();
+		private readonly object _arrayMetadataLock = new();
 
-		private readonly object _objectMetadataLock = new object();
+		private readonly object _objectMetadataLock = new();
 
-		private readonly object _typePropertiesLock = new object();
+		private readonly object _typePropertiesLock = new();
 
 		/// <summary>
 		///     Gets or sets a value indicating whether [is debug mode].
@@ -217,9 +220,9 @@ namespace DevKit.Serialization.Json.Metadata
 			IList<PropertyMetadata> propsMeta;
             lock (_typePropertiesLock)
             {
-	            if (_typeProperties.ContainsKey(type))
+	            if (_typeProperties.TryGetValue(type, out var property))
 	            {
-		            propsMeta = _typeProperties[type];
+		            propsMeta = property;
 		            return propsMeta;
 	            }
             }
@@ -293,5 +296,41 @@ namespace DevKit.Serialization.Json.Metadata
             }
 			return propsMeta;
         }
+
+		public void AddJsonDataMemberAttribute(Type objType, string propName
+			, JsonDataMemberAttribute attribute, bool overrideOtherAttribs = true)
+		{
+			AddObjectMetadata(objType);
+			AddTypeProperties(objType);
+
+			lock (_typePropertiesLock)
+			{
+				if (!_typeProperties.ContainsKey(objType))
+				{
+					return;
+				}
+
+				var objectProperties = _typeProperties[objType];
+				var objectPropertiesClone = objectProperties.ToArray();
+				foreach (var propertyMetadata in objectPropertiesClone)
+				{
+					if (propertyMetadata == null
+					    || propertyMetadata.MemberName != propName)
+					{
+						continue;
+					}
+					if (overrideOtherAttribs)
+					{
+						objectProperties.Clear();
+					}
+					objectProperties.Add(
+						new PropertyMetadata(
+							propertyMetadata.Type
+							, propertyMetadata.Info
+							, propertyMetadata.IsField
+							, attribute));
+				}
+			}
+		}
     }
 }

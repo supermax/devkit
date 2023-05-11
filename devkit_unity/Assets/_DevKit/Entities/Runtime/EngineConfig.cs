@@ -9,12 +9,12 @@ namespace DevKit.Entities
     /// Base config class
     /// </summary>
     [Serializable]
-    public abstract class EngineConfig : IEngineConfig, IDisposable
+    public abstract class EngineConfig : BaseConfiguration, IEngineConfig, IDisposable
     {
         /// <summary>
         /// Contains config values for entities
         /// </summary>
-        public IDictionary<string, EntityConfig> EntitiesConfig { get; set; } = new Dictionary<string, EntityConfig>();
+        public virtual Dictionary<string, EntityConfig> EntitiesConfig { get; set; } = new();
 
         public abstract void Init();
 
@@ -27,7 +27,7 @@ namespace DevKit.Entities
             EntitiesConfig.Clear();
         }
 
-        public void Init(IDictionary<string, EntityConfig> entitiesConfig)
+        public void Init(Dictionary<string, EntityConfig> entitiesConfig)
         {
             EntitiesConfig = entitiesConfig;
         }

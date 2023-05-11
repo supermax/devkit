@@ -69,6 +69,17 @@ namespace DevKit.Serialization.Json.API
 		public Type ConverterType { get; set; }
 
 		/// <summary>
+		/// Ignore this member is it's value is null or default
+		/// </summary>
+		/// <remarks>
+		///	<para>
+		///	Serialization: JSON will not include this member
+		/// </para>
+		/// </remarks>
+		/// TODO implement usage of this prop
+		public bool IgnoreIfNullOrDefault { get; set; }
+
+		/// <summary>
 		/// Called before serialization.
 		/// </summary>
 		/// <param name="src">The source.</param>

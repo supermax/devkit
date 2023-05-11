@@ -4,7 +4,7 @@ using DevKit.Core.Objects;
 
 namespace DevKit.Analytics.Services.API
 {
-    public interface IAnalyticsService : IInitializable
+    public interface IAnalyticsService
     {
         AnalyticsServiceConfig Config { get; }
 

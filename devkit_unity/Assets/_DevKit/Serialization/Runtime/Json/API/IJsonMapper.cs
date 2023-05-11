@@ -47,13 +47,12 @@ namespace DevKit.Serialization.Json.API
 		/// <returns></returns>
 		T ToObject<T>(JsonData jsonData);
 
-		// /// <summary>
-		// ///     Registers the exporter.
-		// /// </summary>
-		// /// <typeparam name="T"></typeparam>
-		// /// <param name="exporter">The exporter.</param>
-		// void RegisterExporter<T>(ExporterFunc<T> exporter);
-
+		/// <summary>
+		///     Registers the exporter.
+		/// </summary>
+		/// <param name="converter">The conversion function</param>
+		/// <typeparam name="TValue">Source Type</typeparam>
+		/// <typeparam name="TJson">Json Type</typeparam>
 		void RegisterExporter<TValue, TJson>(Func<TValue, TJson> converter);
 
 		/// <summary>
@@ -63,5 +62,17 @@ namespace DevKit.Serialization.Json.API
 		/// <typeparam name="TValue">The type of the value.</typeparam>
 		/// <param name="importer">The importer.</param>
 		void RegisterImporter<TJson, TValue>(ImporterFunc<TJson, TValue> importer);
+
+		/// <summary>
+		/// Registers <see cref="JsonDataMemberAttribute"/> per given object type <see cref="T"/>
+		/// </summary>
+		/// <param name="propName">The name of the property to map to the attribute</param>
+		/// <param name="attribute">The instance of the attribute</param>
+		/// <param name="overrideOtherAttribs">If set `true` then will override other similar attributes</param>
+		/// <typeparam name="T">The type of the object</typeparam>
+		void RegisterJsonDataMemberAttribute<T>(
+			string propName
+			, JsonDataMemberAttribute attribute
+			, bool overrideOtherAttribs = true);
 	}
 }

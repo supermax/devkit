@@ -19,6 +19,8 @@ namespace DevKit.Analytics.Services
 
         protected bool IsInitialized { get; set; }
 
+        protected bool IsInitializing { get; set; }
+
         public AnalyticsServiceConfig Config { get; } = new();
 
         public virtual void SendEvent(IAnalyticsEvent analyticsEvent)
@@ -43,11 +45,6 @@ namespace DevKit.Analytics.Services
                 return;
             }
             EnableTimer();
-        }
-
-        public virtual void Init()
-        {
-
         }
 
         protected void EnableTimer()
@@ -106,10 +103,19 @@ namespace DevKit.Analytics.Services
             }
         }
 
-        public virtual void Reset()
+        public virtual void SaveUnprocessedEvents()
         {
-            DisableTimer();
+            // TODO store unprocessed events in local file(s)
+        }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposing)
+            {
+                return;
+            }
+
+            DisableTimer();
             try
             {
                 _isProcessing = true;
@@ -119,19 +125,6 @@ namespace DevKit.Analytics.Services
             finally
             {
                 _isProcessing = false;
-            }
-        }
-
-        public virtual void SaveUnprocessedEvents()
-        {
-            // TODO store unprocessed events in local file(s)
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                Reset();
             }
         }
 

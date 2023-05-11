@@ -7,15 +7,15 @@ namespace DevKit.Entities.API
     /// <summary>
     /// Interface for base entity config
     /// </summary>
-    public interface IEngineConfig : IInitializable
+    public interface IEngineConfig : IInitializable, IConfiguration
     {
-        IDictionary<string, EntityConfig> EntitiesConfig { get; }
+        Dictionary<string, EntityConfig> EntitiesConfig { get; }
 
         /// <summary>
         /// Initialize config values
         /// </summary>
         /// <param name="entitiesConfig"></param>
-        void Init(IDictionary<string, EntityConfig> entitiesConfig);
+        void Init(Dictionary<string, EntityConfig> entitiesConfig);
 
         /// <summary>
         /// Gets initial value for given property

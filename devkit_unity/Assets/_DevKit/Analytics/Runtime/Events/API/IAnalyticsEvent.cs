@@ -9,11 +9,11 @@ namespace DevKit.Analytics.Events.API
 
         string EntityId { get; }
 
-        string EntityType { get; set; }
+        string EntityType { get; }
 
-        DateTime EventTime { get; }
+        DateTime? EventTime { get; }
 
-        AnalyticsEventType EventType { get; }
+        AnalyticsEventType? EventType { get; }
 
         string EventName { get; }
 
@@ -21,9 +21,9 @@ namespace DevKit.Analytics.Events.API
 
         public string Username { get; }
 
-        public string DeviceUniqueId { get; set; }
+        public string DeviceUniqueId { get; }
 
-        public string TimeZone { get; set; }
+        public string TimeZone { get; }
 
         Dictionary<string, object> EventProperties { get; }
     }

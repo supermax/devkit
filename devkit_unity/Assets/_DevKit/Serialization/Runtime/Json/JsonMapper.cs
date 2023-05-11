@@ -1208,6 +1208,12 @@ namespace DevKit.Serialization.Json
 			RegisterImporter(_customImportersTable, typeof (TJson), typeof (TValue), ImporterWrapper);
 		}
 
+		/// <inheritdoc/>
+		public void RegisterJsonDataMemberAttribute<T>(string propName, JsonDataMemberAttribute attribute, bool overrideOtherAttribs = true)
+		{
+			_metadataHandler.AddJsonDataMemberAttribute(typeof(T), propName, attribute, overrideOtherAttribs);
+		}
+
 		/// <summary>
 		///     Unregisters the exporters.
 		/// </summary>

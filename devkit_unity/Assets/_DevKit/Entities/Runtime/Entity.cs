@@ -46,13 +46,14 @@ namespace DevKit.Entities
         /// </summary>
         protected Entity()
         {
+            IsUpdateSuspended = true;
         }
 
         /// <summary>
         /// Ctor that accepts ID
         /// </summary>
         /// <param name="id">entity's id</param>
-        protected Entity(string id)
+        protected Entity(string id) : this()
         {
             Id = id;
         }
@@ -130,12 +131,12 @@ namespace DevKit.Entities
 
         public virtual void Init()
         {
-            // TODO
+            IsUpdateSuspended = false;
         }
 
         public virtual void Reset()
         {
-            // TODO
+            // TODO reset props / fields values
         }
     }
 }

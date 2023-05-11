@@ -302,7 +302,7 @@ namespace DevKit.Serialization.Json.Interpreters
 						TextWriter.Write("\\t");
 						continue;
 
-					case '"':
+					// case '"':
 					case '\\':
 						TextWriter.Write('\\');
 						TextWriter.Write(str[i]);

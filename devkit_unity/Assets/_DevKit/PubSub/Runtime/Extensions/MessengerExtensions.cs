@@ -23,7 +23,7 @@ namespace DevKit.PubSub.Extensions
             this IMessengerSubscriber subscriber
             , Action<TP> callback
             , Predicate<TP> predicate = null)
-            where TP : class, new()
+            where TP : class
         {
             subscriber.ThrowIfDefault(nameof(subscriber));
 
@@ -35,7 +35,7 @@ namespace DevKit.PubSub.Extensions
             this IMessengerSubscriber subscriber
             , Action<TP> callback
             , Predicate<TP> predicate = null)
-            where TP : class, new()
+            where TP : class
         {
             subscriber.ThrowIfDefault(nameof(subscriber));
 
@@ -60,7 +60,7 @@ namespace DevKit.PubSub.Extensions
             , Action<TC, TO> callback
             , Func<TC, TO, bool> predicate = null
             , TO stateObj = default)
-            where TC : class, new()
+            where TC : class
         {
             subscriber.ThrowIfDefault(nameof(subscriber));
 
@@ -80,7 +80,7 @@ namespace DevKit.PubSub.Extensions
         public static IMessengerSubscriber Subscribe<TP>(
             this IMessengerSubscriber subscriber
             , Predicate<TP> predicate)
-            where TP : class, new()
+            where TP : class
         {
             subscriber.ThrowIfDefault(nameof(subscriber));
 
@@ -103,7 +103,7 @@ namespace DevKit.PubSub.Extensions
             this IMessengerSubscriber subscriber
             , Func<TC, TO, bool> predicate
             , TO stateObj = default)
-            where TC : class, new()
+            where TC : class
         {
             subscriber.ThrowIfDefault(nameof(subscriber));
 
@@ -123,7 +123,7 @@ namespace DevKit.PubSub.Extensions
         public static TS Publish<TS, TP>(
             this TS subscriber, TP payload)
             where TS : IMessengerSubscriber
-            where TP : class, new()
+            where TP : class
         {
             subscriber.ThrowIfDefault(nameof(subscriber));
 

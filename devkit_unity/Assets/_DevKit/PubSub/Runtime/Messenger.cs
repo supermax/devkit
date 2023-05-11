@@ -33,11 +33,11 @@ namespace DevKit.PubSub
         static Messenger()
         {
             // init MainThreadDispatcher and print main thread ID
-            Logger.Default.LogInfo("Main Thread ID: {0}", UnityMainThreadDispatcher.Default.ThreadId.ToString());
+            Logger.Default.LogInfo($"Main Thread ID: {UnityMainThreadDispatcher.Default.ThreadId.ToString()}");
 
 #if DEBUG
             // init MessengerMonitor
-            Logger.Default.LogInfo("Messenger Monitor {0}", MessengerMonitor.Default.ToString());
+            Logger.Default.LogInfo($"Messenger Monitor {MessengerMonitor.Default}");
 #endif
         }
 
@@ -98,7 +98,7 @@ namespace DevKit.PubSub
         /// <typeparam name="T">The type of payload to publish</typeparam>
         /// <exception cref="ArgumentNullException">Exception is thrown in case <param name="payload"></param> is null</exception>
         /// <returns>Instance of the Messenger</returns>
-        public IMessengerPublish Publish<T>(T payload) where T : class, new()
+        public IMessengerPublish Publish<T>(T payload) where T : class
         {
             if(payload == null)
             {
@@ -153,7 +153,7 @@ namespace DevKit.PubSub
         /// <typeparam name="T">The type of the payload</typeparam>
         /// <exception cref="ArgumentNullException">Exception is thrown in case <param name="callback"></param> is null</exception>
         /// <returns>Messenger instance</returns>
-        public IMessengerSubscribe Subscribe<T>(Action<T> callback, Predicate<T> predicate = null) where T : class, new()
+        public IMessengerSubscribe Subscribe<T>(Action<T> callback, Predicate<T> predicate = null) where T : class
         {
             if(callback == null)
             {
@@ -177,7 +177,7 @@ namespace DevKit.PubSub
             Action<TC, TS> callback
             , Func<TC, TS, bool> predicate = null
             , TS stateObj = default)
-            where TC : class, new()
+            where TC : class
         {
             // capture the type of the payload
             var key = typeof(TC);
@@ -204,7 +204,7 @@ namespace DevKit.PubSub
         /// <typeparam name="T">The type of payload to receive</typeparam>
         /// <exception cref="ArgumentNullException">Exception is thrown in case <param name="predicate"></param> is null</exception>
         /// <returns>Instance of the Messenger</returns>
-        public IMessengerSubscribe Subscribe<T>(Predicate<T> predicate) where T : class, new()
+        public IMessengerSubscribe Subscribe<T>(Predicate<T> predicate) where T : class
         {
             if(predicate == null)
             {
@@ -236,7 +236,7 @@ namespace DevKit.PubSub
         /// <typeparam name="TC">The type of payload to receive</typeparam>
         /// <typeparam name="TS">The type of state object to receive for the given callback</typeparam>
         /// <returns>Instance of the Messenger</returns>
-        public IMessengerSubscribe Subscribe<TC, TS>(Func<TC, TS, bool> predicate, TS stateObj = default) where TC : class, new()
+        public IMessengerSubscribe Subscribe<TC, TS>(Func<TC, TS, bool> predicate, TS stateObj = default) where TC : class
         {
             if(predicate == null)
             {
@@ -344,7 +344,7 @@ namespace DevKit.PubSub
         /// <typeparam name="T">The type of the payload</typeparam>
         /// <exception cref="ArgumentNullException">Exception is thrown in case <param name="callback"></param> is null</exception>
         /// <returns>Instance of <see cref="Messenger"/></returns>
-        public IMessengerUnsubscribe Unsubscribe<T>(Action<T> callback) where T : class, new()
+        public IMessengerUnsubscribe Unsubscribe<T>(Action<T> callback) where T : class
         {
             if(callback == null)
             {
@@ -364,7 +364,7 @@ namespace DevKit.PubSub
         /// <typeparam name="TS">The type of state object for the given callback</typeparam>
         /// <exception cref="ArgumentNullException">Exception is thrown in case <param name="callback"></param> is null</exception>
         /// <returns>Instance of <see cref="Messenger"/></returns>
-        public IMessengerUnsubscribe Unsubscribe<TC, TS>(Action<TC, TS> callback) where TC : class, new()
+        public IMessengerUnsubscribe Unsubscribe<TC, TS>(Action<TC, TS> callback) where TC : class
         {
             if(callback == null)
             {
@@ -383,7 +383,7 @@ namespace DevKit.PubSub
         /// <typeparam name="T">Type of predicate to unsubscribe from</typeparam>
         /// <exception cref="ArgumentNullException">Exception is thrown in case <param name="predicate"></param> is null</exception>
         /// <returns>Instance of the Messenger</returns>
-        public IMessengerUnsubscribe Unsubscribe<T>(Predicate<T> predicate) where T : class, new()
+        public IMessengerUnsubscribe Unsubscribe<T>(Predicate<T> predicate) where T : class
         {
             if(predicate == null)
             {
@@ -403,7 +403,7 @@ namespace DevKit.PubSub
         /// <typeparam name="TS">The type of state object for the given callback</typeparam>
         /// <exception cref="ArgumentNullException">Exception is thrown in case <param name="predicate"></param> is null</exception>
         /// <returns>Instance of the Messenger</returns>
-        public IMessengerUnsubscribe Unsubscribe<TC, TS>(Func<TC, TS, bool> predicate) where TC : class, new()
+        public IMessengerUnsubscribe Unsubscribe<TC, TS>(Func<TC, TS, bool> predicate) where TC : class
         {
             if(predicate == null)
             {

@@ -78,3 +78,5 @@ devkit_unity/obj/
 devkit_unity/Temp/
 
 devkit_unity/UserSettings/
+
+devkit_unity/CodeCoverage/

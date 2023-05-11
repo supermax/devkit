@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using DevKit.Core.Extensions;
 using DevKit.Entities.API;
 
@@ -9,7 +8,7 @@ namespace DevKit.Entities
     /// Config container for entity
     /// </summary>
     [Serializable]
-    public class EntityConfig : IEntityConfig
+    public class EntityConfig : BaseConfiguration, IEntityConfig
     {
         public EntityPropertiesContainer PropertyValues { get; set; } = new();
 

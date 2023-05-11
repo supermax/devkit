@@ -18,6 +18,9 @@ namespace DevKit.Analytics.Events.API
         Economy,
 
         [JsonDataMember("playerData")]
-        PlayerData
+        PlayerData,
+
+        [JsonDataMember("tech")]
+        Technical
     }
 }

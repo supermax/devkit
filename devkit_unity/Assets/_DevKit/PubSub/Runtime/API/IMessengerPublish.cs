@@ -13,7 +13,7 @@ namespace DevKit.PubSub.API
         /// <param name="payload">Instance of payload to publish</param>
         /// <typeparam name="T">The type of payload to publish</typeparam>
         /// <returns>Instance of the Messenger</returns>
-        IMessengerPublish Publish<T>(T payload) where T : class, new();
+        IMessengerPublish Publish<T>(T payload) where T : class;
 
         /// <summary>
         /// Publish payload

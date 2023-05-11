@@ -10,8 +10,9 @@ namespace DevKit.Entities
         /// <inheritdoc/>
         public IEngineConfig Config { get; private set; }
 
-        public void Init(IEngineConfig config)
+        public virtual void Init(IEngineConfig config)
         {
+            config.Init();
             Config = config;
         }
 

@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace DevKit.Entities.API
 {
-    public interface IEntityConfig : IDisposable
+    public interface IEntityConfig : IDisposable, IConfiguration
     {
         void Init(EntityPropertiesContainer propertyValues);
 
