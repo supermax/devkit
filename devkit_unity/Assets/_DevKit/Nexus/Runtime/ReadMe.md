@@ -24,10 +24,12 @@ EventTriggerBinding:
 - TargetMethod
 
 ValueConverter + ValueConverterAttribute
+
 BindingAttribute
 
 Commands
 
+Complex Path
 
 Use HelpURLAttribute
 

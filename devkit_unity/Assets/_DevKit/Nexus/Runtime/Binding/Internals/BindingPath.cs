@@ -6,9 +6,9 @@ namespace DevKit.Nexus.Binding.Internals
 {
     internal class BindingPath : IObserver
     {
-        internal object Source { get; set; }
+        internal object Source { get; private set; }
 
-        internal PropertyInfo Property { get; set; }
+        private PropertyInfo Property { get; set; }
 
         internal Exception Error { get; set; }
 
