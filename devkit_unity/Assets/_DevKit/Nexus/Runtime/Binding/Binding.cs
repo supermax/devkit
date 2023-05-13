@@ -52,12 +52,26 @@ namespace DevKit.Nexus.Binding
 
         internal Binding Bind()
         {
-            var sourceObservable = SourceBindingPath.Source as IObservableObject;
-            if (sourceObservable != null)
+            if (Mode == BindingMode.OneTime)
             {
                 return this;
             }
-            //sourceObservable.
+            if (SourceBindingPath.Source is not IObservableObject sourceObservable)
+            {
+                return this;
+            }
+            sourceObservable.Subscribe(TargetBindingPath);
+
+            if (Mode != BindingMode.TwoWay)
+            {
+                return this;
+            }
+
+            if (TargetBindingPath.Source is not IObservableObject targetObservable)
+            {
+                return this;
+            }
+            targetObservable.Subscribe(SourceBindingPath);
             return this;
         }
     }
