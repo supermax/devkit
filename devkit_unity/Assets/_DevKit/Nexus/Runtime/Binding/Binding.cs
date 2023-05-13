@@ -1,3 +1,4 @@
+using System;
 using DevKit.Core.Observables.API;
 using DevKit.Nexus.Binding.API;
 using DevKit.Nexus.Binding.Internals;
@@ -29,6 +30,18 @@ namespace DevKit.Nexus.Binding
             TargetPath = targetPath;
 
             Mode = mode;
+        }
+
+        public override string ToString()
+        {
+            var mode = Mode switch
+                {
+                    BindingMode.OneWay => "=>",
+                    BindingMode.TwoWay => "<=>",
+                    BindingMode.OneTime => "=1",
+                    _ => ":"
+                };
+            return $"{SourceBindingPath} {mode} {TargetBindingPath}";
         }
 
         internal Binding SetSourceBindingPath(BindingPath path)

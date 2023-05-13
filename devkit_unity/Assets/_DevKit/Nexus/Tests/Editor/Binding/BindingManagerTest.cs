@@ -11,7 +11,7 @@ namespace DevKit.Nexus.Tests.Editor.Binding
         [Test]
         public void BindingManager_OneWayBinding_SimplePath_Test()
         {
-            var targetModel = new SimpleViewModel();
+            var targetModel = new SimpleModel();
             const string targetPath = nameof(targetModel.Name);
 
             var sourceModel = new ObservableViewModel{ Name = Application.productName };
@@ -66,28 +66,58 @@ namespace DevKit.Nexus.Tests.Editor.Binding
         [Test]
         public void BindingManager_OneWayBinding_ComplexPath_Test()
         {
-            var targetModel = new SimpleViewModel();
+            var targetModel = new SimpleModel();
             const string targetPath = nameof(targetModel.Name);
 
-            var sourceModel = new ObservableViewModel
-                {
-                    ChildModel = { Name = Application.companyName }
-                };
+            var sourceModel = new ObservableViewModel();
+            sourceModel.ChildModel.Name = Application.companyName;
             sourceModel.Init();
             const string sourcePath = nameof(sourceModel.ChildModel) + "." + nameof(sourceModel.ChildModel.Name);
 
             var binding = BindingManager.Default.Bind(sourceModel, sourcePath, targetModel, targetPath, BindingMode.OneWay);
             Assert.That(binding, Is.Not.Null);
-            Assert.That(targetModel.Name, Is.SameAs(sourceModel.Name));
+            Assert.That(targetModel.Name, Is.SameAs(sourceModel.ChildModel.Name));
             Debug.Log($"[{BindingMode.OneWay}] Initialized " +
                       $"{nameof(targetModel)}.{nameof(targetModel.Name)} ({targetModel.Name}) " +
                       $"from {nameof(sourceModel)}.{sourcePath}");
 
-            sourceModel.Name = Application.identifier;
-            Assert.That(targetModel.Name, Is.SameAs(sourceModel.Name));
+            sourceModel.ChildModel.Name = Application.identifier;
+            Assert.That(targetModel.Name, Is.SameAs(sourceModel.ChildModel.Name));
             Debug.Log($"[{BindingMode.OneWay}] Updated " +
                       $"{nameof(targetModel)}.{nameof(targetModel.Name)} ({targetModel.Name}) " +
                       $"from {nameof(sourceModel)}.{sourcePath}");
+        }
+
+        [Test]
+        public void BindingManager_TwoWayBinding_ComplexPath_Test()
+        {
+            var targetModel = new ObservableViewModel();
+            targetModel.Init();
+            const string targetPath = nameof(targetModel.Name);
+
+            var sourceModel = new ObservableViewModel();
+            sourceModel.ChildModel.Name = Application.companyName;
+            sourceModel.Init();
+            const string sourcePath = nameof(sourceModel.ChildModel) + "." + nameof(sourceModel.ChildModel.Name);
+
+            var binding = BindingManager.Default.Bind(sourceModel, sourcePath, targetModel, targetPath, BindingMode.TwoWay);
+            Assert.That(binding, Is.Not.Null);
+            Assert.That(targetModel.Name, Is.SameAs(sourceModel.ChildModel.Name));
+            Debug.Log($"[{BindingMode.TwoWay}] Initialized " +
+                      $"{nameof(targetModel)}.{nameof(targetModel.Name)} ({targetModel.Name}) " +
+                      $"from {nameof(sourceModel)}.{sourcePath}");
+
+            sourceModel.ChildModel.Name = Application.identifier;
+            Assert.That(targetModel.Name, Is.SameAs(sourceModel.ChildModel.Name));
+            Debug.Log($"[{BindingMode.TwoWay}] Updated " +
+                      $"{nameof(targetModel)}.{nameof(targetModel.Name)} ({targetModel.Name}) " +
+                      $"from {nameof(sourceModel)}.{sourcePath}");
+
+            targetModel.Name = Application.productName;
+            Assert.That(sourceModel.ChildModel.Name, Is.SameAs(targetModel.Name));
+            Debug.Log($"[{BindingMode.TwoWay}] Updated " +
+                      $"{nameof(sourceModel)}.{nameof(sourceModel.Name)} ({sourceModel.Name}) " +
+                      $"from {nameof(targetModel)}.{targetPath}");
         }
     }
 }

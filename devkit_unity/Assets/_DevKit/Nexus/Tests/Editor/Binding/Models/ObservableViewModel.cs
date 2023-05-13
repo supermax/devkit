@@ -4,6 +4,6 @@ namespace DevKit.Nexus.Tests.Editor.Binding.Models
 {
     public class ObservableViewModel : BaseViewModel
     {
-        public ObservableViewModel ChildModel { get; } = new();
+        public ObservableModel ChildModel { get; } = new();
     }
 }

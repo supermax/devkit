@@ -41,9 +41,10 @@ namespace DevKit.Nexus.Binding.Internals.Handlers
                     {
                         break;
                     }
-                    objType = propertyInfo.DeclaringType;
+                    //objType = propertyInfo.DeclaringType;
                     source = propertyInfo.GetValue(obj);
                     obj = source;
+                    objType = obj.GetType();
 
                     if (visitedSources.Contains(obj))
                     {

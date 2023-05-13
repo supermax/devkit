@@ -29,6 +29,11 @@ namespace DevKit.Nexus.Binding.Internals
             return value;
         }
 
+        public override string ToString()
+        {
+            return $"{nameof(Source)}: {Source}, {nameof(Property)}: {Property}";
+        }
+
         public void Dispose()
         {
             Source = null;
