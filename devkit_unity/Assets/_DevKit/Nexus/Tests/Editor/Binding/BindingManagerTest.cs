@@ -21,21 +21,46 @@ namespace DevKit.Nexus.Tests.Editor.Binding
             var binding = BindingManager.Default.Bind(sourceModel, sourcePath, targetModel, targetPath, BindingMode.OneWay);
             Assert.That(binding, Is.Not.Null);
             Assert.That(targetModel.Name, Is.SameAs(sourceModel.Name));
-            Debug.Log($"[OneWayBinding] Initialized {nameof(targetModel)}.{nameof(targetModel.Name)} ({targetModel.Name}) from {nameof(targetModel)}");
+            Debug.Log($"[OneWayBinding] Initialized " +
+                      $"{nameof(targetModel)}.{nameof(targetModel.Name)} ({targetModel.Name}) " +
+                      $"from {nameof(sourceModel)}.{sourcePath}");
 
             sourceModel.Name = Application.companyName;
             Assert.That(targetModel.Name, Is.SameAs(sourceModel.Name));
-            Debug.Log($"[OneWayBinding] Updated {nameof(targetModel)}.{nameof(targetModel.Name)} ({targetModel.Name}) from {nameof(targetModel)}");
+            Debug.Log($"[OneWayBinding] Updated " +
+                      $"{nameof(targetModel)}.{nameof(targetModel.Name)} ({targetModel.Name}) " +
+                      $"from {nameof(sourceModel)}.{sourcePath}");
         }
 
-        // // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
-        // // `yield return null;` to skip a frame.
-        // [UnityTest]
-        // public IEnumerator BindingManagerTestWithEnumeratorPasses()
-        // {
-        //     // Use the Assert class to test conditions.
-        //     // Use yield to skip a frame.
-        //     yield return null;
-        // }
+        [Test]
+        public void BindingManager_TwoWayBinding_Test()
+        {
+            var targetModel = new ObservableViewModel();
+            targetModel.Init();
+            const string targetPath = nameof(targetModel.Name);
+
+            var sourceModel = new ObservableViewModel{ Name = Application.productName };
+            sourceModel.Init();
+            const string sourcePath = nameof(sourceModel.Name);
+
+            var binding = BindingManager.Default.Bind(sourceModel, sourcePath, targetModel, targetPath, BindingMode.TwoWay);
+            Assert.That(binding, Is.Not.Null);
+            Assert.That(targetModel.Name, Is.SameAs(sourceModel.Name));
+            Debug.Log($"[TwoWayBinding] Initialized " +
+                      $"{nameof(targetModel)}.{nameof(targetModel.Name)} ({targetModel.Name}) " +
+                      $"from {nameof(sourceModel)}.{sourcePath}");
+
+            sourceModel.Name = Application.companyName;
+            Assert.That(targetModel.Name, Is.SameAs(sourceModel.Name));
+            Debug.Log($"[TwoWayBinding] Updated " +
+                      $"{nameof(targetModel)}.{nameof(targetModel.Name)} ({targetModel.Name}) " +
+                      $"from {nameof(sourceModel)}.{sourcePath}");
+
+            targetModel.Name = Application.identifier;
+            Assert.That(sourceModel.Name, Is.SameAs(targetModel.Name));
+            Debug.Log($"[TwoWayBinding] Updated " +
+                      $"{nameof(sourceModel)}.{nameof(sourceModel.Name)} ({sourceModel.Name}) " +
+                      $"from {nameof(targetModel)}.{targetPath}");
+        }
     }
 }
