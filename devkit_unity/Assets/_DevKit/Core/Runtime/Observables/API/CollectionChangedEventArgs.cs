@@ -1,40 +1,37 @@
+using System.Collections;
+using System.Collections.Generic;
+
 namespace DevKit.Core.Observables.API
 {
-    public class CollectionChangedEventArgs<T> : BaseCollectionChangedEventArgs<IObservableCollection<T>, T>
+    public class CollectionChangedEventArgs
     {
-        public int NewIndex { get; }
+        public IEnumerable PrevKeys { get; }
 
-        public int OldIndex { get; }
+        public IEnumerable NewKeys { get; }
 
-        public CollectionChangedEventArgs(IObservableCollection<T> source, CollectionChangedEventAction actionType, int oldIndex, int newIndex, T oldValue, T newValue) : base(source, actionType, oldValue, newValue)
+        public virtual IObservableCollection Source { get; protected set; }
+
+        public virtual CollectionChangedEventAction Action { get; protected set; }
+
+        public virtual IEnumerable PrevItems { get; protected set; }
+
+        public virtual IEnumerable NewItems { get; protected set; }
+
+        public CollectionChangedEventArgs(
+            IObservableCollection source
+            , CollectionChangedEventAction actionType
+            , IEnumerable prevKeys
+            , IEnumerable newKeys
+            , IEnumerable prevItems
+            , IEnumerable newItems)
         {
-            OldIndex = oldIndex;
-            NewIndex = newIndex;
-        }
+            PrevKeys = prevKeys;
+            NewKeys = newKeys;
 
-        public static CollectionChangedEventArgs<T> Create(IObservableCollection<T> source, CollectionChangedEventAction actionType, int oldIndex, int newIndex, T oldValue, T newValue)
-        {
-            var args = new CollectionChangedEventArgs<T>(source, actionType, oldIndex, newIndex, oldValue, newValue);
-            return args;
-        }
-    }
-
-    public class CollectionChangedEventArgs<TKey, TValue> : BaseCollectionChangedEventArgs<IObservableCollection<TKey, TValue>, TValue>
-    {
-        public TKey OldKey { get; }
-
-        public TKey NewKey { get; }
-
-        public CollectionChangedEventArgs(IObservableCollection<TKey, TValue> source, CollectionChangedEventAction actionType, TKey oldKey, TKey newKey, TValue oldValue, TValue newValue) : base(source, actionType, oldValue, newValue)
-        {
-            OldKey = oldKey;
-            NewKey = newKey;
-        }
-
-        public static CollectionChangedEventArgs<TKey, TValue> Create(IObservableCollection<TKey, TValue> source, CollectionChangedEventAction actionType, TKey oldKey, TKey newKey, TValue prevValue, TValue newValue)
-        {
-            var args = new CollectionChangedEventArgs<TKey, TValue>(source, actionType, oldKey, newKey, prevValue, newValue);
-            return args;
+            Source = source;
+            Action = actionType;
+            PrevItems = prevItems;
+            NewItems = newItems;
         }
     }
 

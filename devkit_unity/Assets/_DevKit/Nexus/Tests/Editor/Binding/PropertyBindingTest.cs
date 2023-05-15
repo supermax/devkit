@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace DevKit.Nexus.Tests.Editor.Binding
 {
-    public class BindingManagerTest
+    public class PropertyBindingTest
     {
         [Test]
         public void BindingManager_OneWayBinding_SimplePath_Test()

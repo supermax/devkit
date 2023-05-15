@@ -1,25 +1,22 @@
-using System.Collections;
 using System.Collections.Generic;
 
 namespace DevKit.Core.Observables.API
 {
-    public interface IObservableCollection<T>
-        : IObservableCollection
-            , IList<T>
-            , IList
+    public interface IObservableCollection
     {
-        event CollectionChangedEventHandler<T> CollectionChanged;
+        event CollectionChangedEventHandler CollectionChanged;
+    }
+
+    public interface IObservableCollection<T>
+            : IObservableCollection
+            , IList<T>
+    {
+
     }
 
     public interface IObservableCollection<TKey, TValue>
-        : IObservableCollection
+            : IObservableCollection
             , IDictionary<TKey, TValue>
-            , IDictionary
-    {
-        event CollectionChangedEventHandler<TKey, TValue> CollectionChanged;
-    }
-
-    public interface IObservableCollection : IObservableObject
     {
 
     }

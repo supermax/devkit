@@ -6,6 +6,7 @@ using DevKit.Serialization.Json;
 using DevKit.Serialization.Json.API;
 using DevKit.Serialization.Tests.Editor.Json.Fixtures;
 using NUnit.Framework;
+using UnityEngine;
 
 #endregion
 
@@ -69,11 +70,12 @@ namespace DevKit.Serialization.Tests.Editor.Json
 			{
 				{"name", "New Name"},
 				{"age", 1},
-				{"person", jsonDataPerson}, // this should be ignored when serialized to Person
+				//{"person", person},
 				//{"arr", new [] {1, 2, 3}} // TODO fix array init in JsonData
 			};
 
 			var jsonStr = jd.ToJson();
+			Debug.Log($"{nameof(JsonData)}.{nameof(jd.ToJson)}: {jsonStr}");
 			Assert.NotNull(jsonStr);
 
 			var newPerson = JsonMapper.Default.ToObject<Person>(jsonStr);

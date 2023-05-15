@@ -2,34 +2,35 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using DevKit.Core.Extensions;
 using DevKit.Core.Observables.API;
 
 namespace DevKit.Core.Observables
 {
     [Serializable]
     [DataContract]
-    public class ObservableDictionary<TKey, TValue> :
+    public class ObservableCollection<TKey, TValue> :
         Observable
         , IObservableCollection<TKey, TValue>
         , ISerializable
     {
         [field: NonSerialized]
-        public event CollectionChangedEventHandler<TKey, TValue> CollectionChanged;
+        public event CollectionChangedEventHandler CollectionChanged;
 
-        [NonSerialized]
+        [field: NonSerialized]
         protected readonly Dictionary<TKey, TValue> InnerDictionary;
 
-        public ObservableDictionary()
+        public ObservableCollection()
         {
             InnerDictionary = new Dictionary<TKey, TValue>();
         }
 
-        public ObservableDictionary(IEnumerable<KeyValuePair<TKey, TValue>> source)
+        public ObservableCollection(IEnumerable<KeyValuePair<TKey, TValue>> source)
         {
             InnerDictionary = new Dictionary<TKey, TValue>(source);
         }
 
-        public ObservableDictionary(SerializationInfo info, StreamingContext context)
+        public ObservableCollection(SerializationInfo info, StreamingContext context)
         {
             InnerDictionary = (Dictionary<TKey, TValue>) info.GetValue(nameof(InnerDictionary), typeof(Dictionary<TKey, TValue>));
         }
@@ -40,7 +41,13 @@ namespace DevKit.Core.Observables
             {
                 return;
             }
-            var args = CollectionChangedEventArgs<TKey, TValue>.Create(this, actionType, oldKey, newKey, prevValue, newValue);
+            var args = new CollectionChangedEventArgs(
+                this
+                , actionType
+                , new [] {oldKey}
+                , new [] {newKey}
+                , new []{prevValue}
+                , new []{newValue});
             CollectionChanged.Invoke(this, args);
         }
 
@@ -52,29 +59,6 @@ namespace DevKit.Core.Observables
                 Clear();
             }
             base.Dispose(disposing);
-        }
-
-        bool IDictionary.Contains(object key)
-        {
-            return InnerDictionary.ContainsKey((TKey)key);
-        }
-
-        IDictionaryEnumerator IDictionary.GetEnumerator()
-        {
-            return InnerDictionary.GetEnumerator();
-        }
-
-        void IDictionary.Remove(object key)
-        {
-            InnerDictionary.Remove((TKey)key);
-        }
-
-        bool IDictionary.IsFixedSize
-        {
-            get
-            {
-                return false;
-            }
         }
 
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
@@ -93,11 +77,6 @@ namespace DevKit.Core.Observables
         {
             InnerDictionary.Add(item.Key, item.Value);
             InvokeCollectionChanged(CollectionChangedEventAction.Add, default, item.Key, default, item.Value);
-        }
-
-        void IDictionary.Add(object key, object value)
-        {
-            InnerDictionary.Add((TKey)key, (TValue)value);
         }
 
         public void Clear()
@@ -132,19 +111,6 @@ namespace DevKit.Core.Observables
             return success;
         }
 
-        void ICollection.CopyTo(Array array, int index)
-        {
-            using var e = InnerDictionary.GetEnumerator();
-            var i = 0;
-            while (i < array.Length && e.MoveNext())
-            {
-                if (i >= index)
-                {
-                    array.SetValue(e.Current, i++);
-                }
-            }
-        }
-
         public int Count
         {
             get
@@ -154,39 +120,11 @@ namespace DevKit.Core.Observables
             }
         }
 
-        bool ICollection.IsSynchronized
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        object ICollection.SyncRoot
-        {
-            get
-            {
-                return InnerDictionary;
-            }
-        }
-
         public bool IsReadOnly
         {
             get
             {
                 return false;
-            }
-        }
-
-        object IDictionary.this[object key]
-        {
-            get
-            {
-                return this[(TKey)key];
-            }
-            set
-            {
-                this[(TKey)key] = (TValue)value;
             }
         }
 
@@ -244,22 +182,6 @@ namespace DevKit.Core.Observables
             }
         }
 
-        ICollection IDictionary.Values
-        {
-            get
-            {
-                return InnerDictionary.Values;
-            }
-        }
-
-        ICollection IDictionary.Keys
-        {
-            get
-            {
-                return InnerDictionary.Keys;
-            }
-        }
-
         public ICollection<TValue> Values
         {
             get
@@ -272,6 +194,30 @@ namespace DevKit.Core.Observables
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue(nameof(InnerDictionary), InnerDictionary, InnerDictionary.GetType());
+        }
+
+        event CollectionChangedEventHandler IObservableCollection.CollectionChanged
+        {
+            add
+            {
+                Subscribe(value);
+            }
+            remove
+            {
+                Unsubscribe(value);
+            }
+        }
+
+        protected virtual void Subscribe(CollectionChangedEventHandler handler)
+        {
+            handler.ThrowIfNull(nameof(handler));
+
+
+        }
+
+        protected virtual void Unsubscribe(CollectionChangedEventHandler handler)
+        {
+            handler.ThrowIfNull(nameof(handler));
         }
     }
 }

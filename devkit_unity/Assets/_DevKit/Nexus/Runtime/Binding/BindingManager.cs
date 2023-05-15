@@ -7,7 +7,7 @@ namespace DevKit.Nexus.Binding
 {
     public class BindingManager : Singleton<IBindingManager, BindingManager>, IBindingManager
     {
-        public Binding Bind(object source, string sourcePath, object target, string targetPath, BindingMode mode)
+        public PropertyBinding Bind(object source, string sourcePath, object target, string targetPath, BindingMode mode)
         {
             source.ThrowIfNull(nameof(source));
             sourcePath.ThrowIfNullOrEmpty(nameof(sourcePath));
@@ -18,7 +18,7 @@ namespace DevKit.Nexus.Binding
             var sourceBindingPath = BindingPathHandler.GetBindingPath(source, sourcePath);
             var targetBindingPath = BindingPathHandler.GetBindingPath(target, targetPath);
 
-            var binding = new Binding(source, sourcePath, target, targetPath, mode)
+            var binding = new PropertyBinding(source, sourcePath, target, targetPath, mode)
                                 .SetSourceBindingPath(sourceBindingPath)
                                 .SetTargetBindingPath(targetBindingPath)
                                 .InitValues()

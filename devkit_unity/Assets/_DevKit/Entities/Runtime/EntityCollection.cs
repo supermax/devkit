@@ -10,7 +10,7 @@ namespace DevKit.Entities
     /// </summary>
     [Serializable]
     public class EntityCollection<TKey, TValue>
-        : ObservableDictionary<TKey, TValue>
+        : ObservableCollection<TKey, TValue>
             , IEntityCollection<TKey, TValue>
         where TValue : class
         , IEntity

@@ -1,11 +1,10 @@
-using System;
 using DevKit.Core.Observables.API;
 using DevKit.Nexus.Binding.API;
 using DevKit.Nexus.Binding.Internals;
 
 namespace DevKit.Nexus.Binding
 {
-    public class Binding
+    public class PropertyBinding
     {
         public BindingMode Mode { get; }
 
@@ -21,7 +20,7 @@ namespace DevKit.Nexus.Binding
 
         private BindingPath TargetBindingPath { get; set; }
 
-        internal Binding(object source, string sourcePath, object target, string targetPath, BindingMode mode)
+        internal PropertyBinding(object source, string sourcePath, object target, string targetPath, BindingMode mode)
         {
             Source = source;
             SourcePath = sourcePath;
@@ -44,26 +43,26 @@ namespace DevKit.Nexus.Binding
             return $"{SourceBindingPath} {mode} {TargetBindingPath}";
         }
 
-        internal Binding SetSourceBindingPath(BindingPath path)
+        internal PropertyBinding SetSourceBindingPath(BindingPath path)
         {
             SourceBindingPath = path;
             return this;
         }
 
-        internal Binding SetTargetBindingPath(BindingPath path)
+        internal PropertyBinding SetTargetBindingPath(BindingPath path)
         {
             TargetBindingPath = path;
             return this;
         }
 
-        internal Binding InitValues()
+        internal PropertyBinding InitValues()
         {
             var sourceValue = SourceBindingPath.GetPropertyValue();
             TargetBindingPath.SetPropertyValue(sourceValue);
             return this;
         }
 
-        internal Binding Bind()
+        internal PropertyBinding Bind()
         {
             if (Mode == BindingMode.OneTime)
             {
