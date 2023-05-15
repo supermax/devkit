@@ -4,43 +4,21 @@ using DevKit.Nexus.Binding.Internals;
 
 namespace DevKit.Nexus.Binding
 {
-    public class PropertyBinding
+    public class PropertyBinding : Binding
     {
-        public BindingMode Mode { get; }
-
-        public object Source { get; }
-
-        public string SourcePath { get; }
-
         private BindingPath SourceBindingPath { get; set; }
-
-        public object Target { get; }
-
-        public string TargetPath { get; }
 
         private BindingPath TargetBindingPath { get; set; }
 
-        internal PropertyBinding(object source, string sourcePath, object target, string targetPath, BindingMode mode)
+        internal PropertyBinding(
+            object source
+            , string sourcePath
+            , object target
+            , string targetPath
+            , BindingMode mode)
+        : base(source, sourcePath, target, targetPath, mode)
         {
-            Source = source;
-            SourcePath = sourcePath;
 
-            Target = target;
-            TargetPath = targetPath;
-
-            Mode = mode;
-        }
-
-        public override string ToString()
-        {
-            var mode = Mode switch
-                {
-                    BindingMode.OneWay => "=>",
-                    BindingMode.TwoWay => "<=>",
-                    BindingMode.OneTime => "=1",
-                    _ => ":"
-                };
-            return $"{SourceBindingPath} {mode} {TargetBindingPath}";
         }
 
         internal PropertyBinding SetSourceBindingPath(BindingPath path)
@@ -85,6 +63,24 @@ namespace DevKit.Nexus.Binding
             }
             targetObservable.Subscribe(SourceBindingPath);
             return this;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (SourceBindingPath != null)
+                {
+                    SourceBindingPath.Dispose();
+                    SourceBindingPath = null;
+                }
+                if (TargetBindingPath != null)
+                {
+                    TargetBindingPath?.Dispose();
+                    TargetBindingPath = null;
+                }
+            }
+            base.Dispose(disposing);
         }
     }
 }

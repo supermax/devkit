@@ -35,6 +35,22 @@ namespace DevKit.Core.Observables
             InnerDictionary = (Dictionary<TKey, TValue>) info.GetValue(nameof(InnerDictionary), typeof(Dictionary<TKey, TValue>));
         }
 
+        public IObservableCollection Subscribe(ICollectionObserver observer)
+        {
+            observer.ThrowIfNull(nameof(observer));
+
+            CollectionChanged += observer.OnCollectionChanged;
+            return this;
+        }
+
+        public IObservableCollection Unsubscribe(ICollectionObserver observer)
+        {
+            observer.ThrowIfNull(nameof(observer));
+
+            CollectionChanged -= observer.OnCollectionChanged;
+            return this;
+        }
+
         protected virtual void InvokeCollectionChanged(CollectionChangedEventAction actionType, TKey oldKey, TKey newKey, TValue prevValue, TValue newValue)
         {
             if (CollectionChanged == null)

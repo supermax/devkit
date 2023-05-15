@@ -41,7 +41,6 @@ namespace DevKit.Nexus.Binding.Internals.Handlers
                     {
                         break;
                     }
-                    //objType = propertyInfo.DeclaringType;
                     source = propertyInfo.GetValue(obj);
                     obj = source;
                     objType = obj.GetType();

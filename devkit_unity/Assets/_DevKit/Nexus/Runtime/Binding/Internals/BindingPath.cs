@@ -65,4 +65,5 @@ namespace DevKit.Nexus.Binding.Internals
             Error = args.Error;
         }
     }
+
 }

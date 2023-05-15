@@ -1,24 +1,23 @@
 using System.Collections;
-using System.Collections.Generic;
 
 namespace DevKit.Core.Observables.API
 {
-    public class CollectionChangedEventArgs
+    public class CollectionChangedEventArgs : BaseEventArgs
     {
         public IEnumerable PrevKeys { get; }
 
         public IEnumerable NewKeys { get; }
 
-        public virtual IObservableCollection Source { get; protected set; }
+        public object Source { get; }
 
-        public virtual CollectionChangedEventAction Action { get; protected set; }
+        public CollectionChangedEventAction Action { get; }
 
-        public virtual IEnumerable PrevItems { get; protected set; }
+        public IEnumerable PrevItems { get; }
 
-        public virtual IEnumerable NewItems { get; protected set; }
+        public IEnumerable NewItems { get; }
 
         public CollectionChangedEventArgs(
-            IObservableCollection source
+            object source
             , CollectionChangedEventAction actionType
             , IEnumerable prevKeys
             , IEnumerable newKeys

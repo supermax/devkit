@@ -8,4 +8,5 @@ namespace DevKit.Core.Observables.API
 
         void OnError(object sender, PropertyChangedEventArgs args);
     }
+
 }

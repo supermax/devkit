@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using DevKit.Core.Extensions;
 using DevKit.Core.Observables.API;
 
 namespace DevKit.Core.Observables
@@ -15,6 +16,22 @@ namespace DevKit.Core.Observables
     {
         [field: NonSerialized]
         public event CollectionChangedEventHandler CollectionChanged;
+
+        public IObservableCollection Subscribe(ICollectionObserver observer)
+        {
+            observer.ThrowIfNull(nameof(observer));
+
+            CollectionChanged += observer.OnCollectionChanged;
+            return this;
+        }
+
+        public IObservableCollection Unsubscribe(ICollectionObserver observer)
+        {
+            observer.ThrowIfNull(nameof(observer));
+
+            CollectionChanged -= observer.OnCollectionChanged;
+            return this;
+        }
 
         [field: NonSerialized]
         protected readonly List<T> InnerList;

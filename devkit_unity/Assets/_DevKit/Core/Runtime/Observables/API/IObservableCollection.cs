@@ -2,9 +2,13 @@ using System.Collections.Generic;
 
 namespace DevKit.Core.Observables.API
 {
-    public interface IObservableCollection
+    public interface IObservableCollection : IObservableObject
     {
         event CollectionChangedEventHandler CollectionChanged;
+
+        IObservableCollection Subscribe(ICollectionObserver observer);
+
+        IObservableCollection Unsubscribe(ICollectionObserver observer);
     }
 
     public interface IObservableCollection<T>
