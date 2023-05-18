@@ -12,12 +12,12 @@ namespace DevKit.Nexus.Binding.Internals
             Property = propertyInfo;
         }
 
-        internal void SetPropertyValue(object value)
+        internal override void SetValue(object value)
         {
             Property.SetValue(Source, value);
         }
 
-        internal object GetPropertyValue()
+        internal override object GetValue()
         {
             var value = Property.GetValue(Source);
             return value;
@@ -45,13 +45,13 @@ namespace DevKit.Nexus.Binding.Internals
                 return;
             }
 
-            var value = GetPropertyValue();
+            var value = GetValue();
             if (Equals(args.NewValue, value))
             {
                 return;
             }
 
-            SetPropertyValue(args.NewValue);
+            SetValue(args.NewValue);
         }
 
         public void OnError(object sender, PropertyChangedEventArgs args)

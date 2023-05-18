@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -10,7 +11,7 @@ namespace DevKit.Nexus.Binding.Internals.Handlers
     {
         private static readonly Dictionary<Type, Dictionary<string, PropertyInfo>> ReflectionCache = new();
 
-        internal static PropertyBindingPath GetBindingPath(object obj, string path)
+        internal static BindingPath GetBindingPath(object obj, string path)
         {
             obj.ThrowIfNull(nameof(obj));
             path.ThrowIfNullOrEmpty(nameof(path));
@@ -32,10 +33,12 @@ namespace DevKit.Nexus.Binding.Internals.Handlers
             {
                 var visitedSources = new List<object>();
                 var pathParts = path.Split(pathSeparator);
+
                 for (var i = 0; i < pathParts.Length; i++)
                 {
                     var pathPart = pathParts[i];
                     propertyInfo = GetPropertyInfo(objType, pathPart);
+                    propertyInfo.ThrowIfNull(nameof(propertyInfo));
 
                     if (i == pathParts.Length - 1)
                     {
@@ -47,8 +50,7 @@ namespace DevKit.Nexus.Binding.Internals.Handlers
 
                     if (visitedSources.Contains(obj))
                     {
-                        // TODO throw relevant exc related to possible recursion
-                        break;
+                        throw new InvalidOperationException($"Possible recursion - the {nameof(path)} `{path}` contains pointer to parent object `{obj}`");
                     }
                     visitedSources.Add(obj);
                 }
@@ -57,7 +59,9 @@ namespace DevKit.Nexus.Binding.Internals.Handlers
             source.ThrowIfNull(nameof(source));
             propertyInfo.ThrowIfNull(nameof(propertyInfo));
 
-            var bindingPath = new PropertyBindingPath(source, propertyInfo);
+            BindingPath bindingPath = source is IEnumerable
+                ? new CollectionBindingPath(source)
+                : new PropertyBindingPath(source, propertyInfo);
             return bindingPath;
         }
 

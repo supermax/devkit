@@ -4,9 +4,9 @@ namespace DevKit.Nexus.Binding.Internals
 {
     public abstract class BindingPath
     {
-        internal object Source { get; private set; }
+        protected internal object Source { get; set; }
 
-        internal Exception Error { get; set; }
+        protected internal Exception Error { get; set; }
 
         protected BindingPath(object source)
         {
@@ -22,5 +22,9 @@ namespace DevKit.Nexus.Binding.Internals
         {
             Source = null;
         }
+
+        internal abstract object GetValue();
+
+        internal abstract void SetValue(object value);
     }
 }

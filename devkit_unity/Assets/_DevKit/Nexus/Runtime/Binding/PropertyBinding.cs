@@ -4,7 +4,7 @@ using DevKit.Nexus.Binding.Internals;
 
 namespace DevKit.Nexus.Binding
 {
-    public class PropertyBinding : Binding<PropertyBindingPath>
+    public class PropertyBinding : Binding
     {
         internal PropertyBinding(
             object source
@@ -17,14 +17,14 @@ namespace DevKit.Nexus.Binding
 
         }
 
-        internal PropertyBinding InitValues()
+        public override IBinding InitValues()
         {
-            var sourceValue = SourceBindingPath.GetPropertyValue();
-            TargetBindingPath.SetPropertyValue(sourceValue);
+            var sourceValue = SourceBindingPath.GetValue();
+            TargetBindingPath.SetValue(sourceValue);
             return this;
         }
 
-        internal PropertyBinding Bind()
+        public override IBinding Bind()
         {
             if (Mode == BindingMode.OneTime)
             {
@@ -34,7 +34,7 @@ namespace DevKit.Nexus.Binding
             {
                 return this;
             }
-            sourceObservable.Subscribe(TargetBindingPath);
+            sourceObservable.Subscribe(TargetBindingPath as PropertyBindingPath);
 
             if (Mode != BindingMode.TwoWay)
             {
@@ -45,7 +45,7 @@ namespace DevKit.Nexus.Binding
             {
                 return this;
             }
-            targetObservable.Subscribe(SourceBindingPath);
+            targetObservable.Subscribe(SourceBindingPath as PropertyBindingPath);
             return this;
         }
 

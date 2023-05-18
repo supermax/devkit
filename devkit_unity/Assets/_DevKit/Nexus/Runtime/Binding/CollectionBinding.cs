@@ -1,13 +1,11 @@
-using System;
 using System.Collections;
-using DevKit.Core.Extensions;
 using DevKit.Core.Observables.API;
 using DevKit.Nexus.Binding.API;
 using DevKit.Nexus.Binding.Internals;
 
 namespace DevKit.Nexus.Binding
 {
-    public class CollectionBinding : Binding<CollectionBindingPath>
+    public class CollectionBinding : Binding
     {
         internal CollectionBinding(
             object source
@@ -38,19 +36,7 @@ namespace DevKit.Nexus.Binding
             base.Dispose(disposing);
         }
 
-        internal CollectionBinding SetSourceBindingPath(CollectionBindingPath path)
-        {
-            SourceBindingPath = path;
-            return this;
-        }
-
-        internal CollectionBinding SetTargetBindingPath(CollectionBindingPath path)
-        {
-            TargetBindingPath = path;
-            return this;
-        }
-
-        internal CollectionBinding InitValues()
+        public override IBinding InitValues()
         {
             switch (Source)
             {
@@ -85,7 +71,7 @@ namespace DevKit.Nexus.Binding
             }
         }
 
-        internal CollectionBinding Bind()
+        public override IBinding Bind()
         {
             if (Mode == BindingMode.OneTime)
             {
@@ -95,7 +81,7 @@ namespace DevKit.Nexus.Binding
             {
                 return this;
             }
-            sourceObservable.Subscribe(TargetBindingPath);
+            sourceObservable.Subscribe(TargetBindingPath as CollectionBindingPath);
 
             if (Mode != BindingMode.TwoWay)
             {
@@ -106,7 +92,7 @@ namespace DevKit.Nexus.Binding
             {
                 return this;
             }
-            targetObservable.Subscribe(SourceBindingPath);
+            targetObservable.Subscribe(SourceBindingPath as CollectionBindingPath);
             return this;
         }
     }

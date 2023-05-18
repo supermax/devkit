@@ -5,20 +5,19 @@ using DevKit.Nexus.Binding.Internals;
 
 namespace DevKit.Nexus.Binding
 {
-    public abstract class Binding<T> : IDisposable
-        where T : BindingPath
+    public abstract class Binding : IBinding
     {
         public BindingMode Mode { get; }
 
         public object Source { get; protected set; }
 
-        protected T SourceBindingPath { get; set; }
+        protected BindingPath SourceBindingPath { get; set; }
 
         public string SourcePath { get; }
 
         public object Target { get; protected set; }
 
-        protected T TargetBindingPath { get; set; }
+        protected BindingPath TargetBindingPath { get; set; }
 
         public string TargetPath { get; }
 
@@ -48,13 +47,13 @@ namespace DevKit.Nexus.Binding
             Mode = mode;
         }
 
-        internal Binding<T> SetSourceBindingPath(T path)
+        public IBinding SetSourceBindingPath(BindingPath path)
         {
             SourceBindingPath = path;
             return this;
         }
 
-        internal Binding<T> SetTargetBindingPath(T path)
+        public IBinding SetTargetBindingPath(BindingPath path)
         {
             TargetBindingPath = path;
             return this;
@@ -87,5 +86,9 @@ namespace DevKit.Nexus.Binding
                 };
             return $"{Source}.{SourcePath} {mode} {Target}{TargetPath}";
         }
+
+        public abstract IBinding InitValues();
+
+        public abstract IBinding Bind();
     }
 }
