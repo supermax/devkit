@@ -1,69 +1,26 @@
 using System;
-using System.Reflection;
-using DevKit.Core.Observables.API;
 
 namespace DevKit.Nexus.Binding.Internals
 {
-    internal class BindingPath : IObserver
+    public abstract class BindingPath
     {
         internal object Source { get; private set; }
 
-        private PropertyInfo Property { get; set; }
-
         internal Exception Error { get; set; }
 
-        internal BindingPath(object source, PropertyInfo propertyInfo)
+        protected BindingPath(object source)
         {
             Source = source;
-            Property = propertyInfo;
-        }
-
-        internal void SetPropertyValue(object value)
-        {
-            Property.SetValue(Source, value);
-        }
-
-        internal object GetPropertyValue()
-        {
-            var value = Property.GetValue(Source);
-            return value;
         }
 
         public override string ToString()
         {
-            return $"{nameof(Source)}: {Source}, {nameof(Property)}: {Property}";
+            return $"{nameof(Source)}: {Source}";
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             Source = null;
-            Property = null;
-        }
-
-        public void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
-        {
-            if (args.IsHandled || args.Error != null)
-            {
-                return;
-            }
-            if (Property.Name != args.PropertyName)
-            {
-                return;
-            }
-
-            var value = GetPropertyValue();
-            if (Equals(args.NewValue, value))
-            {
-                return;
-            }
-
-            SetPropertyValue(args.NewValue);
-        }
-
-        public void OnError(object sender, PropertyChangedEventArgs args)
-        {
-            Error = args.Error;
         }
     }
-
 }

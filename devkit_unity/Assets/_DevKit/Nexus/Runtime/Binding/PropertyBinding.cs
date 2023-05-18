@@ -4,12 +4,8 @@ using DevKit.Nexus.Binding.Internals;
 
 namespace DevKit.Nexus.Binding
 {
-    public class PropertyBinding : Binding
+    public class PropertyBinding : Binding<PropertyBindingPath>
     {
-        private BindingPath SourceBindingPath { get; set; }
-
-        private BindingPath TargetBindingPath { get; set; }
-
         internal PropertyBinding(
             object source
             , string sourcePath
@@ -19,18 +15,6 @@ namespace DevKit.Nexus.Binding
         : base(source, sourcePath, target, targetPath, mode)
         {
 
-        }
-
-        internal PropertyBinding SetSourceBindingPath(BindingPath path)
-        {
-            SourceBindingPath = path;
-            return this;
-        }
-
-        internal PropertyBinding SetTargetBindingPath(BindingPath path)
-        {
-            TargetBindingPath = path;
-            return this;
         }
 
         internal PropertyBinding InitValues()

@@ -10,7 +10,7 @@ namespace DevKit.Nexus.Binding.Internals.Handlers
     {
         private static readonly Dictionary<Type, Dictionary<string, PropertyInfo>> ReflectionCache = new();
 
-        internal static BindingPath GetBindingPath(object obj, string path)
+        internal static PropertyBindingPath GetBindingPath(object obj, string path)
         {
             obj.ThrowIfNull(nameof(obj));
             path.ThrowIfNullOrEmpty(nameof(path));
@@ -57,7 +57,7 @@ namespace DevKit.Nexus.Binding.Internals.Handlers
             source.ThrowIfNull(nameof(source));
             propertyInfo.ThrowIfNull(nameof(propertyInfo));
 
-            var bindingPath = new BindingPath(source, propertyInfo);
+            var bindingPath = new PropertyBindingPath(source, propertyInfo);
             return bindingPath;
         }
 

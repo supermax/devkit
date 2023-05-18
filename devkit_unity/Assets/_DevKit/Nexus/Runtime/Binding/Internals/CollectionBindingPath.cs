@@ -1,28 +1,17 @@
-using System;
-using System.Reflection;
 using DevKit.Core.Observables.API;
 
 namespace DevKit.Nexus.Binding.Internals
 {
-    internal class CollectionBindingPath : ICollectionObserver
+    public class CollectionBindingPath : BindingPath, ICollectionObserver
     {
-        internal object Source { get; private set; }
-
-        internal Exception Error { get; set; }
-
-        internal CollectionBindingPath(object source)
+        internal CollectionBindingPath(object source) : base(source)
         {
-            Source = source;
+
         }
 
         public override string ToString()
         {
             return $"{nameof(Source)}: {Source}";
-        }
-
-        public void Dispose()
-        {
-            Source = null;
         }
 
         public void OnCollectionChanged(object sender, CollectionChangedEventArgs args)
@@ -40,4 +29,5 @@ namespace DevKit.Nexus.Binding.Internals
             Error = args.Error;
         }
     }
+
 }

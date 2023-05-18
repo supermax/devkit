@@ -7,12 +7,8 @@ using DevKit.Nexus.Binding.Internals;
 
 namespace DevKit.Nexus.Binding
 {
-    public class CollectionBinding : Binding
+    public class CollectionBinding : Binding<CollectionBindingPath>
     {
-        private CollectionBindingPath SourceBindingPath { get; set; }
-
-        private CollectionBindingPath TargetBindingPath { get; set; }
-
         internal CollectionBinding(
             object source
             , string sourcePath
