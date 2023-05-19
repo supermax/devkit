@@ -159,6 +159,7 @@ namespace DevKit.DIoC.Container
             }
 
             _instances[typeKey] = instance;
+            _defaultInstanceKey ??= typeKey;
             return instance;
         }
 

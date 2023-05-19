@@ -106,5 +106,22 @@ namespace DevKit.DIoC.Tests.Editor
             Debug.Log($"test {nameof(Maestro_Get_Test)}<{typeof(T).Name}> result {result}");
             Assert.NotNull(result, $"failed to Get<{typeof(T).Name}>");
         }
+
+        [Test]
+        [Order(5)]
+        public void Maestro_Singleton_Test()
+        {
+            var fish1 = Maestro.Default.Get<Fish>().Instance();
+            var hash1 = fish1.GetHashCode();
+            Debug.Log($"test {nameof(Maestro_Singleton_Test)}.{nameof(Maestro.Default.Get)}<{nameof(Fish)}>().Instance() = ID: {hash1}");
+            Assert.NotNull(fish1, $"failed to Get<{nameof(Fish)}>.Instance()");
+
+            var fish2 = Maestro.Default.Get<Fish>().Instance();
+            var hash2 = fish2.GetHashCode();
+            Debug.Log($"test {nameof(Maestro_Singleton_Test)}.{nameof(Maestro.Default.Get)}<{nameof(Fish)}>().Instance() = ID: {hash2}");
+            Assert.NotNull(fish2, $"failed to Get<{nameof(Fish)}>.Instance()");
+
+            Assert.AreEqual(hash1, hash2);
+        }
     }
 }
