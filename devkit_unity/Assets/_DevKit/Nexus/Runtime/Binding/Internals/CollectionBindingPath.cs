@@ -7,6 +7,22 @@ namespace DevKit.Nexus.Binding.Internals
 {
     public class CollectionBindingPath : BindingPath, ICollectionObserver
     {
+        private static readonly Dictionary<CollectionChangedEventAction, Action<IList, CollectionChangedEventArgs>> ListActions = new()
+            {
+                { CollectionChangedEventAction.Add, Add }
+                , { CollectionChangedEventAction.Remove, Remove }
+                , { CollectionChangedEventAction.Replace, Replace }
+                , { CollectionChangedEventAction.Reset, Reset }
+            };
+
+        private static readonly Dictionary<CollectionChangedEventAction, Action<IDictionary, CollectionChangedEventArgs>> DicActions = new()
+            {
+                { CollectionChangedEventAction.Add, Add }
+                , { CollectionChangedEventAction.Remove, Remove }
+                , { CollectionChangedEventAction.Replace, Replace }
+                , { CollectionChangedEventAction.Reset, Reset }
+            };
+
         internal CollectionBindingPath(object source) : base(source) { }
 
         public override string ToString()
@@ -31,27 +47,15 @@ namespace DevKit.Nexus.Binding.Internals
                 return;
             }
 
-            switch (args.Action)
+            switch (Source)
             {
-                case CollectionChangedEventAction.Add:
-                    Add(Source as IList, args.NewItems);
-                    Add(Source as IDictionary, args.NewItems, args.NewKeys);
-                    break;
-                
-                case CollectionChangedEventAction.Remove:
+                case IList list:
+                    ListActions[args.Action].Invoke(list, args);
                     break;
 
-                case CollectionChangedEventAction.Replace:
+                case IDictionary dic:
+                    DicActions[args.Action].Invoke(dic, args);
                     break;
-
-                case CollectionChangedEventAction.Move:
-                    break;
-
-                case CollectionChangedEventAction.Reset:
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(args), $"Unsupported {nameof(args.Action)} type: {args.Action}");
             }
         }
 
@@ -60,30 +64,20 @@ namespace DevKit.Nexus.Binding.Internals
             Error = args.Error;
         }
 
-        private static void Add(IList source, IEnumerable items)
+        private static void Add(IList source, CollectionChangedEventArgs args)
         {
-            if (source == null)
-            {
-                return;
-            }
-
-            foreach (var item in items)
+            foreach (var item in args.NewItems)
             {
                 source.Add(item);
             }
         }
 
-        private static void Add(IDictionary source, IEnumerable items, IEnumerable keys)
+        private static void Add(IDictionary source, CollectionChangedEventArgs args)
         {
-            if (source == null)
-            {
-                return;
-            }
-
-            var eItems = items.GetEnumerator();
+            var eItems = args.NewItems.GetEnumerator();
             eItems.Reset();
 
-            var eKeys = keys.GetEnumerator();
+            var eKeys = args.NewItems.GetEnumerator();
             eKeys.Reset();
 
             while (eItems.MoveNext() && eKeys.MoveNext())
@@ -96,68 +90,66 @@ namespace DevKit.Nexus.Binding.Internals
             }
         }
 
-        private static void Remove(IList source, IEnumerable items)
+        private static void Remove(IList source, CollectionChangedEventArgs args)
         {
-            if (source == null)
+            foreach (var item in args.PrevItems)
             {
-                return;
+                source.Remove(item);
             }
         }
 
-        private static void Remove(IDictionary source, IEnumerable items)
+        private static void Remove(IDictionary source, CollectionChangedEventArgs args)
         {
-            if (source == null)
+            foreach (var key in args.PrevItems)
             {
-                return;
+                source.Remove(key);
             }
         }
 
-        private static void Replace(IList source, IEnumerable items)
+        private static void Replace(IList source, CollectionChangedEventArgs args)
         {
-            if (source == null)
+            var eItems = args.NewItems.GetEnumerator();
+            eItems.Reset();
+
+            var eKeys = args.NewItems.GetEnumerator();
+            eKeys.Reset();
+
+            while (eItems.MoveNext() && eKeys.MoveNext())
             {
-                return;
+                if (eKeys.Current == null)
+                {
+                    continue;
+                }
+                source.Insert((int)eKeys.Current, eItems.Current);
             }
         }
 
-        private static void Replace(IDictionary source, IEnumerable items)
+        private static void Replace(IDictionary source, CollectionChangedEventArgs args)
         {
-            if (source == null)
+            var eItems = args.NewItems.GetEnumerator();
+            eItems.Reset();
+
+            var eKeys = args.NewItems.GetEnumerator();
+            eKeys.Reset();
+
+            while (eItems.MoveNext() && eKeys.MoveNext())
             {
-                return;
+                if (eKeys.Current == null)
+                {
+                    continue;
+                }
+                source[eKeys.Current] = eItems.Current;
             }
         }
 
-        private static void Move(IList source, IEnumerable items)
+        private static void Reset(IList source, CollectionChangedEventArgs args)
         {
-            if (source == null)
-            {
-                return;
-            }
+            source.Clear();
         }
 
-        private static void Move(IDictionary source, IEnumerable items)
+        private static void Reset(IDictionary source, CollectionChangedEventArgs args)
         {
-            if (source == null)
-            {
-                return;
-            }
-        }
-
-        private static void Reset(IList source)
-        {
-            if (source == null)
-            {
-                return;
-            }
-        }
-
-        private static void Reset(IDictionary source)
-        {
-            if (source == null)
-            {
-                return;
-            }
+            source.Clear();
         }
     }
 }

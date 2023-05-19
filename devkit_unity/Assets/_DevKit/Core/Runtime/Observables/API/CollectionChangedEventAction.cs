@@ -18,11 +18,6 @@ namespace DevKit.Core.Observables.API
         Replace,
 
         /// <summary>
-        /// Item(s) moved
-        /// </summary>
-        Move,
-
-        /// <summary>
         /// The collection was reset (cleaned or item(s) range added)
         /// </summary>
         Reset,
