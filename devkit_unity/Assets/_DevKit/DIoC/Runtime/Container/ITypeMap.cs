@@ -9,7 +9,7 @@ namespace DevKit.DIoC.Container
 
         ITypeMap<T> Singleton<TM>(string key = null) where TM : class, T;
 
-        ITypeMap<T> Singleton<TM>([DisallowNull] TM instance, string key = null) where TM : class, T;
+        ITypeMap<T> Singleton<TM>([NotNull] TM instance, string key = null) where TM : class, T;
     }
 
     internal interface ITypeMap : IDisposable

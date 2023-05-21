@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using DevKit.Core.Extensions;
 using DevKit.DIoC.Attributes;
 
@@ -9,7 +9,7 @@ namespace DevKit.DIoC.Extensions
 {
     internal static class ReflectionExtensions
     {
-        internal static ConstructorInfo GetDefaultConstructor(this Type src)
+        internal static ConstructorInfo GetDefaultConstructor([NotNull] this Type src)
         {
             ConstructorInfo defCtor = null;
             var constructors = src.GetConstructors();
@@ -30,7 +30,7 @@ namespace DevKit.DIoC.Extensions
             return defCtor;
         }
 
-        internal static PropertyInfo[] GetInjectableProperties(this Type src)
+        internal static PropertyInfo[] GetInjectableProperties([NotNull] this Type src)
         {
             var injectProps = new List<PropertyInfo>();
             var props = src.GetProperties();
@@ -44,7 +44,7 @@ namespace DevKit.DIoC.Extensions
             return injectProps.ToArray();
         }
 
-        internal static MethodInfo[] GetExecutableMethods(this Type src)
+        internal static MethodInfo[] GetExecutableMethods([NotNull] this Type src)
         {
             var exeMethods = new List<MethodInfo>();
             var methods = src.GetMethods();

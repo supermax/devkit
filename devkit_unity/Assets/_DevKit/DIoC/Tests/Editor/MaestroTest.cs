@@ -43,7 +43,7 @@ namespace DevKit.DIoC.Tests.Editor
             var fish = Maestro.Default
                                         .Map<Fish>()
                                         .Singleton<Shark>("jaws")
-                                        .To<Carp>("fishy");
+                                        .Singleton<Carp>("fishy");
             Debug.Log($"test {nameof(Maestro_Map_Test)}<{nameof(Fish)}> result {fish}");
             Assert.NotNull(fish, $"failed to Map<{nameof(Fish)}>");
         }
@@ -119,6 +119,23 @@ namespace DevKit.DIoC.Tests.Editor
             var fish2 = Maestro.Default.Get<Fish>().Instance();
             var hash2 = fish2.GetHashCode();
             Debug.Log($"test {nameof(Maestro_Singleton_Test)}.{nameof(Maestro.Default.Get)}<{nameof(Fish)}>().Instance() = ID: {hash2}");
+            Assert.NotNull(fish2, $"failed to Get<{nameof(Fish)}>.Instance()");
+
+            Assert.AreEqual(hash1, hash2);
+        }
+
+        [Test]
+        [Order(6)]
+        public void Maestro_Singleton_ByKey_Test()
+        {
+            var fish1 = Maestro.Default.Get<Fish>().Instance("fishy");
+            var hash1 = fish1.GetHashCode();
+            Debug.Log($"test {nameof(Maestro_Singleton_ByKey_Test)}.{nameof(Maestro.Default.Get)}<{nameof(Fish)}>().Instance() = ID: {hash1}");
+            Assert.NotNull(fish1, $"failed to Get<{nameof(Fish)}>.Instance()");
+
+            var fish2 = Maestro.Default.Get<Fish>().Instance("fishy");
+            var hash2 = fish2.GetHashCode();
+            Debug.Log($"test {nameof(Maestro_Singleton_ByKey_Test)}.{nameof(Maestro.Default.Get)}<{nameof(Fish)}>().Instance() = ID: {hash2}");
             Assert.NotNull(fish2, $"failed to Get<{nameof(Fish)}>.Instance()");
 
             Assert.AreEqual(hash1, hash2);

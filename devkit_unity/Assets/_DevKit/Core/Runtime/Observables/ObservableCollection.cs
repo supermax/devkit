@@ -12,10 +12,14 @@ namespace DevKit.Core.Observables
     public class ObservableCollection<T> :
         Observable
         , IObservableCollection<T>
+        , IList
         , ISerializable
     {
         [field: NonSerialized]
         public event CollectionChangedEventHandler CollectionChanged;
+
+        [field: NonSerialized]
+        protected readonly List<T> InnerList = new();
 
         public IObservableCollection Subscribe(ICollectionObserver observer)
         {
@@ -33,13 +37,7 @@ namespace DevKit.Core.Observables
             return this;
         }
 
-        [field: NonSerialized]
-        protected readonly List<T> InnerList;
-
-        public ObservableCollection()
-        {
-            InnerList = new List<T>();
-        }
+        public ObservableCollection() { }
 
         public ObservableCollection(IEnumerable<T> source)
         {
@@ -88,10 +86,35 @@ namespace DevKit.Core.Observables
             return e;
         }
 
+        public int Add(object value)
+        {
+            return ((IList)InnerList).Add(value);
+        }
+
         public void Clear()
         {
             InnerList.Clear();
             InvokeCollectionChanged(CollectionChangedEventAction.Reset, default, default, default, default);
+        }
+
+        public bool Contains(object value)
+        {
+            return ((IList)InnerList).Contains(value);
+        }
+
+        public int IndexOf(object value)
+        {
+            return ((IList)InnerList).IndexOf(value);
+        }
+
+        public void Insert(int index, object value)
+        {
+            ((IList)InnerList).Insert(index, value);
+        }
+
+        public void Remove(object value)
+        {
+            ((IList)InnerList).Remove(value);
         }
 
         public bool Contains(T item)
@@ -108,6 +131,11 @@ namespace DevKit.Core.Observables
             }
         }
 
+        public void CopyTo(Array array, int index)
+        {
+            ((ICollection)InnerList).CopyTo(array, index);
+        }
+
         public int Count
         {
             get
@@ -117,11 +145,39 @@ namespace DevKit.Core.Observables
             }
         }
 
+        public bool IsSynchronized
+        {
+            get
+            {
+                return ((ICollection)InnerList).IsSynchronized;
+            }
+        }
+
+        public object SyncRoot
+        {
+            get
+            {
+                return ((ICollection)InnerList).SyncRoot;
+            }
+        }
+
         public bool IsReadOnly
         {
             get
             {
                 return false;
+            }
+        }
+
+        object IList.this[int index]
+        {
+            get
+            {
+                return ((IList)InnerList)[index];
+            }
+            set
+            {
+                ((IList)InnerList)[index] = value;
             }
         }
 
@@ -180,6 +236,14 @@ namespace DevKit.Core.Observables
                 , default
                 , new []{prevItem}
                 , default);
+        }
+
+        public bool IsFixedSize
+        {
+            get
+            {
+                return ((IList)InnerList).IsFixedSize;
+            }
         }
 
         public T this[int index]

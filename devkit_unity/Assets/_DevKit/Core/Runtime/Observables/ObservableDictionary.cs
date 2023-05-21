@@ -12,18 +12,16 @@ namespace DevKit.Core.Observables
     public class ObservableCollection<TKey, TValue> :
         Observable
         , IObservableCollection<TKey, TValue>
+        , IDictionary
         , ISerializable
     {
         [field: NonSerialized]
         public event CollectionChangedEventHandler CollectionChanged;
 
         [field: NonSerialized]
-        protected readonly Dictionary<TKey, TValue> InnerDictionary;
+        protected readonly Dictionary<TKey, TValue> InnerDictionary = new();
 
-        public ObservableCollection()
-        {
-            InnerDictionary = new Dictionary<TKey, TValue>();
-        }
+        public ObservableCollection() { }
 
         public ObservableCollection(IEnumerable<KeyValuePair<TKey, TValue>> source)
         {
@@ -77,6 +75,29 @@ namespace DevKit.Core.Observables
             base.Dispose(disposing);
         }
 
+        public bool Contains(object key)
+        {
+            return ((IDictionary)InnerDictionary).Contains(key);
+        }
+
+        IDictionaryEnumerator IDictionary.GetEnumerator()
+        {
+            return ((IDictionary)InnerDictionary).GetEnumerator();
+        }
+
+        public void Remove(object key)
+        {
+            ((IDictionary)InnerDictionary).Remove(key);
+        }
+
+        public bool IsFixedSize
+        {
+            get
+            {
+                return ((IDictionary)InnerDictionary).IsFixedSize;
+            }
+        }
+
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
             var e = InnerDictionary.GetEnumerator();
@@ -93,6 +114,11 @@ namespace DevKit.Core.Observables
         {
             InnerDictionary.Add(item.Key, item.Value);
             InvokeCollectionChanged(CollectionChangedEventAction.Add, default, item.Key, default, item.Value);
+        }
+
+        public void Add(object key, object value)
+        {
+            ((IDictionary)InnerDictionary).Add(key, value);
         }
 
         public void Clear()
@@ -127,6 +153,11 @@ namespace DevKit.Core.Observables
             return success;
         }
 
+        public void CopyTo(Array array, int index)
+        {
+            ((ICollection)InnerDictionary).CopyTo(array, index);
+        }
+
         public int Count
         {
             get
@@ -136,11 +167,39 @@ namespace DevKit.Core.Observables
             }
         }
 
+        public bool IsSynchronized
+        {
+            get
+            {
+                return ((ICollection)InnerDictionary).IsSynchronized;
+            }
+        }
+
+        public object SyncRoot
+        {
+            get
+            {
+                return ((ICollection)InnerDictionary).SyncRoot;
+            }
+        }
+
         public bool IsReadOnly
         {
             get
             {
                 return false;
+            }
+        }
+
+        public object this[object key]
+        {
+            get
+            {
+                return ((IDictionary)InnerDictionary)[key];
+            }
+            set
+            {
+                ((IDictionary)InnerDictionary)[key] = value;
             }
         }
 
@@ -195,6 +254,22 @@ namespace DevKit.Core.Observables
             {
                 var keys = InnerDictionary.Keys;
                 return keys;
+            }
+        }
+
+        ICollection IDictionary.Values
+        {
+            get
+            {
+                return ((IDictionary)InnerDictionary).Values;
+            }
+        }
+
+        ICollection IDictionary.Keys
+        {
+            get
+            {
+                return ((IDictionary)InnerDictionary).Keys;
             }
         }
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using DevKit.Core.Extensions;
 using DevKit.DIoC.Attributes;
@@ -98,7 +99,7 @@ namespace DevKit.DIoC.Container
             return this;
         }
 
-        public ITypeMapReset<T> From<TM>(TM instance, string key = null) where TM : class, T
+        public ITypeMapReset<T> From<TM>([NotNull] TM instance, string key = null) where TM : class, T
         {
             From<TM>(key);
             return this;
@@ -109,7 +110,7 @@ namespace DevKit.DIoC.Container
             return MapType<TM>(key, true);
         }
 
-        public ITypeMap<T> Singleton<TM>(TM instance, string key = null) where TM : class, T
+        public ITypeMap<T> Singleton<TM>([NotNull] TM instance, string key = null) where TM : class, T
         {
             var type = typeof(TM);
             if (!type.IsClass)
@@ -163,7 +164,7 @@ namespace DevKit.DIoC.Container
             return instance;
         }
 
-        public T Inject(T instance, params object[] args)
+        public T Inject([NotNull] T instance, params object[] args)
         {
             // TODO implement
             throw new NotImplementedException();
@@ -194,7 +195,7 @@ namespace DevKit.DIoC.Container
 
         // TODO split into short methods
         // TODO use args param
-        private object Resolve(Type src, object[] args)
+        private object Resolve([NotNull] Type src, object[] args)
         {
             if (src == null)
             {
@@ -210,70 +211,19 @@ namespace DevKit.DIoC.Container
                 src = type.GetMappedType();
             }
 
-            object instance;
+            InitDependencies(src, args);
+            var instance = InitInstance(src, args);
+            InjectProperties(src, args, instance);
+            ExecuteMethods(src, args, instance);
+            return instance;
+        }
 
-            var depAtt = src.GetCustomAttribute<DependencyAttribute>();
-            if (depAtt != null && !depAtt.Dependencies.IsNullOrEmpty())
-            {
-                _dependencies ??= new List<Type>();
-                foreach (var dependency in depAtt.Dependencies)
-                {
-                    // TODO check for circular dependency
-                    if (_dependencies.Contains(dependency))
-                    {
-                        // TODO write to log
-                        continue;
-                    }
-                    _dependencies.Add(dependency);
-                    Resolve(dependency, args);
-                }
-            }
-
-            var ctor = src.GetDefaultConstructor();
-            if (ctor == null)
-            {
-                throw new OperationCanceledException($"Cannot get constructor for {src}");
-            }
-
-            var ctorParams = ctor.GetParameters();
-            if (ctorParams.IsNullOrEmpty())
-            {
-                instance = ctor.Invoke(null);
-            }
-            else
-            {
-                // TODO use args param
-                var ctorParamValues = new object[ctorParams.Length];
-                for (var  i = 0; i < ctorParams.Length; i++)
-                {
-                    var ctorParam = ctorParams[i];
-                    var ctorParamType = ctorParam.ParameterType;
-                    var ctorParamValue = Resolve(ctorParamType, args);
-                    ctorParamValues[i] = ctorParamValue;
-                }
-                instance = ctor.Invoke(ctorParamValues);
-            }
-
-            var props = src.GetInjectableProperties();
-            if (!props.IsNullOrEmpty())
-            {
-                foreach (var prop in props)
-                {
-                    if (!prop.CanWrite)
-                    {
-                        // TODO write to log
-                        continue;
-                    }
-
-                    var propValue = Resolve(prop.PropertyType, args);
-                    prop.SetValue(instance, propValue);
-                }
-            }
-
+        private void ExecuteMethods(Type src, object[] args, object instance)
+        {
             var methods = src.GetExecutableMethods();
             if (methods.IsNullOrEmpty())
             {
-                return instance;
+                return;
             }
 
             foreach (var method in methods)
@@ -296,7 +246,79 @@ namespace DevKit.DIoC.Container
                     method.Invoke(instance, null);
                 }
             }
+        }
+
+        private void InjectProperties(Type src, object[] args, object instance)
+        {
+
+            var props = src.GetInjectableProperties();
+            if (!props.IsNullOrEmpty())
+            {
+                foreach (var prop in props)
+                {
+                    if (!prop.CanWrite)
+                    {
+                        // TODO write to log
+                        continue;
+                    }
+
+                    var propValue = Resolve(prop.PropertyType, args);
+                    prop.SetValue(instance, propValue);
+                }
+            }
+        }
+
+        private object InitInstance(Type src, object[] args)
+        {
+
+            object instance;
+            var ctor = src.GetDefaultConstructor();
+            if (ctor == null)
+            {
+                throw new OperationCanceledException($"Cannot get constructor for {src}");
+            }
+
+            var ctorParams = ctor.GetParameters();
+            if (ctorParams.IsNullOrEmpty())
+            {
+                instance = ctor.Invoke(null);
+            }
+            else
+            {
+                // TODO use args param
+                var ctorParamValues = new object[ctorParams.Length];
+                for (var i = 0; i < ctorParams.Length; i++)
+                {
+                    var ctorParam = ctorParams[i];
+                    var ctorParamType = ctorParam.ParameterType;
+                    var ctorParamValue = Resolve(ctorParamType, args);
+                    ctorParamValues[i] = ctorParamValue;
+                }
+                instance = ctor.Invoke(ctorParamValues);
+            }
             return instance;
+        }
+
+        private void InitDependencies([NotNull] MemberInfo src, object[] args)
+        {
+            var depAtt = src.GetCustomAttribute<DependencyAttribute>();
+            if (depAtt == null || depAtt.Dependencies.IsNullOrEmpty())
+            {
+                return;
+            }
+
+            _dependencies ??= new List<Type>();
+            foreach (var dependency in depAtt.Dependencies)
+            {
+                // TODO check for circular dependency
+                if (_dependencies.Contains(dependency))
+                {
+                    // TODO write to log
+                    continue;
+                }
+                _dependencies.Add(dependency);
+                Resolve(dependency, args);
+            }
         }
     }
 }
