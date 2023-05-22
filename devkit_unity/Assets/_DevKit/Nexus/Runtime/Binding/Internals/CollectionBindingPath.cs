@@ -110,7 +110,7 @@ namespace DevKit.Nexus.Binding.Internals
         {
             var indexesEnum = args.NewKeys.GetEnumerator();
             indexesEnum.Reset();
-            
+
             var itemsEnum = args.NewItems.GetEnumerator();
             itemsEnum.Reset();
 
