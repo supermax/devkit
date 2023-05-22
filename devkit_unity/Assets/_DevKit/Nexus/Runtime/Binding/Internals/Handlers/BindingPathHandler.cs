@@ -26,8 +26,9 @@ namespace DevKit.Nexus.Binding.Internals.Handlers
                 || path.StartsWith(pathSeparator)
                 || path.EndsWith(pathSeparator))
             {
-                source = obj;
                 propertyInfo = GetPropertyInfo(objType, path);
+                var propValue = propertyInfo.GetValue(obj);
+                source = propValue is IEnumerable ? propValue : obj;
             }
             else // in case the path is complex and contains '.' char (e.g. `DataContext.Item.Name`)
             {

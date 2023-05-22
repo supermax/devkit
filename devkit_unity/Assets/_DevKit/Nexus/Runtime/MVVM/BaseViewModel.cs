@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using DevKit.Core.Observables;
 using DevKit.Nexus.MVVM.API;
@@ -45,7 +46,7 @@ namespace DevKit.Nexus.MVVM
         /// </summary>
         /// <param name="propertyName">The name of the property</param>
         /// <returns><see cref="string"/> with validation text</returns>
-        public virtual string Validate(string propertyName)
+        public virtual string Validate([NotNull] string propertyName)
         {
             return null;
         }

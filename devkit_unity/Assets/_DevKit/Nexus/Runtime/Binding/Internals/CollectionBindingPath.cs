@@ -108,19 +108,19 @@ namespace DevKit.Nexus.Binding.Internals
 
         private static void Replace(IList source, CollectionChangedEventArgs args)
         {
-            var eItems = args.NewItems.GetEnumerator();
-            eItems.Reset();
+            var indexesEnum = args.NewKeys.GetEnumerator();
+            indexesEnum.Reset();
+            
+            var itemsEnum = args.NewItems.GetEnumerator();
+            itemsEnum.Reset();
 
-            var eKeys = args.NewItems.GetEnumerator();
-            eKeys.Reset();
-
-            while (eItems.MoveNext() && eKeys.MoveNext())
+            while (itemsEnum.MoveNext() && indexesEnum.MoveNext())
             {
-                if (eKeys.Current == null)
+                if (indexesEnum.Current == null)
                 {
                     continue;
                 }
-                source.Insert((int)eKeys.Current, eItems.Current);
+                source.Insert((int)indexesEnum.Current, itemsEnum.Current);
             }
         }
 

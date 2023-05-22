@@ -38,9 +38,9 @@ namespace DevKit.Nexus.Binding
 
         public override IBinding InitValues()
         {
-            switch (Source)
+            switch (SourceBindingPath.Source)
             {
-                case IList sourceList when Target is IList targetList:
+                case IEnumerable sourceList when TargetBindingPath.Source is IList targetList:
                 {
                     foreach (var item in sourceList)
                     {
@@ -52,7 +52,7 @@ namespace DevKit.Nexus.Binding
                     }
                     return this;
                 }
-                case IDictionary sourceDic when Target is IDictionary targetDic:
+                case IDictionary sourceDic when TargetBindingPath.Source is IDictionary targetDic:
                 {
                     var e = sourceDic.GetEnumerator();
                     e.Reset();
@@ -67,7 +67,9 @@ namespace DevKit.Nexus.Binding
                     return this;
                 }
                 default:
+                {
                     return this;
+                }
             }
         }
 
