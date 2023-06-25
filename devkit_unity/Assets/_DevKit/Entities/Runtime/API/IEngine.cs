@@ -26,13 +26,20 @@ namespace DevKit.Entities.API
         T GetInstance<T>() where T : class, IEntity;
 
         /// <summary>
+        /// Get existing entity instance in case it's registered as singleton or creates new entity instance and initializes with config values
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        IEntity GetInstance(string type);
+
+        /// <summary>
         /// Registers entity type and maps it to implementation
         /// </summary>
         /// <param name="singleton">If set `true` then the type will be mapped as singleton</param>
         /// <typeparam name="TInterface">Entity's interface</typeparam>
         /// <typeparam name="TImplementation">Entity's implementation</typeparam>
         void Register<TInterface, TImplementation>(bool singleton)
-            where TInterface : class
+            where TInterface : class, IEntity
             where TImplementation : class, TInterface;
     }
 }

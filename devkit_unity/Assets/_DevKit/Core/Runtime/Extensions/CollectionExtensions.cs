@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -285,6 +286,21 @@ namespace DevKit.Core.Extensions
 
             return false;
         }
+
+        // public static bool IsNullOrEmpty<T>(this IList src)
+        // {
+        //     if (src == null)
+        //     {
+        //         return true;
+        //     }
+        //
+        //     if (src.Count < 1)
+        //     {
+        //         return true;
+        //     }
+        //
+        //     return false;
+        // }
 
         /// <summary>
         ///     IsNullOrEmpty handling for nullable Guid objects

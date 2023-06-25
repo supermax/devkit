@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using DevKit.Analytics.Events.API;
 using DevKit.Analytics.Services.API;
+using DevKit.Core.Threading;
 
 namespace DevKit.Analytics.Services
 {
@@ -12,6 +13,8 @@ namespace DevKit.Analytics.Services
         private readonly ConcurrentQueue<IAnalyticsEvent> _eventsQueue = new();
 
         private readonly ConcurrentQueue<IAnalyticsEvent> _unprocessedEventsQueue = new();
+
+        private readonly IThreadDispatcher _dispatcher;
 
         private Timer _timer;
 
@@ -22,6 +25,11 @@ namespace DevKit.Analytics.Services
         protected bool IsInitializing { get; set; }
 
         public AnalyticsServiceConfig Config { get; } = new();
+
+        protected AnalyticsService(IThreadDispatcher dispatcher)
+        {
+            _dispatcher = dispatcher;
+        }
 
         public virtual void SendEvent(IAnalyticsEvent analyticsEvent)
         {
@@ -78,13 +86,18 @@ namespace DevKit.Analytics.Services
             try
             {
                 _isProcessing = true;
-                var analyticsEvents = new IAnalyticsEvent[Config.EventsPerWriteRequest];
+                var eventsCount = _eventsQueue.Count > Config.EventsPerWriteRequest
+                    ? Config.EventsPerWriteRequest
+                    : _eventsQueue.Count;
+                var analyticsEvents = new IAnalyticsEvent[eventsCount];
                 for (var i = 0; i < analyticsEvents.Length; i++)
                 {
                     _eventsQueue.TryDequeue(out var analyticsEvent);
                     analyticsEvents[i] = analyticsEvent;
                 }
-                SendEventsToService(analyticsEvents);
+
+                Action<IEnumerable<IAnalyticsEvent>> act = SendEventsToService;
+                _dispatcher.Dispatch(act, new object[]{analyticsEvents});
             }
             finally
             {

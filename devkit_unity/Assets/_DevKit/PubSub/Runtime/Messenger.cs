@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using DevKit.Core.Extensions;
 using DevKit.Core.Objects;
 using System.Threading;
@@ -14,7 +15,7 @@ namespace DevKit.PubSub
     /// Pub/Sub Messenger Singleton
     /// <remarks>(Implements <see cref="IMessenger"/>)</remarks>
     /// </summary>
-    public sealed class Messenger : Singleton<IMessenger, Messenger>, IMessenger
+    public sealed class Messenger : Singleton<IMessenger, Messenger>, IMessenger, IDisposable
     {
         // Mapping [PAYLOAD_TYPE]->[MAP(INT, SUBSCRIBER)]
         private readonly Dictionary<Type, SubscriberSet> _subscribersSet = new();
@@ -516,6 +517,37 @@ namespace DevKit.PubSub
                 SubscribeInternal(subscriber);
             }
             _add.Clear();
+        }
+
+        private bool _disposing;
+
+        public void Dispose()
+        {
+            if (_disposing)
+            {
+                return;
+            }
+            _disposing = true;
+
+            try
+            {
+                foreach (var sub in _subscribers.ToArray())
+                {
+                    sub.Dispose();
+                }
+                _subscribersSet.Clear();
+                _subscribers.Clear();
+
+                foreach (var sub in _add.ToArray())
+                {
+                    sub.Dispose();
+                }
+                _add.Clear();
+            }
+            finally
+            {
+                _disposing = false;
+            }
         }
     }
 }

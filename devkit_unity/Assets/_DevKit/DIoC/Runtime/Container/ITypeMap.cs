@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace DevKit.DIoC.Container
@@ -14,6 +15,8 @@ namespace DevKit.DIoC.Container
 
     internal interface ITypeMap : IDisposable
     {
-        Type GetMappedType();
+        IDictionary<string, TypeMapConfig> GetTypeMapConfigs();
+
+        IDictionary<string, object> GetInstances();
     }
 }

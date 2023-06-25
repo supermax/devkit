@@ -19,6 +19,9 @@ namespace DevKit.Entities
         /// <inheritdoc/>
         public abstract T GetInstance<T>() where T : class, IEntity;
 
+        /// <inheritdoc/>
+        public abstract IEntity GetInstance(string type);
+
         /// <summary>
         /// Instantiates entity's instance based on given type <see cref="T"/>
         /// </summary>
@@ -29,7 +32,7 @@ namespace DevKit.Entities
 
         /// <inheritdoc/>
         public abstract void Register<TInterface, TImplementation>(bool singleton)
-            where TInterface : class
+            where TInterface : class, IEntity
             where TImplementation : class, TInterface;
 
         /// <inheritdoc/>

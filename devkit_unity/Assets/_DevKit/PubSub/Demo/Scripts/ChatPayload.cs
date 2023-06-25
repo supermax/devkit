@@ -8,7 +8,7 @@
 
         public override string ToString()
         {
-            return $"UserId: {UserId}, Text: {Text}";
+            return $"{nameof(UserId)}: {UserId}, {nameof(Text)}: {Text}";
         }
     }
 }

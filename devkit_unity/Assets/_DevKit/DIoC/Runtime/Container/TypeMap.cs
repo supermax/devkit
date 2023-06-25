@@ -2,10 +2,12 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Reflection;
 using DevKit.Core.Extensions;
 using DevKit.DIoC.Attributes;
 using DevKit.DIoC.Extensions;
+using DevKit.Logging.Extensions;
 
 namespace DevKit.DIoC.Container
 {
@@ -13,15 +15,16 @@ namespace DevKit.DIoC.Container
     // TODO dispose upon removal from cache
     // TODO refer to TypeMapAttr and to InitTrigger during mapping
     // TODO handle default keys (add/remove/update)
-    internal class TypeMap<T> : ITypeMap, ITypeMap<T>, ITypeMapResolver<T>, ITypeMapReset<T> where T : class
+    internal class TypeMap<TInterface>
+        : ITypeMap
+        , ITypeMap<TInterface>
+        , ITypeMapResolver<TInterface>
+        , ITypeMapReset<TInterface>
+        where TInterface : class
     {
-        private string _defaultMapTypeKey;
-
         private IDictionary<string, TypeMapConfig> _mapTypes;
 
-        private string _defaultInstanceKey;
-
-        private IDictionary<string, T> _instances;
+        private IDictionary<string, TInterface> _instances;
 
         private List<Type> _dependencies;
 
@@ -31,12 +34,12 @@ namespace DevKit.DIoC.Container
         {
             _cache = cache;
             _mapTypes = new ConcurrentDictionary<string, TypeMapConfig>();
-            _instances = new ConcurrentDictionary<string, T>();
+            _instances = new ConcurrentDictionary<string, TInterface>();
         }
 
-        private ITypeMap<T> MapType<TM>(string key = null, bool isSingleton = false) where TM : class, T
+        private ITypeMap<TInterface> MapType<TImplementation>(string key = null, bool isSingleton = false) where TImplementation : class, TInterface
         {
-            var type = typeof(TM);
+            var type = typeof(TImplementation);
             if (!type.IsClass)
             {
                 throw new OperationCanceledException($"The type {type} is not a class!");
@@ -45,9 +48,6 @@ namespace DevKit.DIoC.Container
             {
                 throw new InvalidOperationException($"The type {type} cannot be {GetType()}!");
             }
-
-            var typeKey = key ?? type.FullName;
-            _defaultMapTypeKey ??= typeKey;
 
             var mapAtt = type.GetCustomAttribute<TypeMapAttribute>();
             if (mapAtt is {IsSingleton: true})
@@ -69,105 +69,113 @@ namespace DevKit.DIoC.Container
                 }
             }
 
-            _mapTypes[typeKey] = new TypeMapConfig {Type = type, IsSingleton = isSingleton};
-            return this;
-        }
-
-        public ITypeMap<T> To<TM>(string key = null) where TM : class, T
-        {
-            return MapType<TM>(key);
-        }
-
-        public ITypeMapReset<T> From<TM>(string key = null) where TM : class, T
-        {
-            var type = typeof(TM);
-            if (!type.IsClass)
+            var config = new TypeMapConfig {Type = type, IsSingleton = isSingleton};
+            if (key != null)
             {
-                throw new OperationCanceledException($"The type {type} is not a class!");
-            }
-            if (type == GetType())
-            {
-                throw new InvalidOperationException($"The type {type} cannot be {GetType()}!");
-            }
-
-            key ??= type.FullName;
-            _mapTypes.Remove(key);
-            if (_defaultMapTypeKey == key)
-            {
-                _defaultMapTypeKey = null;
-            }
-            return this;
-        }
-
-        public ITypeMapReset<T> From<TM>([NotNull] TM instance, string key = null) where TM : class, T
-        {
-            From<TM>(key);
-            return this;
-        }
-
-        public ITypeMap<T> Singleton<TM>(string key = null) where TM : class, T
-        {
-            return MapType<TM>(key, true);
-        }
-
-        public ITypeMap<T> Singleton<TM>([NotNull] TM instance, string key = null) where TM : class, T
-        {
-            var type = typeof(TM);
-            if (!type.IsClass)
-            {
-                throw new OperationCanceledException($"The type {type} is not a class!");
-            }
-            if (type == GetType())
-            {
-                throw new InvalidOperationException($"The type {type} cannot be {GetType()}!");
-            }
-
-            key ??= type.FullName;
-            key.ThrowIfNullOrEmpty(nameof(type.FullName));
-
-            _defaultInstanceKey = key;
-            // ReSharper disable once AssignNullToNotNullAttribute
-            _instances[key] = instance;
-
-            return Singleton<TM>(key);
-        }
-
-        public T Instance(string key = null, params object[] args)
-        {
-            T instance;
-            var type = typeof(T);
-            var instanceKey = (key ?? _defaultInstanceKey) ?? type.FullName;
-            if (_instances.ContainsKey(instanceKey))
-            {
-                instance = _instances[instanceKey];
-                return instance;
-            }
-
-            var typeKey = (key ?? _defaultMapTypeKey) ?? type.FullName;
-            if (!_mapTypes.ContainsKey(typeKey))
-            {
-                MapType<T>(typeKey);
+                _mapTypes[key] = config;
             }
             else
             {
-                type = _mapTypes[typeKey].Type;
+                _mapTypes[typeof (TInterface).FullName] = config;
+                _mapTypes[typeof (TImplementation).FullName] = config;
+            }
+            return this;
+        }
+
+        public ITypeMap<TInterface> To<TImplementation>(string key = null) where TImplementation : class, TInterface
+        {
+            return MapType<TImplementation>(key);
+        }
+
+        public ITypeMapReset<TInterface> From<TImplementation>(string key = null) where TImplementation : class, TInterface
+        {
+            var type = typeof(TImplementation);
+            if (!type.IsClass)
+            {
+                throw new OperationCanceledException($"The type {type} is not a class!");
+            }
+            if (type == GetType())
+            {
+                throw new InvalidOperationException($"The type {type} cannot be {GetType()}!");
             }
 
-            instance = (T)Resolve(type, args);
-            if (!_mapTypes[typeKey].IsSingleton)
+            if (key != null)
+            {
+                _mapTypes.Remove(key);
+            }
+            else
+            {
+                _mapTypes.Remove(typeof (TInterface).FullName);
+                _mapTypes.Remove(typeof (TImplementation).FullName);
+            }
+            return this;
+        }
+
+        public ITypeMapReset<TInterface> From<TImplementation>([NotNull] TImplementation instance, string key = null) where TImplementation : class, TInterface
+        {
+            return From<TImplementation>(key);
+        }
+
+        public ITypeMap<TInterface> Singleton<TImplementation>(string key = null) where TImplementation : class, TInterface
+        {
+            return MapType<TImplementation>(key, true);
+        }
+
+        public ITypeMap<TInterface> Singleton<TImplementation>([NotNull] TImplementation instance, string key = null) where TImplementation : class, TInterface
+        {
+            var type = typeof(TImplementation);
+            if (!type.IsClass)
+            {
+                throw new OperationCanceledException($"The type {type} is not a class!");
+            }
+            if (type == GetType())
+            {
+                throw new InvalidOperationException($"The type {type} cannot be {GetType()}!");
+            }
+
+            if (key != null)
+            {
+                _instances[key] = instance;
+            }
+            else
+            {
+                _instances[typeof (TInterface).FullName] = instance;
+                _instances[typeof (TImplementation).FullName] = instance;
+            }
+            return Singleton<TImplementation>(key);
+        }
+
+        public TInterface Instance(string key = null, params object[] args)
+        {
+            TInterface instance;
+            key ??= typeof(TInterface).FullName;
+            if (_instances.ContainsKey(key))
+            {
+                instance = _instances[key];
+                return instance;
+            }
+
+            if (!_mapTypes.ContainsKey(key))
+            {
+                this.LogWarning($"Cannot find mapped type for {key}");
+                return default;
+            }
+
+            var type = _mapTypes[key].Type;
+            instance = (TInterface)Resolve(type, args);
+            if (!_mapTypes[key].IsSingleton)
             {
                 return instance;
             }
 
-            _instances[typeKey] = instance;
-            _defaultInstanceKey ??= typeKey;
+            _instances[key] = instance;
             return instance;
         }
 
-        public T Inject([NotNull] T instance, params object[] args)
+        public TInterface Inject([NotNull] TInterface instance, params object[] args)
         {
-            // TODO implement
-            throw new NotImplementedException();
+            InjectProperties(instance.GetType(), args, instance);
+            return instance;
         }
 
         public void Dispose()
@@ -176,51 +184,58 @@ namespace DevKit.DIoC.Container
 
             _mapTypes?.Clear();
             _mapTypes = null;
-            _defaultMapTypeKey = null;
 
             _instances?.Clear();
             _instances = null;
-            _defaultInstanceKey = null;
         }
 
         public override string ToString()
         {
-            return $"{nameof(TypeMap<T>)}<{typeof(T).FullName}>";
+            return $"{nameof(TypeMap<TInterface>)}<{typeof(TInterface).FullName}>";
         }
 
-        Type ITypeMap.GetMappedType()
+        private object Resolve([NotNull] Type type, object[] args)
         {
-            return _mapTypes[_defaultMapTypeKey].Type;
-        }
-
-        // TODO split into short methods
-        // TODO use args param
-        private object Resolve([NotNull] Type src, object[] args)
-        {
-            if (src == null)
+            type.ThrowIfNull(nameof(type));
+            object instance;
+            if (!type.IsClass)
             {
-                throw new ArgumentNullException(nameof(src));
-            }
-            if (!src.IsClass)
-            {
-                var type = _cache.Get(src);
-                if (type == null)
+                var typeMap = _cache.Get(type);
+                if (typeMap == null)
                 {
-                    throw new OperationCanceledException($"The {src} is not a class!");
+                    throw new OperationCanceledException($"The {type} is not a class!");
                 }
-                src = type.GetMappedType();
-            }
 
-            InitDependencies(src, args);
-            var instance = InitInstance(src, args);
-            InjectProperties(src, args, instance);
-            ExecuteMethods(src, args, instance);
+                var key = type.FullName;
+                var configs = typeMap.GetTypeMapConfigs();
+                if (!configs.IsNullOrEmpty() && configs.ContainsKey(key))
+                {
+                    var typeConfig = configs[key];
+                    type = typeConfig.Type;
+                    key = type.FullName;
+
+                    if (typeConfig.IsSingleton)
+                    {
+                        var instances = typeMap.GetInstances();
+                        if (!instances.IsNullOrEmpty() && instances.TryGetValue(key, out instance))
+                        {
+                            return instance;
+                        }
+                    }
+                }
+            }
+            type.ThrowIfNull(nameof(type));
+
+            InitDependencies(type, args);
+            instance = InitInstance(type, args);
+            InjectProperties(type, args, instance);
+            ExecuteMethods(type, args, instance);
             return instance;
         }
 
-        private void ExecuteMethods(Type src, object[] args, object instance)
+        private void ExecuteMethods(Type type, object[] args, object instance)
         {
-            var methods = src.GetExecutableMethods();
+            var methods = type.GetExecutableMethods();
             if (methods.IsNullOrEmpty())
             {
                 return;
@@ -248,34 +263,34 @@ namespace DevKit.DIoC.Container
             }
         }
 
-        private void InjectProperties(Type src, object[] args, object instance)
+        private void InjectProperties(Type type, object[] args, object instance)
         {
-
-            var props = src.GetInjectableProperties();
-            if (!props.IsNullOrEmpty())
+            var props = type.GetInjectableProperties();
+            if (props.IsNullOrEmpty())
             {
-                foreach (var prop in props)
-                {
-                    if (!prop.CanWrite)
-                    {
-                        // TODO write to log
-                        continue;
-                    }
+                return;
+            }
 
-                    var propValue = Resolve(prop.PropertyType, args);
-                    prop.SetValue(instance, propValue);
+            foreach (var prop in props)
+            {
+                if (!prop.CanWrite)
+                {
+                    this.LogWarning($"Cannot inject value into READ-ONLY property.");
+                    continue;
                 }
+
+                var propValue = Resolve(prop.PropertyType, args);
+                prop.SetValue(instance, propValue);
             }
         }
 
-        private object InitInstance(Type src, object[] args)
+        private object InitInstance(Type type, object[] args)
         {
-
             object instance;
-            var ctor = src.GetDefaultConstructor();
+            var ctor = type.GetDefaultConstructor();
             if (ctor == null)
             {
-                throw new OperationCanceledException($"Cannot get constructor for {src}");
+                throw new OperationCanceledException($"Cannot get constructor for {type}");
             }
 
             var ctorParams = ctor.GetParameters();
@@ -310,15 +325,31 @@ namespace DevKit.DIoC.Container
             _dependencies ??= new List<Type>();
             foreach (var dependency in depAtt.Dependencies)
             {
-                // TODO check for circular dependency
                 if (_dependencies.Contains(dependency))
                 {
-                    // TODO write to log
+                    this.LogWarning($"Cyclic dependency {dependency}, skipping resolution");
                     continue;
                 }
+
                 _dependencies.Add(dependency);
                 Resolve(dependency, args);
             }
         }
+
+        #region ITypeMap
+
+        IDictionary<string, TypeMapConfig> ITypeMap.GetTypeMapConfigs()
+        {
+            return _mapTypes;
+        }
+
+        IDictionary<string, object> ITypeMap.GetInstances()
+        {
+            var dic = _instances
+                .ToDictionary<KeyValuePair<string, TInterface>, string, object>(pair => pair.Key, pair => pair.Value);
+            return dic;
+        }
+
+        #endregion
     }
 }

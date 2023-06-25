@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91bd20453eeb428986d064bf3b3942f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isLoggingEnabled: 1
+  _isLoggingEnabled: 0
   _sceneBootObjects:
   - _instance: {fileID: 1510985618}
   - _instance: {fileID: 8582652049774021219}
@@ -170,8 +170,99 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &740413045
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 740413046}
+  - component: {fileID: 740413047}
+  m_Layer: 0
+  m_Name: MyView
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &740413046
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 740413045}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &740413047
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 740413045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2b4b4279d354439b6835168fabf2222, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _isLoggingEnabled: 0
+--- !u!1 &1100970438
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1100970439}
+  - component: {fileID: 1100970440}
+  m_Layer: 0
+  m_Name: ScopedMaestroTest
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1100970439
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1100970438}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1100970440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1100970438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89abc039350f4453a6ff069ca8f9db88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _isLoggingEnabled: 0
+  _myView: {fileID: 740413047}
 --- !u!1 &1510985617
 GameObject:
   m_ObjectHideFlags: 0
@@ -183,7 +274,7 @@ GameObject:
   - component: {fileID: 1510985619}
   - component: {fileID: 1510985618}
   m_Layer: 0
-  m_Name: IncodeLoading
+  m_Name: DefaultMaestroDemoTest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -201,7 +292,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d75a54507428a48d0837148d8c128bc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isLoggingEnabled: 1
+  _isLoggingEnabled: 0
 --- !u!4 &1510985619
 Transform:
   m_ObjectHideFlags: 0
@@ -215,7 +306,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &8582652049774021218
 PrefabInstance:
@@ -233,7 +324,7 @@ PrefabInstance:
     - target: {fileID: 8582652051014588076, guid: d1f2aeb5fb6b6467ab57950b1da18e18,
         type: 3}
       propertyPath: _isLoggingEnabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8582652051014588077, guid: d1f2aeb5fb6b6467ab57950b1da18e18,
         type: 3}

@@ -16,12 +16,12 @@ namespace DevKit.Entities.API
         /// <summary>
         /// Gets Entity ID (normally will be same as class's name + hashcode)
         /// </summary>
-        string Id { get; }
+        string Id { get; set; }
 
         /// <summary>
         /// Gets Entity Type ID (normally will be same as class's name)
         /// </summary>
-        string TypeId { get; }
+        string TypeId { get; set; }
 
         /// <summary>
         /// Gets / Sets Entity's Name

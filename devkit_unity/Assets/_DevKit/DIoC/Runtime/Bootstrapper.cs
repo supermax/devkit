@@ -27,6 +27,8 @@ namespace DevKit.DIoC
             }
         }
 
+        public IMaestro MaestroInstance { get; set; } = Maestro.Default;
+
         private void Awake()
         {
             Setup();
@@ -99,7 +101,7 @@ namespace DevKit.DIoC
             this.LogInfo("Processed {0}.", nameof(BootConfig));
         }
 
-        private static void Map(AssemblyConfig assemblyConfig, TypeConfig typeConfig)
+        private void Map(AssemblyConfig assemblyConfig, TypeConfig typeConfig)
         {
             //TODO move assembly name to type map
 
@@ -107,11 +109,11 @@ namespace DevKit.DIoC
             typeConfig.ThrowIfNull(nameof(typeConfig));
 
             var maestroInterfaceType = typeof (IMaestro);
-            var mapMethodInfo = maestroInterfaceType.GetMethod(nameof(Maestro.Default.Map));
+            var mapMethodInfo = maestroInterfaceType.GetMethod(nameof(MaestroInstance.Map));
             var sourceType = Type.GetType($"{typeConfig.SourceType}, {assemblyConfig.Name}", true, true);
             var genericMapMethodInfo = mapMethodInfo.MakeGenericMethod(sourceType);
 
-            var typeMapObject = genericMapMethodInfo.Invoke(Maestro.Default, null);
+            var typeMapObject = genericMapMethodInfo.Invoke(MaestroInstance, null);
             var typeMapObjectType = typeMapObject.GetType();
             var mapToTypeMethodInfo = typeMapObjectType.GetMethod("To");
             var targetTypeName = typeConfig.TypeMappings[0];
@@ -119,7 +121,7 @@ namespace DevKit.DIoC
             var genericMapToMethodInfo = mapToTypeMethodInfo.MakeGenericMethod(targetType);
             typeMapObject = genericMapToMethodInfo.Invoke(typeMapObject, new object[]{string.Empty});
 
-            Debug.LogWarning(typeMapObject);
+            this.LogInfo($"{nameof(typeMapObject)}: {typeMapObject}");
 
             //Maestro.Default.Map<object>().Singleton<object>();
         }

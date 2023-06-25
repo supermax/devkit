@@ -5,6 +5,8 @@ namespace DevKit.Entities
 {
     public abstract class BaseConfiguration : IConfiguration
     {
+        public virtual string Id { get; set; }
+
         public virtual string Version { get; set; } = "1.0.0.0";
 
         public virtual DateTime? UpdateTime { get; set; }

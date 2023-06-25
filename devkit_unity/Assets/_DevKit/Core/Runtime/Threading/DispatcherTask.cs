@@ -5,7 +5,7 @@ namespace DevKit.Core.Threading
 {
     public class DispatcherTask : IDisposable
     {
-        public WeakReferenceDelegate Action 
+        public WeakReferenceDelegate Action
         {
             get; private set;
         }
@@ -28,7 +28,7 @@ namespace DevKit.Core.Threading
             {
                 return;
             }
-            Action.Invoke(Payload);            
+            Action.Invoke(Payload);
         }
 
         public void Dispose()
@@ -38,7 +38,12 @@ namespace DevKit.Core.Threading
                 Action.Dispose();
                 Action = null;
             }
-            Payload = null;            
+            Payload = null;
         }
-    }    
+
+        public override string ToString()
+        {
+            return $"{Action}";
+        }
+    }
 }

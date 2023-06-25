@@ -116,7 +116,7 @@ namespace DevKit.Core.Observables
             InvokeCollectionChanged(CollectionChangedEventAction.Add, default, item.Key, default, item.Value);
         }
 
-        public void Add(object key, object value)
+        void IDictionary.Add(object key, object value)
         {
             ((IDictionary)InnerDictionary).Add(key, value);
         }

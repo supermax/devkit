@@ -23,7 +23,10 @@ namespace DevKit.Core.Objects
                     {
                         isStatic = true
                     };
-                Object.DontDestroyOnLoad(root);
+                if (Application.isPlaying)
+                {
+                    Object.DontDestroyOnLoad(root);
+                }
             }
             _root = root;
             return _root;

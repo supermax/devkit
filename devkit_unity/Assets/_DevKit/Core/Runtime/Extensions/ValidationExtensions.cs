@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
@@ -51,6 +52,14 @@ namespace DevKit.Core.Extensions
             if (value.IsNullOrEmpty())
             {
                 throw new ArgumentNullException(memberName, $"{memberName} cannot be null ({callerName})");
+            }
+        }
+
+        public static void ThrowIfNullOrEmpty(this IList value, string memberName, [CallerMemberName] string callerName = "")
+        {
+            if (value == null || value.Count < 1)
+            {
+                throw new ArgumentNullException(memberName, $"{memberName} cannot be null or empty ({callerName})");
             }
         }
     }

@@ -9,8 +9,10 @@ namespace DevKit.Core.Threading
     public class UnityMainThreadDispatcher
         : MonoBehaviourSingleton<IThreadDispatcher, UnityMainThreadDispatcher>
             , IThreadDispatcher
+            , IDisposable
+            , IInitializable
     {
-        private readonly ConcurrentQueue<DispatcherTask> _tasks = new ConcurrentQueue<DispatcherTask>();
+        private readonly ConcurrentQueue<DispatcherTask> _tasks = new();
 
         public int ThreadId
         {
@@ -26,9 +28,10 @@ namespace DevKit.Core.Threading
             }
         }
 
-        private void Awake()
+        protected override void OnAwake()
         {
-            ThreadId = Thread.CurrentThread.ManagedThreadId;
+            Init();
+            base.OnAwake();
         }
 
         public void Dispatch(Delegate action, object[] payload)
@@ -44,11 +47,27 @@ namespace DevKit.Core.Threading
                 {
                     continue;
                 }
-                Debug.LogFormat("(Queue.Count: {0}) Dispatching task {1}", _tasks.Count, task.Action);
+                Debug.LogFormat($"Dispatching {task} ({_tasks.Count}: {_tasks.Count})");
 
                 task.Invoke();
                 task.Dispose();
             }
+        }
+
+        public void Dispose()
+        {
+            enabled = false;
+            _tasks.Clear();
+        }
+
+        public void Init()
+        {
+            ThreadId = Thread.CurrentThread.ManagedThreadId;
+        }
+
+        public void Reset()
+        {
+            _tasks.Clear();
         }
     }
 }
