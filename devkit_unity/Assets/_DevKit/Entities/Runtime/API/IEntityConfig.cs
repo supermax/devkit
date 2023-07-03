@@ -9,10 +9,18 @@ namespace DevKit.Entities.API
         void Init(EntityPropertiesContainer propertyValues);
 
         /// <summary>
-        /// Gets initial value for entity property
+        /// Gets value for entity's property
         /// </summary>
         /// <param name="name">The name of the property</param>
-        /// <returns></returns>
-        PropertyValueHolder GetPropertyInitialValue(string name);
+        /// <returns><see cref="PropertyValueHolder"/>Value holder</returns>
+        PropertyValueHolder GetValue(string name);
+
+        /// <summary>
+        /// Gets value for entity's property
+        /// </summary>
+        /// <param name="name">The name of the property</param>
+        /// <param name="valueHolder">the value holder</param>
+        /// <returns><see cref="PropertyValueHolder"/>Value holder</returns>
+        PropertyValueHolder SetValue(string name, PropertyValueHolder valueHolder);
     }
 }

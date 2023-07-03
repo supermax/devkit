@@ -40,5 +40,12 @@ namespace DevKit.PubSub.API
         /// <typeparam name="TS">The type of state object for the given callback</typeparam>
         /// <returns>Instance of the Messenger</returns>
         IMessengerUnsubscribe Unsubscribe<TC, TS>(Func<TC, TS, bool> predicate) where TC : class;
+
+        /// <summary>
+        /// Unsubscribe all callbacks from receiving payload of the given type
+        /// </summary>
+        /// <typeparam name="T">Type of payload to unsubscribe from</typeparam>
+        /// <returns>Instance of the Messenger</returns>
+        IMessengerUnsubscribe UnsubscribeAll<T>() where T : class;
     }
 }

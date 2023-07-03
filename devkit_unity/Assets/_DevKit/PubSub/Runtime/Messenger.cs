@@ -416,6 +416,53 @@ namespace DevKit.PubSub
             return this;
         }
 
+        /// <inheritdoc/>
+        public IMessengerUnsubscribe UnsubscribeAll<T>() where T : class
+        {
+            var payloadType = typeof (T);
+
+            // check if payload is registered
+            if (!_subscribersSet.ContainsKey(payloadType))
+            {
+                return this;
+            }
+
+            // get list of callbacks for the payload
+            _subscribersSet.TryGetValue(payloadType, out var callbacks);
+
+            // check if callbacks list is null or empty and if messenger is publishing payloads
+            if(callbacks.IsNullOrEmpty())
+            {
+                // remove payload from subscribers dic
+                _subscribersSet.Remove(payloadType);
+                return this;
+            }
+
+            // check if callback is registered and if messenger is busy with publishing
+            if(!callbacks.IsNullOrEmpty() && !callbacks.IsPublishing)
+            {
+                foreach (var callback in callbacks.Values)
+                {
+                    // remove the subscriber from the subscribers dic
+                    if (_subscribers.Contains(callback))
+                    {
+                        _subscribers.Remove(callback);
+                    }
+
+                    if (_add.Contains(callback))
+                    {
+                        _add.Remove(callback);
+                    }
+                }
+
+                callbacks.Clear();
+            }
+
+            // remove callbacks from the _subscribersSet
+            _subscribersSet.Remove(payloadType);
+            return this;
+        }
+
         /// <summary>
         /// Unsubscribe given callback by payload type
         /// </summary>

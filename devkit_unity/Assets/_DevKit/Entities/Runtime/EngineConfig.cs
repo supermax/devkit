@@ -32,14 +32,14 @@ namespace DevKit.Entities
             EntitiesConfig = entitiesConfig;
         }
 
-        public PropertyValueHolder GetPropertyInitialValue<T>(string name)
+        public PropertyValueHolder GetValue<T>(string name)
         {
             var type = typeof(T);
-            var value = GetPropertyInitialValue(type, name);
+            var value = GetValue(type, name);
             return value;
         }
 
-        public PropertyValueHolder GetPropertyInitialValue(Type type, string name)
+        public PropertyValueHolder GetValue(Type type, string name)
         {
             type.ThrowIfNull(nameof(type));
             name.ThrowIfNull(nameof(name));
@@ -50,7 +50,7 @@ namespace DevKit.Entities
             {
                 return null;
             }
-            var value = entityConfig.GetPropertyInitialValue(name);
+            var value = entityConfig.GetValue(name);
             return value;
         }
 

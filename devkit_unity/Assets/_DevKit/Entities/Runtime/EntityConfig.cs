@@ -10,41 +10,52 @@ namespace DevKit.Entities
     [Serializable]
     public class EntityConfig : BaseConfiguration, IEntityConfig
     {
-        public EntityPropertiesContainer PropertyValues { get; set; } = new();
+        /// <summary>
+        /// Properties' values container
+        /// </summary>
+        public EntityPropertiesContainer Values { get; set; } = new();
 
+        /// <inheritdoc/>
         public void Init(EntityPropertiesContainer propertyValues)
         {
-            PropertyValues = propertyValues;
+            Values = propertyValues;
         }
 
-        /// <summary>
-        /// Gets initial value for entity property
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public PropertyValueHolder GetPropertyInitialValue(string name)
+        /// <inheritdoc/>
+        public PropertyValueHolder GetValue(string name)
         {
-            if (!PropertyValues.ContainsKey(name))
+            if (!Values.ContainsKey(name))
             {
                 name = name.ToJsonPropName();
             }
-            if (!PropertyValues.ContainsKey(name))
+            if (!Values.ContainsKey(name))
             {
-                PropertyValues[name] = new PropertyValueHolder();
+                Values[name] = new PropertyValueHolder();
             }
-            var value = PropertyValues[name];
+            var value = Values[name];
             return value;
+        }
+
+        /// <inheritdoc/>
+        public PropertyValueHolder SetValue(string name, PropertyValueHolder valueHolder)
+        {
+            if (!Values.ContainsKey(name))
+            {
+                name = name.ToJsonPropName();
+            }
+            Values.TryAdd(name, valueHolder);
+            return valueHolder;
         }
 
         public void Dispose()
         {
-            if (PropertyValues == null)
+            if (Values == null)
             {
                 return;
             }
 
-            PropertyValues.Clear();
-            PropertyValues = null;
+            Values.Clear();
+            Values = null;
         }
     }
 }

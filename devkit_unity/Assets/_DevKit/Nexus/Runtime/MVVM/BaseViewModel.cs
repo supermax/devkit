@@ -59,7 +59,11 @@ namespace DevKit.Nexus.MVVM
         /// <param name="firePropertyChangedEvent">If set 'true' then fires `PropertyChangedEvent'</param>
         /// <param name="name">Property name</param>
         /// <typeparam name="T">The type of value</typeparam>
-        protected virtual void SetPropertyValue<T>(ref T value, T newValue, bool firePropertyChangedEvent = true, [CallerMemberName] string name = "")
+        protected virtual void SetPropertyValue<T>(
+            ref T value
+            , T newValue
+            , bool firePropertyChangedEvent = true
+            , [CallerMemberName] string name = "")
         {
             if (Equals(value, newValue))
             {

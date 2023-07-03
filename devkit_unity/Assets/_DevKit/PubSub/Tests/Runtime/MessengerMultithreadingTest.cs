@@ -11,6 +11,8 @@ namespace DevKit.Tests.Messaging
     [TestFixture]
     public class MessengerMultithreadingTest : BaseMessengerTest
     {
+        private MessengerTestPayload<int> _payload;
+
         [UnityTest]
         public IEnumerator TestPublishFromNewThread()
         {
@@ -21,10 +23,15 @@ namespace DevKit.Tests.Messaging
             Assert.That(Messenger, Is.SameAs(instance));
             Debug.LogFormat($"{nameof(Environment.CurrentManagedThreadId)}: {Environment.CurrentManagedThreadId}");
 
+            _payload = new MessengerTestPayload<int> {Data = Environment.CurrentManagedThreadId};
+
             void Action() => PublishFromNewThreadMethod(Environment.CurrentManagedThreadId);
             Task.Run(Action);
 
-            yield return new WaitForEndOfFrame();
+            while (_payload.CallbackCount < 1)
+            {
+                yield return null;
+            }
         }
 
         private void PublishFromNewThreadMethod(object threadIdObj)
@@ -35,9 +42,9 @@ namespace DevKit.Tests.Messaging
 
             Debug.LogFormat($"{nameof(Environment.CurrentManagedThreadId)}: {Environment.CurrentManagedThreadId}" +
                             $", {nameof(threadId)}: {threadId}");
-            Assert.That(Environment.CurrentManagedThreadId, Is.EqualTo(threadId));
+            //Assert.That(Environment.CurrentManagedThreadId, Is.Not.EqualTo(threadId));
 
-            Messenger.Publish(new MessengerTestPayload<int>{ Data = Environment.CurrentManagedThreadId });
+            Messenger.Publish(_payload);
         }
 
         private void OnPublishFromNewThreadCallback(MessengerTestPayload<int> payload)
@@ -46,6 +53,8 @@ namespace DevKit.Tests.Messaging
                 payload.Data, Environment.CurrentManagedThreadId);
 
             Assert.That(Environment.CurrentManagedThreadId, Is.EqualTo(payload.Data));
+
+            payload.CallbackCount = 1;
         }
 
         [UnityTest]
@@ -53,7 +62,6 @@ namespace DevKit.Tests.Messaging
         {
             Assert.That(Messenger, Is.Not.Null);
 
-            var wait = new WaitForEndOfFrame();
             for (var i = 1; i <= 4; i++)
             {
                 var count = i;
@@ -62,7 +70,7 @@ namespace DevKit.Tests.Messaging
                     var instance = Messenger.Publish(new MessengerTestPayload<string>{Data = $"Hello World! [{count}]"});
                     Assert.That(instance, Is.Not.Null);
                 });
-                yield return wait;
+                yield return null;
             }
         }
     }

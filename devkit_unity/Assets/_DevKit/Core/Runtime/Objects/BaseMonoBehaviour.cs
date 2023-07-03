@@ -5,6 +5,8 @@ namespace DevKit.Core.Objects
 {
     public abstract class BaseMonoBehaviour : MonoBehaviour
     {
+        private string _typeName;
+
         [SerializeField] private bool _isLoggingEnabled;
 
         /// <summary>
@@ -35,12 +37,13 @@ namespace DevKit.Core.Objects
         {
             if (IsLoggingEnabled)
             {
-                Debug.LogFormat("{0}->{1}", GetType().Name, callerName);
+                Debug.LogFormat("{0}->{1}", _typeName, callerName);
             }
         }
 
         private void Awake()
         {
+            _typeName = GetType().Name;
             OnAwake();
         }
 
