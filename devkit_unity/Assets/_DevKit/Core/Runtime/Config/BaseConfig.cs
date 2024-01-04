@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using DevKit.Core.Extensions;
 
-namespace DevKit.DIoC.Config
+namespace DevKit.Core.Config
 {
     [Serializable]
     public abstract class BaseConfig : Dictionary<string, object>

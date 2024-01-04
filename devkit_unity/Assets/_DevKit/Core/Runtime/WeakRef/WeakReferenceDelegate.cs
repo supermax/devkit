@@ -121,7 +121,7 @@ namespace DevKit.Core.WeakRef
 
         public override string ToString()
         {
-            return $"[{GetType().Name}]-[{_id}]: {_method}, {nameof(IsAlive)}: {IsAlive}";
+            return $"{_method} [{nameof(IsAlive)}: {IsAlive}, {GetType().Name}]-[{_id}]";
         }
 
         #endregion

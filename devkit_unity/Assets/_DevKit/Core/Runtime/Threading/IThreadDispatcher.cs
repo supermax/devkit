@@ -6,6 +6,6 @@ namespace DevKit.Core.Threading
     {
         int ThreadId { get; }
 
-        void Dispatch(Delegate action, object[] payload);        
+        void Dispatch(Delegate action, object[] payload, DispatcherTaskPriority priority = DispatcherTaskPriority.Medium, float? delay = null);
     }
 }

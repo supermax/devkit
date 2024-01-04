@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Concurrent;
 using System.Threading;
 using DevKit.Core.Objects;
 using UnityEngine;
@@ -12,7 +11,7 @@ namespace DevKit.Core.Threading
             , IDisposable
             , IInitializable
     {
-        private readonly ConcurrentQueue<DispatcherTask> _tasks = new();
+        private readonly PriorityQueues _tasks = new();
 
         public int ThreadId
         {
@@ -24,7 +23,7 @@ namespace DevKit.Core.Threading
         {
             get
             {
-                return _tasks.Count;
+                return _tasks.GetTotalCount();
             }
         }
 
@@ -34,24 +33,14 @@ namespace DevKit.Core.Threading
             base.OnAwake();
         }
 
-        public void Dispatch(Delegate action, object[] payload)
+        public void Dispatch(Delegate action, object[] payload, DispatcherTaskPriority priority = DispatcherTaskPriority.Medium, float? delay = null)
         {
-            _tasks.Enqueue(new DispatcherTask(action, payload));
+            _tasks.Dispatch(action, payload, priority);
         }
 
         private void Update()
         {
-            while(_tasks.Count > 0)
-            {
-                if (!_tasks.TryDequeue(out var task))
-                {
-                    continue;
-                }
-                Debug.LogFormat($"Dispatching {task} ({_tasks.Count}: {_tasks.Count})");
-
-                task.Invoke();
-                task.Dispose();
-            }
+            StartCoroutine(_tasks.Process());
         }
 
         public void Dispose()
@@ -63,6 +52,7 @@ namespace DevKit.Core.Threading
         public void Init()
         {
             ThreadId = Thread.CurrentThread.ManagedThreadId;
+            Debug.LogFormat($"[±] {nameof(Thread.CurrentThread.ManagedThreadId)}: ThreadId");
         }
 
         public void Reset()

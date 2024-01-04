@@ -53,5 +53,12 @@ namespace DevKit.Entities.API
         /// </summary>
         /// <param name="config">The entity config instance</param>
         void Init(IEntityConfig config);
+
+        /// <summary>
+        /// Init this instance with values from the <see cref="instance"/>
+        /// </summary>
+        /// <param name="instance">The entity instance</param>
+        /// <typeparam name="T">Type of entity</typeparam>
+        void Init<T>(T instance) where T : IEntity;
     }
 }

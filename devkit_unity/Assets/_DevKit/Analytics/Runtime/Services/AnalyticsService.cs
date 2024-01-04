@@ -1,30 +1,33 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Threading;
+using System.Threading.Tasks;
 using DevKit.Analytics.Events.API;
 using DevKit.Analytics.Services.API;
+using DevKit.Analytics.Services.Config;
+using DevKit.Core.Extensions;
 using DevKit.Core.Threading;
+using DevKit.Logging.Extensions;
 
 namespace DevKit.Analytics.Services
 {
     public abstract class AnalyticsService : IAnalyticsService, IDisposable
     {
-        private readonly ConcurrentQueue<IAnalyticsEvent> _eventsQueue = new();
+        protected readonly ConcurrentQueue<IAnalyticsEvent> EventsQueue = new();
 
-        private readonly ConcurrentQueue<IAnalyticsEvent> _unprocessedEventsQueue = new();
+        protected readonly ConcurrentQueue<IAnalyticsEvent> UnprocessedEventsQueue = new();
+
+        private readonly List<IAnalyticsProvider> _providers = new();
 
         private readonly IThreadDispatcher _dispatcher;
 
-        private Timer _timer;
-
-        private bool _isProcessing;
+        protected bool IsProcessing;
 
         protected bool IsInitialized { get; set; }
 
         protected bool IsInitializing { get; set; }
 
-        public AnalyticsServiceConfig Config { get; } = new();
+        public virtual AnalyticsServiceConfig Config { get; protected set; } = new();
 
         protected AnalyticsService(IThreadDispatcher dispatcher)
         {
@@ -33,7 +36,7 @@ namespace DevKit.Analytics.Services
 
         public virtual void SendEvent(IAnalyticsEvent analyticsEvent)
         {
-            _eventsQueue.Enqueue(analyticsEvent);
+            EventsQueue.Enqueue(analyticsEvent);
             ProcessEvents();
         }
 
@@ -41,84 +44,137 @@ namespace DevKit.Analytics.Services
         {
             foreach (var analyticsEvent in analyticsEvents)
             {
-                _eventsQueue.Enqueue(analyticsEvent);
+                EventsQueue.Enqueue(analyticsEvent);
             }
             ProcessEvents();
         }
 
         protected virtual void ProcessEvents()
         {
-            if (_eventsQueue.IsEmpty || _isProcessing)
+            if (EventsQueue.IsEmpty
+                && UnprocessedEventsQueue.IsEmpty
+                || IsProcessing
+                || !Config.IsOnlineModeEnabled)
             {
                 return;
             }
-            EnableTimer();
-        }
 
-        protected void EnableTimer()
-        {
-            _timer = new Timer(OnTimerTick, this, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1));
-        }
-
-        protected void DisableTimer()
-        {
-            _timer?.Dispose();
-            _timer = null;
-        }
-
-        protected virtual void OnTimerTick(object state)
-        {
-            if (!_isProcessing && _eventsQueue.IsEmpty && !_unprocessedEventsQueue.IsEmpty)
+            if (EventsQueue.IsEmpty && !UnprocessedEventsQueue.IsEmpty)
             {
-                foreach (var analyticsEvent in _unprocessedEventsQueue)
+                while (UnprocessedEventsQueue.TryDequeue(out var analyticsEvent))
                 {
-                    _eventsQueue.Enqueue(analyticsEvent);
+                    EventsQueue.Enqueue(analyticsEvent);
                 }
-                return;
             }
 
-            if (_eventsQueue.IsEmpty)
+            if (EventsQueue.IsEmpty)
             {
-                DisableTimer();
                 return;
             }
 
             try
             {
-                _isProcessing = true;
-                var eventsCount = _eventsQueue.Count > Config.EventsPerWriteRequest
+                IsProcessing = true;
+                var eventsCount = EventsQueue.Count > Config.EventsPerWriteRequest
                     ? Config.EventsPerWriteRequest
-                    : _eventsQueue.Count;
+                    : EventsQueue.Count;
                 var analyticsEvents = new IAnalyticsEvent[eventsCount];
                 for (var i = 0; i < analyticsEvents.Length; i++)
                 {
-                    _eventsQueue.TryDequeue(out var analyticsEvent);
+                    EventsQueue.TryDequeue(out var analyticsEvent);
                     analyticsEvents[i] = analyticsEvent;
                 }
 
                 Action<IEnumerable<IAnalyticsEvent>> act = SendEventsToService;
-                _dispatcher.Dispatch(act, new object[]{analyticsEvents});
+                _dispatcher.Dispatch(act, new object[]{analyticsEvents}, DispatcherTaskPriority.Low);
             }
             finally
             {
-                DisableTimer();
-                _isProcessing = false;
+                IsProcessing = false;
             }
         }
 
-        protected abstract void SendEventsToService(IEnumerable<IAnalyticsEvent> analyticsEvents);
+        protected virtual void SendEventsToService(IEnumerable<IAnalyticsEvent> analyticsEvents)
+        {
+            if (!Config.IsOnlineModeEnabled)
+            {
+                return;
+            }
+            analyticsEvents.ThrowIfNull(nameof(analyticsEvents));
+
+            foreach (var provider in _providers)
+            {
+                try
+                {
+                    provider.SendEvents(analyticsEvents);
+                }
+                catch (Exception e)
+                {
+                    this.LogError($"Error on sending {nameof(analyticsEvents)} to {provider}: {e}");
+                }
+            }
+        }
 
         protected virtual void OnEventsSendFailed(IEnumerable<IAnalyticsEvent> analyticsEvents)
         {
+            //TODO override in inheritor
             foreach (var analyticsEvent in analyticsEvents)
             {
-                _unprocessedEventsQueue.Enqueue(analyticsEvent);
+                UnprocessedEventsQueue.Enqueue(analyticsEvent);
             }
         }
 
         public virtual void SaveUnprocessedEvents()
         {
             // TODO store unprocessed events in local file(s)
+        }
+
+        protected virtual async Task InitProviders()
+        {
+            foreach (var provider in _providers.ToArray())
+            {
+                try
+                {
+                    var providerName = provider.GetType().Name;
+                    if (Config.ProvidersConfig.ContainsKey(providerName))
+                    {
+                        var providerConfig = Config.ProvidersConfig[providerName];
+                        if (!providerConfig.IsEnabled)
+                        {
+                            provider.IsEnabled = false;
+                            provider.Dispose();
+                            _providers.Remove(provider);
+                            this.LogInfo($"The {provider} is disabled, removing it from the list");
+                            continue;
+                        }
+                        provider.Config = providerConfig;
+                    }
+
+                    this.LogInfo($"Initialing {provider}");
+                    await provider.InitAsync();
+                }
+                catch (Exception e)
+                {
+                    this.LogError($"Error on initialising {provider}: {e}");
+                }
+            }
+        }
+
+        protected void AddProviders(params IAnalyticsProvider[] providers)
+        {
+            providers.ThrowIfNullOrEmpty(nameof(providers));
+
+            foreach (var provider in providers)
+            {
+                AddProvider(provider);
+            }
+        }
+
+        protected void AddProvider(IAnalyticsProvider provider)
+        {
+            provider.ThrowIfNull(nameof(provider));
+
+            _providers.Add(provider);
         }
 
         protected virtual void Dispose(bool disposing)
@@ -128,16 +184,23 @@ namespace DevKit.Analytics.Services
                 return;
             }
 
-            DisableTimer();
             try
             {
-                _isProcessing = true;
-                _eventsQueue.Clear();
-                _unprocessedEventsQueue.Clear();
+                IsProcessing = true;
+                EventsQueue.Clear();
+                UnprocessedEventsQueue.Clear();
+
+                _providers.ForEach(provider =>
+                {
+                    provider.Dispose();
+                    this.LogInfo($"Disposed {provider}");
+                });
+                _providers.Clear();
             }
             finally
             {
-                _isProcessing = false;
+                IsProcessing = false;
+                this.LogInfo("Disposed");
             }
         }
 

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Threading;
 using DevKit.Core.Objects;
-using System.Collections.Concurrent;
-using UnityEngine;
 
 namespace DevKit.Core.Threading
 {
@@ -10,7 +8,7 @@ namespace DevKit.Core.Threading
         : Singleton<IThreadDispatcher, MainThreadDispatcher>
         , IThreadDispatcher
     {
-        private readonly ConcurrentQueue<DispatcherTask> _tasks = new ConcurrentQueue<DispatcherTask>();
+        private readonly PriorityQueues _tasks = new();
 
         public int ThreadId
         {
@@ -22,7 +20,7 @@ namespace DevKit.Core.Threading
         {
             get
             {
-                return _tasks.Count;
+                return _tasks.GetTotalCount();
             }
         }
 
@@ -31,25 +29,15 @@ namespace DevKit.Core.Threading
             ThreadId = Thread.CurrentThread.ManagedThreadId;
         }
 
-        public void Dispatch(Delegate action, object[] payload)
+        public void Dispatch(Delegate action, object[] payload, DispatcherTaskPriority priority = DispatcherTaskPriority.Medium, float? delay = null)
         {
-            _tasks.Enqueue(new DispatcherTask(action, payload));
+            _tasks.Dispatch(action, payload, priority);
         }
 
         // TODO adjust for classic .NET async queue dispatching
         private void Update()
         {
-            while(_tasks.Count > 0)
-            {
-                if (!_tasks.TryDequeue(out var task))
-                {
-                    continue;
-                }
-                Debug.LogFormat("(Queue.Count: {0}) Dispatching task {1}", _tasks.Count, task.Action);
-
-                task.Invoke();
-                task.Dispose();
-            }
+            _tasks.Process();
         }
     }
 }

@@ -5,9 +5,9 @@ namespace DevKit.Core.Threading
 {
     public class DispatcherTask : IDisposable
     {
-        public WeakReferenceDelegate Action
+        private WeakReferenceDelegate Action
         {
-            get; private set;
+            get; set;
         }
 
         private object[] Payload
@@ -16,10 +16,27 @@ namespace DevKit.Core.Threading
             set;
         }
 
-        public DispatcherTask(Delegate action, object[] payload)
+        private DispatcherTaskPriority Priority
+        {
+            get;
+            set;
+        }
+
+        public float? Delay
+        {
+            get;
+            set;
+        }
+
+        public DispatcherTask(Delegate action
+            , object[] payload
+            , DispatcherTaskPriority priority = DispatcherTaskPriority.Medium
+            , float? delay = null)
         {
             Action = new WeakReferenceDelegate(action);
             Payload = payload;
+            Priority = priority;
+            Delay = delay;
         }
 
         public void Invoke()

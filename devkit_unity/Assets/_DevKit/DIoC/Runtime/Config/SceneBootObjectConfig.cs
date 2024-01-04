@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.Serialization;
+using DevKit.Core.Config;
 using UnityEngine;
 
 namespace DevKit.DIoC.Config

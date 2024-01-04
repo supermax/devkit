@@ -17,7 +17,7 @@ namespace DevKit.Analytics.Events.API
 
         string EventName { get; }
 
-        string SessionId { get; }
+        string GameSID { get; }
 
         public string Username { get; }
 

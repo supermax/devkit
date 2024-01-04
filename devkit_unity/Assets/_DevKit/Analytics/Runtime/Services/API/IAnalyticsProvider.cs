@@ -1,15 +1,18 @@
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using DevKit.Analytics.Events.API;
 using DevKit.Analytics.Services.Config;
-using DevKit.Core.Objects;
 
 namespace DevKit.Analytics.Services.API
 {
-    public interface IAnalyticsService
+    public interface IAnalyticsProvider : IDisposable
     {
-        AnalyticsServiceConfig Config { get; }
+        AnalyticsProviderConfig Config { get; set; }
 
-        void SendEvent(IAnalyticsEvent analyticsEvent);
+        bool IsEnabled { get; set; }
+
+        Task InitAsync();
 
         void SendEvents(IEnumerable<IAnalyticsEvent> analyticsEvents);
     }

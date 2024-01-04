@@ -8,7 +8,7 @@ namespace DevKit.Entities
     /// <summary>
     /// Base entity class
     /// </summary>
-    [Serializable]
+    //[Serializable]
     public abstract class Entity : Observable, IEntity
     {
         protected string NameValue;
@@ -83,6 +83,7 @@ namespace DevKit.Entities
                 return;
             }
 
+            var oldValue = value;
             value = newValue;
             if (name != nameof(UpdateTime))
             {
@@ -93,7 +94,7 @@ namespace DevKit.Entities
             {
                 return;
             }
-            InvokePropertyChanged(name, value, newValue);
+            InvokePropertyChanged(name, oldValue, newValue);
         }
 
         /// <inheritdoc/>
@@ -128,6 +129,11 @@ namespace DevKit.Entities
 
         /// <inheritdoc/>
         public abstract void Init(IEntityConfig config);
+
+        public virtual void Init<T>(T instance) where T : IEntity
+        {
+
+        }
 
         public virtual void Init()
         {

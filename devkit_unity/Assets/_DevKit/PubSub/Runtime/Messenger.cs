@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using DevKit.Core.Extensions;
 using DevKit.Core.Objects;
 using System.Threading;
@@ -114,7 +113,10 @@ namespace DevKit.PubSub
             }
 
             // add "act" into "MainThreadDispatcher" queue
-            UnityMainThreadDispatcher.Default.Dispatch((Action<Type, object>)PublishInternal, new object[] { typeof(T), payload });
+            UnityMainThreadDispatcher.Default.Dispatch(
+                (Action<Type, object>)PublishInternal
+                , new object[] { typeof(T), payload }
+                , DispatcherTaskPriority.Medium);
             return this;
         }
 
@@ -142,7 +144,10 @@ namespace DevKit.PubSub
             }
 
             // add "act" into "MainThreadDispatcher" queue
-            UnityMainThreadDispatcher.Default.Dispatch((Action<Type, object>)PublishInternal, new [] { payloadType, payload });
+            UnityMainThreadDispatcher.Default.Dispatch(
+                (Action<Type, object>)PublishInternal
+                , new [] { payloadType, payload }
+                , DispatcherTaskPriority.Medium);
             return this;
         }
 

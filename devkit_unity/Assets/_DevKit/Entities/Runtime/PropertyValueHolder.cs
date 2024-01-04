@@ -174,6 +174,17 @@ namespace DevKit.Entities
 		/// </summary>
 		/// <param name="data">The data.</param>
 		/// <returns></returns>
+		public static implicit operator PropertyValueHolder(int? data)
+		{
+			var holder = new PropertyValueHolder();
+			holder.SetValue(data);
+			return holder;
+		}
+
+		/// <summary>
+		/// </summary>
+		/// <param name="data">The data.</param>
+		/// <returns></returns>
 		public static implicit operator PropertyValueHolder(string data)
 		{
 			return new PropertyValueHolder(data);
@@ -250,6 +261,21 @@ namespace DevKit.Entities
 					$"Instance of {nameof(PropertyValueHolder)} doesn't hold a {typeof(int)}");
 			}
 			return (int)data.Number.GetValueOrDefault();
+		}
+
+		/// <summary>
+		/// </summary>
+		/// <param name="data">The data.</param>
+		/// <returns></returns>
+		/// <exception cref="System.InvalidCastException">Instance of holder doesn't hold an int</exception>
+		public static explicit operator int?(PropertyValueHolder data)
+		{
+			if (!data.Number.HasValue)
+			{
+				throw new InvalidCastException(
+					$"Instance of {nameof(PropertyValueHolder)} doesn't hold a {typeof(int?)}");
+			}
+			return (int?)data.Number.GetValueOrDefault();
 		}
 
 		/// <summary>

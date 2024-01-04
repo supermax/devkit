@@ -10,7 +10,7 @@ namespace DevKit.Analytics.Events
     public class AnalyticsEvent : IAnalyticsEvent
     {
         [JsonDataMember(Name = "sid")]
-        public string SessionId { get; set; }
+        public string GameSID { get; set; }
 
         [JsonDataMember(Name = "username")]
         public string Username { get; set; }

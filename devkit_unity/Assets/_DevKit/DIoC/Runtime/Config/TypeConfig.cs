@@ -1,4 +1,5 @@
 using System;
+using DevKit.Core.Config;
 
 namespace DevKit.DIoC.Config
 {

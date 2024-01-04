@@ -1,3 +1,4 @@
+using System;
 using DevKit.Core.Extensions;
 
 namespace DevKit.Serialization.Json.Extensions
@@ -43,6 +44,36 @@ namespace DevKit.Serialization.Json.Extensions
             // TODO use JsonData and not Json String
             var text = JsonMapper.Default.ToJson(graph);
             var result = JsonMapper.Default.ToObject<T>(text);
+            return result;
+        }
+
+        /// <summary>
+        /// Clones the specified object.
+        /// </summary>
+        /// <param name="graph"></param>
+        /// <typeparam name="TS"></typeparam>
+        /// <typeparam name="TT"></typeparam>
+        /// <returns></returns>
+        public static TT Clone<TS, TT>(this TS graph)
+        {
+            // TODO use JsonData and not Json String
+            var text = JsonMapper.Default.ToJson(graph);
+            var result = JsonMapper.Default.ToObject(text, typeof(TT));
+            return (TT)result;
+        }
+
+        /// <summary>
+        /// Clones the specified object.
+        /// </summary>
+        /// <param name="graph"></param>
+        /// <param name="targetType"></param>
+        /// <typeparam name="TS"></typeparam>
+        /// <returns></returns>
+        public static object Clone<TS>(this TS graph, Type targetType)
+        {
+            // TODO use JsonData and not Json String
+            var text = JsonMapper.Default.ToJson(graph);
+            var result = JsonMapper.Default.ToObject(text, targetType);
             return result;
         }
     }

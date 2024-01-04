@@ -11,8 +11,11 @@ namespace DevKit.PubSub
             IsPublishing = true;
             try
             {
+                var callbacks = new Subscriber[Values.Count];
+                Values.CopyTo(callbacks, 0);
+                
                 // iterate thru list of subscribers and invoke type's predicate
-                foreach (var callback in Values)
+                foreach (var callback in callbacks)
                 {
                     if (callback is not {IsPredicate: true})
                     {
@@ -27,7 +30,7 @@ namespace DevKit.PubSub
                 }
 
                 // iterate thru list of subscribers and invoke callbacks
-                foreach (var callback in Values)
+                foreach (var callback in callbacks)
                 {
                     if (callback.IsPredicate)
                     {

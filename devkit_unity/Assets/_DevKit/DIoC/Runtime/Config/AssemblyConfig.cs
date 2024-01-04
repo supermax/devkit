@@ -1,4 +1,5 @@
 using System;
+using DevKit.Core.Config;
 using DevKit.Core.Extensions;
 
 namespace DevKit.DIoC.Config
