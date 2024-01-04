@@ -2,7 +2,7 @@ using System;
 
 namespace DevKit.Nexus.Binding.Internals
 {
-    public abstract class BindingPath
+    public abstract class BindingPath : IDisposable
     {
         protected internal object Source { get; set; }
 

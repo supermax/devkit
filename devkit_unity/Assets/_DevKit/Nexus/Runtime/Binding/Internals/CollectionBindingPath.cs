@@ -74,19 +74,28 @@ namespace DevKit.Nexus.Binding.Internals
 
         private static void Add(IDictionary source, CollectionChangedEventArgs args)
         {
-            var eItems = args.NewItems.GetEnumerator();
-            eItems.Reset();
-
-            var eKeys = args.NewItems.GetEnumerator();
-            eKeys.Reset();
-
-            while (eItems.MoveNext() && eKeys.MoveNext())
+            IEnumerator eKeys = null, eItems = null;
+            try
             {
-                if (eKeys.Current == null)
+                eItems = args.NewItems.GetEnumerator();
+                eItems.Reset();
+
+                eKeys = args.NewKeys.GetEnumerator();
+                eKeys.Reset();
+
+                while (eItems.MoveNext() && eKeys.MoveNext())
                 {
-                    continue;
+                    if (eKeys.Current == null)
+                    {
+                        continue;
+                    }
+                    source.Add(eKeys.Current, eItems.Current);
                 }
-                source.Add(eKeys.Current, eItems.Current);
+            }
+            finally
+            {
+                (eKeys as IDisposable)?.Dispose();
+                (eItems as IDisposable)?.Dispose();
             }
         }
 
@@ -108,37 +117,55 @@ namespace DevKit.Nexus.Binding.Internals
 
         private static void Replace(IList source, CollectionChangedEventArgs args)
         {
-            var indexesEnum = args.NewKeys.GetEnumerator();
-            indexesEnum.Reset();
-            
-            var itemsEnum = args.NewItems.GetEnumerator();
-            itemsEnum.Reset();
-
-            while (itemsEnum.MoveNext() && indexesEnum.MoveNext())
+            IEnumerator eKeys = null, eItems = null;
+            try
             {
-                if (indexesEnum.Current == null)
+                eKeys = args.NewKeys.GetEnumerator();
+                eKeys.Reset();
+
+                eItems = args.NewItems.GetEnumerator();
+                eItems.Reset();
+
+                while (eItems.MoveNext() && eKeys.MoveNext())
                 {
-                    continue;
+                    if (eKeys.Current == null)
+                    {
+                        continue;
+                    }
+                    source.Insert((int)eKeys.Current, eItems.Current);
                 }
-                source.Insert((int)indexesEnum.Current, itemsEnum.Current);
+            }
+            finally
+            {
+                (eKeys as IDisposable)?.Dispose();
+                (eItems as IDisposable)?.Dispose();
             }
         }
 
         private static void Replace(IDictionary source, CollectionChangedEventArgs args)
         {
-            var eItems = args.NewItems.GetEnumerator();
-            eItems.Reset();
-
-            var eKeys = args.NewItems.GetEnumerator();
-            eKeys.Reset();
-
-            while (eItems.MoveNext() && eKeys.MoveNext())
+            IEnumerator eKeys = null, eItems = null;
+            try
             {
-                if (eKeys.Current == null)
+                eItems = args.NewItems.GetEnumerator();
+                eItems.Reset();
+
+                eKeys = args.NewKeys.GetEnumerator();
+                eKeys.Reset();
+
+                while (eItems.MoveNext() && eKeys.MoveNext())
                 {
-                    continue;
+                    if (eKeys.Current == null)
+                    {
+                        continue;
+                    }
+                    source[eKeys.Current] = eItems.Current;
                 }
-                source[eKeys.Current] = eItems.Current;
+            }
+            finally
+            {
+                (eKeys as IDisposable)?.Dispose();
+                (eItems as IDisposable)?.Dispose();
             }
         }
 
