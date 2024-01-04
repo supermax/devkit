@@ -1,0 +1,18 @@
+{
+    "name": "DevKit.Nexus.UI.Demo",
+    "rootNamespace": "DevKit",
+    "references": [
+        "GUID:189092fc0a61b4360931e9f8819b9ac2",
+        "GUID:0d9bfe26eca3144e5922e743850afa5b",
+        "GUID:97dbebd3a38444fb9bdbaa8fb85299e1"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
