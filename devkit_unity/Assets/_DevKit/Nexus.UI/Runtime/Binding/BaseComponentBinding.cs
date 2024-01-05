@@ -82,13 +82,6 @@ namespace DevKit.Nexus.UI.Binding
             base.OnAwake();
             Init();
         }
-
-         #if UNITY_EDITOR
-        private void OnValidate()
-        {
-            Init();
-        }
-        #endif
     }
 
 }

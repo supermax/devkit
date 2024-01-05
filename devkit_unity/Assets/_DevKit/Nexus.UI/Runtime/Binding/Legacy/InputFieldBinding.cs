@@ -17,9 +17,7 @@ namespace DevKit.Nexus.UI.Binding.Legacy
                 {
                     return;
                 }
-
                 Target.text = value;
-                OnValueChanged(value);
             }
         }
 
@@ -27,7 +25,7 @@ namespace DevKit.Nexus.UI.Binding.Legacy
         {
             base.Init();
 
-            _prevTextValue = Target.text;
+            _prevTextValue = TargetProperty;
             Target.onValueChanged.AddListener(OnValueChanged);
         }
 
