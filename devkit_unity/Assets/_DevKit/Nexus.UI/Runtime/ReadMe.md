@@ -1,17 +1,11 @@
 ## ObjectBinding
-- BindingMode: OneWay, TwoWay, OneTime
-- TargetObject
-- TargetProperty
-- SourceObject
-- SourceProperty
+- TextInput
+- Label
+- Image
+- Any common UI component
 
 ## CollectionBinding
-- BindingMode: OneWay, TwoWay, OneTime
-- TargetContainer
-- TargetProperty
-- SourceCollection
-- SourceProperty
-- ItemTemplate
+- Any common UI container
 
 ## DataTriggerBinding
 - DataTrigger

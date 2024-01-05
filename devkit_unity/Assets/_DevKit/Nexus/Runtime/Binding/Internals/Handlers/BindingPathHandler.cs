@@ -25,6 +25,8 @@ namespace DevKit.Nexus.Binding.Internals.Handlers
             if (!path.Contains(pathSeparator))
             {
                 propertyInfo = GetPropertyInfo(objType, path);
+                propertyInfo.ThrowIfNull(nameof(propertyInfo));
+
                 var propValue = propertyInfo.GetValue(obj);
                 source = propValue is IEnumerable and not string ? propValue : obj;
             }
