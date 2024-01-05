@@ -1,4 +1,3 @@
-using DevKit.Nexus.Binding.API;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,10 +18,8 @@ namespace DevKit.Nexus.UI.Binding.Legacy
                     return;
                 }
 
-                _prevTextValue = Target.text;
                 Target.text = value;
-
-                InvokePropertyChanged(nameof(TargetProperty), _prevTextValue, value);
+                OnValueChanged(value);
             }
         }
 
@@ -30,6 +27,7 @@ namespace DevKit.Nexus.UI.Binding.Legacy
         {
             base.Init();
 
+            _prevTextValue = Target.text;
             Target.onValueChanged.AddListener(OnValueChanged);
         }
 
@@ -45,7 +43,8 @@ namespace DevKit.Nexus.UI.Binding.Legacy
 
         private void OnValueChanged(string text)
         {
-            InvokePropertyChanged(nameof(TargetProperty), _prevTextValue, TargetProperty);
+            InvokePropertyChanged(nameof(TargetProperty), _prevTextValue, text);
+            _prevTextValue = text;
         }
     }
 }
