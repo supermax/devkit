@@ -134,7 +134,8 @@ GameObject:
   - component: {fileID: 407662025}
   - component: {fileID: 407662027}
   - component: {fileID: 407662026}
-  - component: {fileID: 407662028}
+  - component: {fileID: 407662029}
+  - component: {fileID: 407662030}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -204,7 +205,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 407662024}
   m_CullTransparentMesh: 1
---- !u!114 &407662028
+--- !u!114 &407662029
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 407662024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2d112f8a0574dcfa7fa26cac84ee2de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _isLoggingEnabled: 0
+  _source: {fileID: 770952477}
+  _target: {fileID: 407662030}
+  _bindingMode: 0
+  _isBindingEnabled: 1
+--- !u!114 &407662030
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -217,10 +235,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isLoggingEnabled: 0
-  _source: {fileID: 770952473}
-  _sourcePath: TargetProperty
-  _bindingMode: 0
-  _isBindingEnabled: 1
 --- !u!1 &770952472
 GameObject:
   m_ObjectHideFlags: 0
@@ -382,10 +396,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isLoggingEnabled: 0
-  _source: {fileID: 0}
-  _sourcePath: 
-  _bindingMode: 0
-  _isBindingEnabled: 0
 --- !u!1 &786588034
 GameObject:
   m_ObjectHideFlags: 0

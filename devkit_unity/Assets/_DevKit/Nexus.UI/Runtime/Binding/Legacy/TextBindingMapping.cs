@@ -4,7 +4,7 @@ using UnityEngine.UI;
 namespace DevKit.Nexus.UI.Binding.Legacy
 {
     [RequireComponent(typeof(Text))]
-    public class TextBinding : BaseComponentBinding<Text, string>
+    public class TextBindingMapping : BaseComponentBinding<Text, string>
     {
         public override string TargetProperty
         {
