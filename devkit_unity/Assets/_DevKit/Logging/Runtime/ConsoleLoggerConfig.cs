@@ -4,19 +4,14 @@ namespace DevKit.Logging
 {
     public class ConsoleLoggerConfig : ILoggerConfig
     {
-        public string Name { get; set; }
-        
-        public LogTarget Target { get; set; }
-        
-        public bool IsEnabled { get; set; }
-        
-        public TimeSpan MessageTimeSpan { get; set; }
+        public string Name { get; set; } = "Console Logger";
 
-        public ConsoleLoggerConfig()
-        {
-            Name = "Console Logger";
-            Target = LogTarget.Console;
-            IsEnabled = true;
-        }
+        public LogTarget Target { get; set; } = LogTarget.Console;
+
+        public LogType Type { get; set; } = LogType.All;
+
+        public bool IsEnabled { get; set; } = true;
+
+        public TimeSpan MessageTimeSpan { get; set; }
     }
 }

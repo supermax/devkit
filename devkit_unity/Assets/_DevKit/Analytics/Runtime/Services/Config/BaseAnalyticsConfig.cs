@@ -1,4 +1,5 @@
 using DevKit.Core.Config;
+using DevKit.Logging;
 using DevKit.Serialization.Json.API;
 
 namespace DevKit.Analytics.Services.Config
@@ -18,5 +19,11 @@ namespace DevKit.Analytics.Services.Config
 
         [JsonDataMember("eventsPerWriteRequest")]
         public virtual int EventsPerWriteRequest { get; set; }
+
+        [JsonDataMember("loggingEnabled")]
+        public virtual bool IsLoggingEnabled { get; set; }
+
+        [JsonDataMember("logType")]
+        public virtual LogType LogType { get; set; }
     }
 }

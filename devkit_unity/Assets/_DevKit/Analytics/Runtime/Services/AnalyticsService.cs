@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using DevKit.Analytics.Events.API;
 using DevKit.Analytics.Services.API;
 using DevKit.Analytics.Services.Config;
 using DevKit.Core.Extensions;
 using DevKit.Core.Threading;
+using DevKit.Logging;
 using DevKit.Logging.Extensions;
 
 namespace DevKit.Analytics.Services
@@ -141,7 +143,6 @@ namespace DevKit.Analytics.Services
                         var providerConfig = Config.ProvidersConfig[providerName];
                         if (!providerConfig.IsEnabled)
                         {
-                            provider.IsEnabled = false;
                             provider.Dispose();
                             _providers.Remove(provider);
                             this.LogInfo($"The {provider} is disabled, removing it from the list");
@@ -150,7 +151,7 @@ namespace DevKit.Analytics.Services
                         provider.Config = providerConfig;
                     }
 
-                    this.LogInfo($"Initialing {provider}");
+                    LogInfo($"Initialing {provider}");
                     await provider.InitAsync();
                 }
                 catch (Exception e)
@@ -209,5 +210,51 @@ namespace DevKit.Analytics.Services
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+        #region Logging
+
+        protected void LogInfo(string message, [CallerMemberName] string callerName = null)
+        {
+            if (!Config.IsLoggingEnabled)
+            {
+                return;
+            }
+            if (!Config.LogType.HasFlag(LogType.Info))
+            {
+                return;
+            }
+
+            LoggingExtensions.LogInfo(this, message, callerName);
+        }
+
+        protected void LogWarning(string message, [CallerMemberName] string callerName = null)
+        {
+            if (!Config.IsLoggingEnabled)
+            {
+                return;
+            }
+            if (!Config.LogType.HasFlag(LogType.Warning))
+            {
+                return;
+            }
+
+            LoggingExtensions.LogWarning(this, message, callerName);
+        }
+
+        protected void LogError(string message, [CallerMemberName] string callerName = null)
+        {
+            if (!Config.IsLoggingEnabled)
+            {
+                return;
+            }
+            if (!Config.LogType.HasFlag(LogType.Error))
+            {
+                return;
+            }
+
+            LoggingExtensions.LogError(this, message, callerName);
+        }
+
+        #endregion
     }
 }

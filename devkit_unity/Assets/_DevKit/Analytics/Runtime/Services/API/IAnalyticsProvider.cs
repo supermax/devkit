@@ -10,7 +10,7 @@ namespace DevKit.Analytics.Services.API
     {
         AnalyticsProviderConfig Config { get; set; }
 
-        bool IsEnabled { get; set; }
+        bool IsEnabled { get; }
 
         Task InitAsync();
 

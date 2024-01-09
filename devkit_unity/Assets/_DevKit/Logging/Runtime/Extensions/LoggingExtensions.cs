@@ -35,10 +35,5 @@ namespace DevKit.Logging.Extensions
             InitCallerName(obj, ref callerName);
             return Logger.Default.LogError(message, callerName);
         }
-
-        public static bool HasFlag(this LogTarget value, LogTarget flag)
-        {
-            return (value & flag) != 0;
-        }
     }
 }
