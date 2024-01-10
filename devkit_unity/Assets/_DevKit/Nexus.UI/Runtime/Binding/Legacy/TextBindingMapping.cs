@@ -8,10 +8,10 @@ namespace DevKit.Nexus.UI.Binding.Legacy
     {
         public override string TargetProperty
         {
-            get { return Target.text; }
+            get { return !Target ? null : Target.text; }
             set
             {
-                if (Target.text == value)
+                if (!Target || Target.text == value)
                 {
                     return;
                 }

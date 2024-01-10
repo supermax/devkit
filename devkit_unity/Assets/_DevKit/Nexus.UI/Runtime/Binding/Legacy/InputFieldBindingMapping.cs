@@ -6,20 +6,18 @@ namespace DevKit.Nexus.UI.Binding.Legacy
     [RequireComponent(typeof(InputField))]
     public class InputFieldBindingMapping : BaseComponentBinding<InputField, string>
     {
-        private InputField _target;
-
         public override InputField Target
         {
-            get { return _target; }
+            get { return base.Target; }
             protected set
             {
-                if (Equals(_target, value))
+                if (Equals(base.Target, value))
                 {
                     return;
                 }
 
-                _target = value;
-                if (_target == null)
+                base.Target = value;
+                if (base.Target == null)
                 {
                     return;
                 }
