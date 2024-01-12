@@ -1,3 +1,4 @@
+using DevKit.Core.Extensions;
 using DevKit.Core.Observables;
 using DevKit.Logging.Extensions;
 using DevKit.Nexus.Binding;
@@ -10,7 +11,11 @@ namespace DevKit.Nexus.UI.Binding
     {
         [SerializeField] private BaseComponentBinding _source;
 
+        [SerializeField] private string _sourcePath;
+
         [SerializeField] private BaseComponentBinding _target;
+
+        [SerializeField] private string _targetPath;
 
         [SerializeField] private BindingMode _bindingMode;
 
@@ -24,10 +29,22 @@ namespace DevKit.Nexus.UI.Binding
             set { _source = value; }
         }
 
+        public string SourcePath
+        {
+            get { return _sourcePath; }
+            set { _sourcePath = value; }
+        }
+
         public BaseComponentBinding Target
         {
             get { return _target; }
             set { _target = value; }
+        }
+
+        public string TargetPath
+        {
+            get { return _targetPath; }
+            set { _targetPath = value; }
         }
 
         public BindingMode BindingMode
@@ -52,9 +69,13 @@ namespace DevKit.Nexus.UI.Binding
 
             Binding = BindingManager.Default.Bind(
                 Source
-                , nameof(BaseComponentBinding<Component,object>.TargetProperty)
+                , !SourcePath.IsNullOrEmpty()
+                    ? SourcePath
+                    : nameof(BaseComponentBinding<Component,object>.TargetProperty)
                 , Target
-                , nameof(BaseComponentBinding<Component,object>.TargetProperty)
+                , !TargetPath.IsNullOrEmpty()
+                    ? TargetPath
+                    : nameof(BaseComponentBinding<Component,object>.TargetProperty)
                 , BindingMode);
         }
 

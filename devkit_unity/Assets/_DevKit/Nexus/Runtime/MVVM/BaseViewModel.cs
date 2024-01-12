@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using DevKit.Core.Extensions;
 using DevKit.Core.Observables;
 using DevKit.Nexus.MVVM.API;
 
@@ -10,7 +11,7 @@ namespace DevKit.Nexus.MVVM
     /// Base entity class
     /// </summary>
     [Serializable]
-    public abstract class BaseViewModel : Observable, IViewModel
+    public abstract class BaseViewModel : ObservableComponent, IViewModel
     {
         protected string NameValue;
 
@@ -57,14 +58,16 @@ namespace DevKit.Nexus.MVVM
         /// <param name="value">Current value</param>
         /// <param name="newValue">New value</param>
         /// <param name="firePropertyChangedEvent">If set 'true' then fires `PropertyChangedEvent'</param>
-        /// <param name="name">Property name</param>
+        /// <param name="propName">Property name</param>
         /// <typeparam name="T">The type of value</typeparam>
         protected virtual void SetPropertyValue<T>(
             ref T value
             , T newValue
             , bool firePropertyChangedEvent = true
-            , [CallerMemberName] string name = "")
+            , [CallerMemberName] string propName = "")
         {
+            propName.ThrowIfNullOrEmpty(nameof(propName));
+
             if (Equals(value, newValue))
             {
                 return;
@@ -80,7 +83,7 @@ namespace DevKit.Nexus.MVVM
             {
                 return;
             }
-            InvokePropertyChanged(name, value, newValue);
+            InvokePropertyChanged(propName, value, newValue);
         }
 
         public virtual void Init()
