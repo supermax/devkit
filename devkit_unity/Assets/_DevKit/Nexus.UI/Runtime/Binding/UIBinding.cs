@@ -79,9 +79,9 @@ namespace DevKit.Nexus.UI.Binding
                 , BindingMode);
         }
 
-        protected override void OnAwake()
+        protected override void OnStart()
         {
-            base.OnAwake();
+            base.OnStart();
             Init();
         }
     }

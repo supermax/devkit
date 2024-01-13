@@ -40,10 +40,6 @@ namespace DevKit.Nexus.Binding.Internals
             {
                 return;
             }
-            // if (Property.Name != args.PropertyName)
-            // {
-            //     return;
-            // }
 
             var value = GetValue();
             if (Equals(args.NewValue, value))

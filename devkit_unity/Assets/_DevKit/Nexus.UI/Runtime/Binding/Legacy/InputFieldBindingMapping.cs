@@ -16,14 +16,19 @@ namespace DevKit.Nexus.UI.Binding.Legacy
                     return;
                 }
 
+                if (base.Target != null && Target.onValueChanged != null)
+                {
+                    Target.onValueChanged.RemoveListener(OnValueChanged);
+                }
+
                 base.Target = value;
-                if (base.Target == null)
+                if (base.Target == null || !Target)
                 {
                     return;
                 }
 
                 _prevTextValue = TargetProperty;
-                Target.onValueChanged.AddListener(OnValueChanged);
+                Target.onValueChanged?.AddListener(OnValueChanged);
             }
         }
 
