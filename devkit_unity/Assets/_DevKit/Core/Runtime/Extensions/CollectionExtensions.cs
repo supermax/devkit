@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +11,27 @@ namespace DevKit.Core.Extensions
     /// </summary>
     public static class CollectionExtensions
     {
+        /// <summary>
+        /// Adds items from <param name="range"/>
+        /// </summary>
+        /// <param name="source">Source dictionary</param>
+        /// <param name="range">Range dictionary</param>
+        /// <typeparam name="TKey">The type of key</typeparam>
+        /// <typeparam name="TValue">The type of value</typeparam>
+        /// <returns>Returns <param name="source"/> instance</returns>
+        public static IDictionary<TKey, TValue> AddRange<TKey, TValue>(this IDictionary<TKey, TValue> source,
+            IDictionary<TKey, TValue> range)
+        {
+            source.ThrowIfNull(nameof(source));
+            range.ThrowIfNull(nameof(range));
+
+            foreach (var pair in range)
+            {
+                source[pair.Key] = pair.Value;
+            }
+            return source;
+        }
+        
         /// <summary>
         /// Returns first element or default value of <see cref="T"/>.
         /// </summary>

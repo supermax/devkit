@@ -25,9 +25,9 @@ namespace DevKit.Analytics.Services
 
         protected bool IsProcessing;
 
-        protected bool IsInitialized { get; set; }
+        public bool IsInitialized { get; protected set; }
 
-        protected bool IsInitializing { get; set; }
+        public bool IsInitializing { get; protected set; }
 
         public virtual AnalyticsServiceConfig Config { get; protected set; } = new();
 

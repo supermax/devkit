@@ -35,7 +35,7 @@ namespace DevKit.Core.Threading
 
         public void Dispatch(Delegate action, object[] payload, DispatcherTaskPriority priority = DispatcherTaskPriority.Medium, float? delay = null)
         {
-            _tasks.Dispatch(action, payload, priority);
+            _tasks.Dispatch(action, payload, priority, delay);
         }
 
         private void Update()
