@@ -17,9 +17,9 @@ namespace DevKit.Core.Observables
     {
         protected bool IsUpdateSuspended;
 
-        protected bool IsDisposing;
+        public bool IsDisposing { get; private set;}
 
-        protected bool IsDisposed;
+        public bool IsDisposed { get; private set; }
 
         // TODO consider using weak ref delegate
         [field: NonSerialized]

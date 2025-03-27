@@ -128,7 +128,13 @@ namespace DevKit.Entities
         }
 
         /// <inheritdoc/>
-        public abstract void Init(IEntityConfig config);
+        public virtual void Init(IEntityConfig config)
+        {
+            Config = config;
+            Id = config.Id;
+            Name = config.Name;
+            TypeId = config.TypeId;
+        }
 
         public virtual void Init<T>(T instance) where T : IEntity
         {

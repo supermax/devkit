@@ -11,5 +11,7 @@ namespace DevKit.DIoC
         ITypeMapReset<T> UnMap<T>() where T : class;
 
         void UnMapAll<T>() where T : class;
+
+		void Reset();
     }
 }

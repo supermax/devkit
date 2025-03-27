@@ -1,6 +1,7 @@
 ﻿using System;
 using DevKit.Logging;
 using DevKit.Core.WeakRef;
+using DevKit.Logging.Extensions;
 
 namespace DevKit.PubSub
 {
@@ -21,9 +22,6 @@ namespace DevKit.PubSub
         private WeakReferenceDelegate _predicate;
 
         private object _stateObj;
-
-        // logger instance from Messenger
-        private ILogger _logger;
 
         /// <summary>
         /// Indicates if callback owner is alive
@@ -77,8 +75,8 @@ namespace DevKit.PubSub
         /// <exception cref="ArgumentNullException">
         /// The exception is thrown in case 'payloadType' or 'predicate' null
         /// </exception>
-        public Subscriber(Type payloadType, Delegate predicate, ILogger logger, object stateObj)
-            : this(payloadType, predicate, null, logger, true, stateObj)
+        public Subscriber(Type payloadType, Delegate predicate, object stateObj)
+            : this(payloadType, predicate, null, true, stateObj)
         { }
 
         /// <summary>
@@ -87,13 +85,12 @@ namespace DevKit.PubSub
         /// <param name="payloadType">The type of the payload</param>
         /// <param name="callback">The callback delegate</param>
         /// <param name="predicate">The predicate delegate</param>
-        /// <param name="logger">The logger to log info or errors</param>
         /// <param name="stateObj">The state object</param>
         /// <exception cref="ArgumentNullException">
         /// The exception is thrown in case 'payloadType' or 'callback' null
         /// </exception>
-        public Subscriber(Type payloadType, Delegate callback, Delegate predicate, ILogger logger, object stateObj)
-            : this(payloadType, callback, predicate, logger, false, stateObj)
+        public Subscriber(Type payloadType, Delegate callback, Delegate predicate, object stateObj)
+            : this(payloadType, callback, predicate, false, stateObj)
         { }
 
         /// <summary>
@@ -102,13 +99,12 @@ namespace DevKit.PubSub
         /// <param name="payloadType">The type of the payload</param>
         /// <param name="callback">The callback delegate</param>
         /// <param name="predicate">The predicate delegate</param>
-        /// <param name="logger">The logger to log info or errors</param>
         /// <param name="isPredicate">Indicator is passed callback is predicate</param>
         /// <param name="stateObj">The state object</param>
         /// <exception cref="ArgumentNullException">
         /// The exception is thrown in case 'payloadType' or 'callback' null
         /// </exception>
-        private Subscriber(Type payloadType, Delegate callback, Delegate predicate, ILogger logger, bool isPredicate, object stateObj)
+        private Subscriber(Type payloadType, Delegate callback, Delegate predicate, bool isPredicate, object stateObj)
         {
             if(callback == null)
             {
@@ -119,7 +115,6 @@ namespace DevKit.PubSub
             PayloadType = payloadType ?? throw new ArgumentNullException(nameof(payloadType));
             Id = callback.GetHashCode();
             _callback = new WeakReferenceDelegate(callback);
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             IsPredicate = isPredicate;
             _stateObj = stateObj;
 
@@ -144,18 +139,18 @@ namespace DevKit.PubSub
             }
             if (_isDisposed)
             {
-                _logger?.LogError($"This instance of {nameof(Subscriber)} is disposed.");
+                this.LogError($"This instance of {nameof(Subscriber)} is disposed [{this}].");
                 return null;
             }
             // validate callback method info
             if(_callback == null)
             {
-                _logger?.LogError($"{nameof(_callback)} is null.");
+                this.LogError($"{nameof(_callback)} is null [{this}].");
                 return null;
             }
             if(!_callback.IsAlive)
             {
-                _logger?.LogWarning($"{nameof(_callback)} is not alive.");
+                this.LogWarning($"{nameof(_callback)} is not alive [{this}].");
                 return null;
             }
 
@@ -205,8 +200,7 @@ namespace DevKit.PubSub
             }
 
             _stateObj = null;
-            _logger = null;
-
+            
             if(_callback != null)
             {
                 _callback.Dispose();
@@ -238,6 +232,18 @@ namespace DevKit.PubSub
             var other = obj as Subscriber;
             var isSame = other != null && Id == other.Id && PayloadType == other.PayloadType;
             return isSame;
+        }
+
+        public override string ToString()
+        {
+            var id = (_callback?.ToString() ?? PayloadType?.Name) ?? Id.ToString();
+            return id;
+        }
+
+        public string GetCallbackString()
+        {
+            var id = $"{_callback.Target}.{_callback.Method.Name}()";
+            return id;
         }
     }
 }

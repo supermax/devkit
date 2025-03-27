@@ -14,7 +14,7 @@ namespace DevKit.Entities
         /// <summary>
         /// Contains config values for entities
         /// </summary>
-        public virtual Dictionary<string, EntityConfig> EntitiesConfig { get; set; } = new();
+        public virtual Dictionary<string, IEntityConfig> EntitiesConfig { get; set; } = new();
 
         public abstract void Init();
 
@@ -27,7 +27,7 @@ namespace DevKit.Entities
             EntitiesConfig.Clear();
         }
 
-        public void Init(Dictionary<string, EntityConfig> entitiesConfig)
+        public void Init(Dictionary<string, IEntityConfig> entitiesConfig)
         {
             EntitiesConfig = entitiesConfig;
         }
@@ -54,23 +54,26 @@ namespace DevKit.Entities
             return value;
         }
 
-        public IEntityConfig GetEntityConfig<T>()
+        public IEntityConfig GetEntityConfig(string id)
         {
-            var type = typeof (T);
-            return GetEntityConfig(type);
+            return EntitiesConfig.TryGetValue(id, out var entityConfig) ? entityConfig : null;
         }
 
-        public IEntityConfig GetEntityConfig(Type type)
+        public void AddEntityConfig(string id, IEntityConfig entityConfig)
         {
-            type.ThrowIfNull(nameof(type));
+            EntitiesConfig[id] = entityConfig;
+        }
 
-            var typeName = type.Name.ToJsonPropName();
-            if (!EntitiesConfig.ContainsKey(typeName))
+        public void AddEntityConfig<T>(Dictionary<string, T> configs) where T : class, IEntityConfig
+        {
+            if (configs == null)
             {
-                return null;
+                return;
             }
-            var entityConfig = EntitiesConfig[typeName];
-            return entityConfig;
+            foreach (var pair in configs)
+            {
+                AddEntityConfig(pair.Key, pair.Value);
+            }
         }
 
         protected virtual void Dispose(bool disposing)

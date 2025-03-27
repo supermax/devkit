@@ -58,6 +58,11 @@ namespace DevKit.DIoC
             }
             _cache.Remove<T>();
         }
+		
+		public void Reset()
+		{
+			_cache.Reset();
+		}
 
         public void Dispose()
         {

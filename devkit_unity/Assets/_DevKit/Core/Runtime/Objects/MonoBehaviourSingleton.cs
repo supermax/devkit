@@ -25,7 +25,7 @@ namespace DevKit.Core.Objects
 
         private static TInterface InvalidateInstance()
         {
-            if(!Equals(_default, default(TImplementation)))
+            if (!Equals(_default, default(TImplementation)))
             {
                 return _default;
             }
@@ -43,7 +43,7 @@ namespace DevKit.Core.Objects
                 }
             }
 
-            if (!Equals(_default, default(TImplementation)))
+            if (!Equals(_default, null))
             {
                 return _default;
             }
@@ -55,6 +55,15 @@ namespace DevKit.Core.Objects
 
             _default = go.AddComponent<TImplementation>();
             return _default;
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            if (_default != null && _default.Equals(this))
+            {
+                _default = default;
+            }
         }
     }
 }

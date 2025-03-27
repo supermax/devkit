@@ -162,6 +162,44 @@ namespace DevKit.Core.Extensions
                 action(collection[i]);
             }
         }
+        /// <summary>
+        /// Tries to get an value from dictionary, of certain type.
+        /// </summary>
+        /// <param name="dict">the soruce dictionary</param>
+        /// <param name="instance">output instance of parameter if correct type found</param>
+        /// <typeparam name="T">The type of the item</typeparam>
+        public static bool TryGetValueOfType<T>(this Dictionary<System.Type, object> dict, out T instance) where T : class
+        {
+            dict.TryGetValue(typeof(T), out var raw);
+            if (raw == null)
+            {
+                instance = null;
+                return false;
+            }
+            instance = raw as T;
+            return instance != null;
+        }
+        /// <summary>
+        /// Iterate thru parameters, and return one that matches a type.
+        /// </summary>
+        /// <remarks>
+        /// Using more effective for(i) loop instead of the expensive enumerator
+        /// </remarks>
+        /// <param name="parameters">the soruce array</param>
+        /// <param name="instance">output instance of parameter if correct type found</param>
+        /// <typeparam name="T">The type of the item</typeparam>
+        public static bool TryGetValueOfType<T>(this object[] parameters, out T instance) where T : class
+        {
+            for (var i = 0; i < parameters.Length; i++)
+                if (parameters[i] is T)
+                {
+                    instance = parameters[i] as T;
+                    return true;
+                }
+
+            instance = null;
+            return instance != null;
+        }
 
         /// <summary>
         /// IsNullOrEmpty

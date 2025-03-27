@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace DevKit.Core.Objects
 {
-    internal static class MonoBehaviourRoot
+    public static class MonoBehaviourRoot
     {
         private const string SingletonsRootName = "[SINGLETONS]";
 
@@ -10,14 +10,14 @@ namespace DevKit.Core.Objects
 
         internal static GameObject GetRoot()
         {
-            // create root game object for "[SINGLETONS]"
+            // Create root game object for "[SINGLETONS]"
             if (_root != null)
             {
                 return _root;
             }
 
             var root = GameObject.Find(SingletonsRootName);
-            if(root == null)
+            if (root == null)
             {
                 root = new GameObject(SingletonsRootName)
                     {
@@ -31,5 +31,10 @@ namespace DevKit.Core.Objects
             _root = root;
             return _root;
         }
+
+		public static void ResetAll()
+		{
+			Object.Destroy(_root);
+		}
     }
 }

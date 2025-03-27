@@ -6,16 +6,30 @@ namespace DevKit.Logging.Extensions
     // TODO cover all required extensions for useful logging
     public static class LoggingExtensions
     {
+        private static void InitCallerName(System.Type type, ref string callerName)
+        {
+            if (type == null)
+            {
+                return;
+            }
+
+            callerName = !callerName.IsNullOrEmpty()
+                ? $"{type.Name}->{callerName}"
+                : $"{type.Name}";
+        }
+
         private static void InitCallerName(object obj, ref string callerName)
         {
             if (obj == null)
             {
                 return;
             }
-
-            callerName = !callerName.IsNullOrEmpty()
-                ? $"{obj.GetType().Name}->{callerName}"
-                : $"{obj.GetType().Name}";
+            if (obj is System.Type type)
+            {
+                InitCallerName(type, ref callerName);
+                return;
+            }
+            InitCallerName(obj.GetType(), ref callerName);
         }
 
         public static ILogger LogInfo(this object obj, string message, [CallerMemberName] string callerName = "")

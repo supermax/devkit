@@ -39,6 +39,11 @@ namespace DevKit.Entities.API
         IEntityConfig Config { get; }
 
         /// <summary>
+        /// Has been disposed
+        /// </summary>
+        bool IsDisposed { get; }
+
+        /// <summary>
         /// Applies numeric property modifier
         /// </summary>
         /// <param name="name">The name of the property</param>

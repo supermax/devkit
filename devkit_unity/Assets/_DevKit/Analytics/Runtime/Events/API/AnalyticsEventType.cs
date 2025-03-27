@@ -21,6 +21,9 @@ namespace DevKit.Analytics.Events.API
         PlayerData,
 
         [JsonDataMember("tech")]
-        Technical
+        Technical,
+        
+        [JsonDataMember("popup")]
+        Popup
     }
 }

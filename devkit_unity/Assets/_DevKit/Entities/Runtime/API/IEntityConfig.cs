@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 
 namespace DevKit.Entities.API
 {
     public interface IEntityConfig : IDisposable, IConfiguration
     {
-        void Init(EntityPropertiesContainer propertyValues);
+        string TypeId { get; }
+        Dictionary<string, List<string>> RelatedConfigs { get; }
+        
+        void Init(IDictionary<string, PropertyValueHolder> propertyValues);
 
         /// <summary>
         /// Gets value for entity's property
@@ -22,5 +24,9 @@ namespace DevKit.Entities.API
         /// <param name="valueHolder">the value holder</param>
         /// <returns><see cref="PropertyValueHolder"/>Value holder</returns>
         PropertyValueHolder SetValue(string name, PropertyValueHolder valueHolder);
+        
+        List<string> GetRelatedConfigIds(string name);
+
+        IEntityConfig Copy();
     }
 }

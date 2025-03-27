@@ -2,7 +2,8 @@
     "name": "DevKit.Entities",
     "rootNamespace": "DevKit",
     "references": [
-        "GUID:189092fc0a61b4360931e9f8819b9ac2"
+        "GUID:189092fc0a61b4360931e9f8819b9ac2",
+        "GUID:5667eaf776092417d984f0d642785a98"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

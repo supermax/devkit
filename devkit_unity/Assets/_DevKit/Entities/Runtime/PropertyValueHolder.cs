@@ -10,9 +10,10 @@ namespace DevKit.Entities
     /// Mainly used in RPG entities with engine initialization and optimal calculations
     /// </remarks>
     [Serializable]
+    //[JsonConverter(typeof(PropertyValueHolderJsonConverter))]
     public class PropertyValueHolder
     {
-        /// <summary>
+	    /// <summary>
         /// Holds <see cref="bool"/> value
         /// </summary>
         public bool? Bool { get; set; }

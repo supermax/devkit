@@ -6,7 +6,6 @@ using DevKit.Tests.Messaging.Fixtures;
 using UnityEngine;
 using UnityEngine.TestTools;
 using Debug = System.Diagnostics.Debug;
-using ILogger = DevKit.Logging.ILogger;
 
 namespace DevKit.Tests.Messaging
 {
@@ -27,16 +26,16 @@ namespace DevKit.Tests.Messaging
             Assert.That(_ref.Ref, Is.Not.Null);
         }
 
-        private static Subscriber GetSubscriber(Type payloadType, Delegate callback, Delegate predicate, ILogger logger, object stateObj)
+        private static Subscriber GetSubscriber(Type payloadType, Delegate callback, Delegate predicate, object stateObj)
         {
-            var subscriber = new Subscriber(payloadType, callback, predicate, logger, stateObj);
+            var subscriber = new Subscriber(payloadType, callback, predicate, stateObj);
             Assert.That(subscriber, Is.Not.Null);
             return subscriber;
         }
 
-        private static Subscriber GetSubscriber(Type payloadType, Delegate predicate, ILogger logger, object stateObj)
+        private static Subscriber GetSubscriber(Type payloadType, Delegate predicate,  object stateObj)
         {
-            var subscriber = new Subscriber(payloadType, predicate, logger, stateObj);
+            var subscriber = new Subscriber(payloadType, predicate, stateObj);
             Assert.That(subscriber, Is.Not.Null);
             return subscriber;
         }
@@ -44,7 +43,7 @@ namespace DevKit.Tests.Messaging
         private Subscriber GetSubscriber()
         {
             var payload = new MessengerTestPayload<int> {Data = StateNumber};
-            var subscriber = GetSubscriber(_filteredPayloadType, (Action<FilteredPayload, object>)OnSubscriberCallback, (Func<FilteredPayload, object, bool>)SubscriberPredicate, Logger, payload);
+            var subscriber = GetSubscriber(_filteredPayloadType, (Action<FilteredPayload, object>)OnSubscriberCallback, (Func<FilteredPayload, object, bool>)SubscriberPredicate, payload);
             return subscriber;
         }
 
@@ -79,19 +78,19 @@ namespace DevKit.Tests.Messaging
             var predicate = (Func<FilteredPayload, object, bool>)SubscriberPredicate;
 
             // ctor with callback only
-            Assert.Throws<ArgumentNullException>(() => GetSubscriber(null, null!, null, null, null));
-            Assert.Throws<ArgumentNullException>(() => GetSubscriber(_filteredPayloadType, null!, null, null, null));
-            Assert.Throws<ArgumentNullException>(() => GetSubscriber(_filteredPayloadType, callback, null, null, null));
-            Assert.That(() => GetSubscriber(_filteredPayloadType, callback, null, Logger, null), Is.Not.Null);
+            Assert.Throws<ArgumentNullException>(() => GetSubscriber(null, null!, null, null));
+            Assert.Throws<ArgumentNullException>(() => GetSubscriber(_filteredPayloadType, null!, null, null));
+            Assert.Throws<ArgumentNullException>(() => GetSubscriber(_filteredPayloadType, callback, null, null));
+            Assert.That(() => GetSubscriber(_filteredPayloadType, callback, null, null), Is.Not.Null);
 
             // ctor with callback and predicate
-            Assert.Throws<ArgumentNullException>(() => GetSubscriber(_filteredPayloadType, null!, predicate, null, null));
-            Assert.Throws<ArgumentNullException>(() => GetSubscriber(_filteredPayloadType, callback, predicate, null, null));
-            Assert.That(() => GetSubscriber(typeof(FilteredPayload), callback, predicate, Logger, null), Is.Not.Null);
+            Assert.Throws<ArgumentNullException>(() => GetSubscriber(_filteredPayloadType, null!, predicate, null));
+            Assert.Throws<ArgumentNullException>(() => GetSubscriber(_filteredPayloadType, callback, predicate, null));
+            Assert.That(() => GetSubscriber(typeof(FilteredPayload), callback, predicate, null), Is.Not.Null);
 
             // ctor with predicate only
             Assert.Throws<ArgumentNullException>(() => GetSubscriber(_filteredPayloadType, predicate, null, null));
-            Assert.That(() => GetSubscriber(_filteredPayloadType, predicate, Logger, null), Is.Not.Null);
+            Assert.That(() => GetSubscriber(_filteredPayloadType, predicate, null), Is.Not.Null);
         }
 
         [Test]
@@ -132,7 +131,7 @@ namespace DevKit.Tests.Messaging
             Debug.Assert(_ref.Ref != null, $"{nameof(_ref.Ref)} != null");
             Debug.WriteLine("Tested {0}->{1}", _ref, _ref.Ref);
 
-            var subscriber = GetSubscriber(typeof(MessengerTestPayload<int>), (Action<MessengerTestPayload<int>>)_ref.Ref.Callback, Logger, null);
+            var subscriber = GetSubscriber(typeof(MessengerTestPayload<int>), (Action<MessengerTestPayload<int>>)_ref.Ref.Callback, null);
             Assert.That(subscriber, Is.Not.Null);
 
             var payload = new MessengerTestPayload<int>();

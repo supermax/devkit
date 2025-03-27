@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using DevKit.Serialization.Json.API;
 
@@ -285,7 +286,7 @@ namespace DevKit.Serialization.Json.Interpreters
 			    number.IndexOf('e') != -1 ||
 			    number.IndexOf('E') != -1)
 			{
-				if (double.TryParse(number, out var nDouble))
+				if (double.TryParse(number, NumberStyles.Number, CultureInfo.InvariantCulture, out var nDouble))
 				{
 					Token = JsonToken.Double;
 					Value = nDouble;

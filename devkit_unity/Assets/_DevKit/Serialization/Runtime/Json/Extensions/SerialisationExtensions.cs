@@ -24,7 +24,6 @@ namespace DevKit.Serialization.Json.Extensions
         /// </summary>
         /// <param name="json">Source JSON string</param>
         /// <typeparam name="T">The type of target object</typeparam>
-        /// <returns><see cref="string"/></returns>
         public static T ToObject<T>(this string json)
         {
             json.ThrowIfNullOrEmpty(json);

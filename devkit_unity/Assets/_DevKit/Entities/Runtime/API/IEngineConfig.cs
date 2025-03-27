@@ -9,13 +9,13 @@ namespace DevKit.Entities.API
     /// </summary>
     public interface IEngineConfig : IInitializable, IConfiguration
     {
-        Dictionary<string, EntityConfig> EntitiesConfig { get; }
+        Dictionary<string, IEntityConfig> EntitiesConfig { get; }
 
         /// <summary>
         /// Initialize config values
         /// </summary>
         /// <param name="entitiesConfig"></param>
-        void Init(Dictionary<string, EntityConfig> entitiesConfig);
+        void Init(Dictionary<string, IEntityConfig> entitiesConfig);
 
         /// <summary>
         /// Gets initial value for given property
@@ -33,8 +33,8 @@ namespace DevKit.Entities.API
         /// <returns></returns>
         PropertyValueHolder GetValue(Type type, string name);
 
-        IEntityConfig GetEntityConfig<T>();
-
-        IEntityConfig GetEntityConfig(Type type);
+        IEntityConfig GetEntityConfig(string id);
+        void AddEntityConfig(string id, IEntityConfig entityConfig);
+        void AddEntityConfig<T>(Dictionary<string, T> configs) where T : class, IEntityConfig;
     }
 }

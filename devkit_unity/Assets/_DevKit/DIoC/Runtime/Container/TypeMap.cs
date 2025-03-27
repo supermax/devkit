@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using DevKit.Core.Extensions;
+using DevKit.Core.Observables;
 using DevKit.DIoC.Attributes;
 using DevKit.DIoC.Extensions;
 using DevKit.Logging.Extensions;
@@ -147,11 +148,10 @@ namespace DevKit.DIoC.Container
 
         public TInterface Instance(string key = null, params object[] args)
         {
-            TInterface instance;
             key ??= typeof(TInterface).FullName;
-            if (_instances.ContainsKey(key))
+            if (_instances.TryGetValue(key, out TInterface instance) &&
+                (instance is not Observable observable || (!observable.IsDisposed && !observable.IsDisposing)))
             {
-                instance = _instances[key];
                 return instance;
             }
 

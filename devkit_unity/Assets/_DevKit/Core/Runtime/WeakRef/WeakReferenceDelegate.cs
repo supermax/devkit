@@ -30,18 +30,20 @@ namespace DevKit.Core.WeakRef
         {
             get
             {
-                if(_method == null)
+                if (_method == null)
                 {
                     return false;
                 }
-                if(_method.IsStatic)
+                if (_method.IsStatic)
                 {
                     return true;
                 }
-                var isAlive = _ref is {IsAlive: true, Target: not null};
+                var isAlive = _ref is { IsAlive: true, Target: not null };
                 return isAlive;
             }
         }
+
+        public MethodInfo Method => _method;
 
         public WeakReferenceDelegate(Delegate method)
         {
@@ -100,7 +102,7 @@ namespace DevKit.Core.WeakRef
 
             object result;
             // if method is void, don't expect return value
-            if (_method.ReturnType == typeof (void))
+            if (_method.ReturnType == typeof(void))
             {
                 result = null;
                 _method.Invoke(Target, args);

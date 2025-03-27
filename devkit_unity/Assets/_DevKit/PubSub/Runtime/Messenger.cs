@@ -5,6 +5,7 @@ using DevKit.Core.Objects;
 using System.Threading;
 using DevKit.Logging;
 using DevKit.Core.Threading;
+using DevKit.Logging.Extensions;
 using DevKit.PubSub.API;
 using DevKit.PubSub.Monitor;
 
@@ -24,8 +25,6 @@ namespace DevKit.PubSub
 
         // List of subscribers to optimize add (subscribe) operation
         private readonly List<Subscriber> _add = new();
-
-        private readonly ILogger _logger = Logger.Default;
 
         /// <summary>
         /// Static CTOR to initialize other monitoring tools (singletons)
@@ -115,8 +114,7 @@ namespace DevKit.PubSub
             // add "act" into "MainThreadDispatcher" queue
             UnityMainThreadDispatcher.Default.Dispatch(
                 (Action<Type, object>)PublishInternal
-                , new object[] { typeof(T), payload }
-                , DispatcherTaskPriority.Medium);
+                , new object[] { typeof(T), payload });
             return this;
         }
 
@@ -146,8 +144,7 @@ namespace DevKit.PubSub
             // add "act" into "MainThreadDispatcher" queue
             UnityMainThreadDispatcher.Default.Dispatch(
                 (Action<Type, object>)PublishInternal
-                , new [] { payloadType, payload }
-                , DispatcherTaskPriority.Medium);
+                , new [] { payloadType, payload });
             return this;
         }
 
@@ -188,7 +185,7 @@ namespace DevKit.PubSub
             // capture the type of the payload
             var key = typeof(TC);
             // init new subscriber instance
-            var sub = new Subscriber(key, callback, predicate, _logger, stateObj);
+            var sub = new Subscriber(key, callback, predicate, stateObj);
 
             // check if messenger is busy with publishing payloads
             if (_subscribersSet.ContainsKey(key) && _subscribersSet[key].IsPublishing)
@@ -220,7 +217,7 @@ namespace DevKit.PubSub
             // capture the type of the payload
             var key = typeof(T);
             // init new subscriber instance
-            var sub = new Subscriber(key, predicate, _logger, null);
+            var sub = new Subscriber(key, predicate, null);
 
             // check if messenger is busy with publishing payloads
             if (_subscribersSet.ContainsKey(key) && _subscribersSet[key].IsPublishing)
@@ -252,7 +249,7 @@ namespace DevKit.PubSub
             // capture the type of the payload
             var key = typeof(TC);
             // init new subscriber instance
-            var sub = new Subscriber(key, predicate, _logger, stateObj);
+            var sub = new Subscriber(key, predicate, stateObj);
 
             // check if messenger is busy with publishing payloads
             if (_subscribersSet.ContainsKey(key) && _subscribersSet[key].IsPublishing)
@@ -280,7 +277,7 @@ namespace DevKit.PubSub
             // capture the type of the payload
             var key = typeof(T);
             // init new subscriber instance
-            var sub = new Subscriber(key, callback, predicate, _logger, null);
+            var sub = new Subscriber(key, callback, predicate, null);
 
             // check if messenger is busy with publishing payloads
             if (_subscribersSet.ContainsKey(key) && _subscribersSet[key].IsPublishing)
@@ -302,7 +299,7 @@ namespace DevKit.PubSub
             // check is subscriber is valid
             if(subscriber is not {IsAlive: true})
             {
-                _logger.LogError("The {Subscriber} is null or not alive", nameof(subscriber));
+                this.LogError($"The {nameof(subscriber)} is null or not alive");
                 return;
             }
 
@@ -324,18 +321,17 @@ namespace DevKit.PubSub
 
             if (callbacks == null)
             {
-                _logger.LogError($"{nameof(callbacks)} container is null!");
+                this.LogError($"{nameof(callbacks)} container is null!");
                 return;
             }
 
+            // register new subscriber
             // check if subscriber is already registered
-            if(callbacks.ContainsKey(subscriber.Id))
+            if(!callbacks.TryAdd(subscriber.Id, subscriber))
             {
                 return;
             }
-            // register new subscriber
-            callbacks.Add(subscriber.Id, subscriber);
-
+            
             // add new list of callbacks/subscribers into flat list for fast access
             if (!_subscribers.Contains(subscriber))
             {
