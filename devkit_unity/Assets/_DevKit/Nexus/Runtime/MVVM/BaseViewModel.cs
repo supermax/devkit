@@ -35,14 +35,6 @@ namespace DevKit.Nexus.MVVM
         public virtual DateTime? UpdateTime { get; set; }
 
         /// <summary>
-        /// Default ctor
-        /// </summary>
-        protected BaseViewModel()
-        {
-            IsUpdateSuspended = true;
-        }
-
-        /// <summary>
         /// Validates property's value and returns the text with error or empty/null if value is valid
         /// </summary>
         /// <param name="propertyName">The name of the property</param>

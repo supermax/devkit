@@ -1,349 +1,96 @@
-# Pub/Sub Messaging in Unity
-
-**Pub-Sub Messenger** is a Lightweight, Open Source Library for Unity.
-This library will provide a pub-sub mechanism that is a part of SOLID principles in programming.
-
-## Contents
-* [The Problem](#the-problem)
-* [The Solution](#the-solution)
-* [Message Routing](#message-routing)
-* [Messenger API](#messenger-api)
-* [Use Cases](#use-cases)
-* [Correct Usage](#correct-usage)
-* [MainThreadDispatcher API](#mainthreaddispatcher-api)
-* [Package Structure](#package-structure)
-* [Unit Tests](#unit-tests)
-* [DEMO Project](#demo-project)
-
-### Youtube Video with Instructions:
-[![Video-Instructions](http://img.youtube.com/vi/vI0XYKGAZLg/0.jpg)](http://www.youtube.com/watch?v=vI0XYKGAZLg)
-
-***
-
-## The Problem
-
-* **Wiring the Parts with Events** – Tightly Coupled and may cause Memory Leak problems. The Publisher and the Subscriber have to know of each other, and a Subscriber can't be collected by the GC if it's connected with the Publisher with strong event reference.
-* **Using Unity Event Routing** – Although Unity Event Routing is a very good feature, it is a Unity Specific Solution and we need a generic one. Also, we cannot use it everywhere even if the project is in Unity.
-* **Dependency** - In commonly used C# events or delegates, classes are “familiar” with each other and this prevents good modularity. This is NOT following SOLID Principles and Objects are not Encapsulated.
-
-### Example of common usages of events in C#:
-
-```csharp
-public class Human
-{
-    // event that passes instance of Stick when it is invoked
-    public event Action<Stick> FetchStick;
-    
-    // static event that passes instance of Ball when it is invoked
-    public static event Action<Ball> FetchBall;
-}
-
-public class Dog : Animal
-{
-    // event handler - method that is invoked by event and receives Stick instance
-    public void OnFetchStick(Stick stick) { /*TODO*/ }
-}
-
-public class Cat : Animal
-{
-    // event handler - method that is invoked by event and receives Ball instance
-    public void OnFetchBall(Ball ball) { /*TODO*/ }
-}
-
-public class Playground
-{
-    public Human David { get; set; }
-    private Dog Rex { get; set; }
-    private Cat Max { get; set; }
-
-    public void RegisterEvents()
-    {
-        David.FetchStick += Rex.OnFetchStick;
-        Human.FetchBall += Max.OnFetchBall;
-    }
-}
-```
-![david -> rex](Images/david_rex.png)
-> Rex.OnFetchStick is attached to David.FetchStick and David instance has reference to Rex instance. Rex instance will not be removed from the memory until it's handler OnFetchStick will be detached from FetchStick event or until David will be removed from the memory.
-
-![human -> rex](Images/human_rex.png)
-> Max.OnFetchBall is attached to Human.FetchBall and Max instance is referenced by static pointer Human.FetchBall. Max instance will not be removed from the memory until it's handler OnFetchBall will be detached from static event FetchBall. Static references are worse case of memory leaks.
-
-***
-
-## The Solution
-
-* **Pub\Sub Messenger** - Container for Events that allows Decoupling of Publishers and Subscribers so they can evolve independently. This Decoupling is useful in Modularised Applications because new modules can be added that respond to events defined by the Shell or, more likely, other modules. All events have a Weak Reference and invocation can be done Async or Sync way.
-* Instead of passing objects or modules, pass small **Payloads** (Data/Messages) that are relevant for the specific cases/events.
-* Classes/Modules will not be “familiar” with each other, this will allow better **encapsulation and less dependencies**.
-* In case of subscriber’s destruction, it will be removed automatically from Messenger’s list, since it was referenced via **Weak Reference**.
-* Pub/Sub can be a great pattern in combination with _Dependency Injection_ (DP) and with _Inversion of Control_ (IoC), both part of _SOLID_ Principles.
-
-### Usage of Messenger as Pub/Sub mechanism:
-
-```csharp
-public class FetchStickPayload
-{
-     // stick type for filtering
-     public StickTypes StickType { get; set; }
-     
-     // the position of stick in the space
-     public Vector3 Position { get; set; }
-}
-
-// publisher
-public class Human
-{
-     public void PublishFetchStickPayload()
-     {
-         // publish new payload with specific data
-         Messenger.Default.Publish(
-              new FetchStickPayload 
-                       { 
-                              StickType = StickTypes.PlasticStick, 
-                              Position = new Vector3(1, 1, 0) 
-                       });
-     }
-}
-
-// subscriber
-public class Dog : Animal
-{
-     // callback - method that is invoked by Messenger and receives payload instance
-     public void OnFetchStick(FetchStickPayload payload) { /* TODO handle stick fetching */ }
-}
-
-public class Playground
-{
-     public Human David { get; set; }
-     public Dog Billy { get; set; }
-     public Dog Mika { get; set; }
-
-     public void Subscribe()
-     { 
-         // subscribe callback Billy.OnFetchStick to FetchStickPayload
-         Messenger.Default.Subscribe<FetchStickPayload>(Billy.OnFetchStick);
-        
-         // subscribe callback Mika.OnFetchStick to FetchStickPayload with filter/predicate
-         Messenger.Default.Subscribe<FetchStickPayload>(Mika.OnFetchStick, CanFetchStick);
-     }
-
-     private bool CanFetchStick(FetchStickPayload payload) { /* TODO filter unwanted stick types */ }
-}
-```
-![billi -> mika](Images/billi_mika.png)
-
-***
-
-## Message Routing
-
-![Messenger](Images/messenger.gif)
-
-***
-
-## Messenger API
-
-### Messenger implements this interface:
-
-```csharp
-// Messenger Interface
-public interface IMessenger
-{
-    // Subscribe callback to receive a payload
-    // Predicate to filter the payload (optional)
-    IMessenger Subscribe<T>(Action<T> callback, Predicate<T> predicate = null);
-
-    // Unsubscribe the callback from receiving the payload 
-    IMessenger Unsubscribe<T>(Action<T> callback);
-
-    // Publish the payload to its subscribers
-    IMessenger Publish<T>(T payload);
-}
-```
-
-Access to default Messenger instance via: 
-```csharp
-SuperMaxim.Messaging.Messenger.Default.[function]
-```
+---
+title: DevKit – The AI-Powered Gaming Platform
+description: Build smarter, scalable games with AI. DevKit brings AI-native tools, modular infrastructure, and next-gen world generation to developers of every size.
+theme: jekyll-theme-hacker
+---
 
-### Publish
+# 🎮 DevKit — The AI-Powered Game-as-a-Service Platform
 
-```csharp
-// Generic Parameter <T> - here is a <Payload> that will be published to subscribers of this type
-Messenger.Default.Publish<Payload>(new Payload{ /* payload params */ });
+> One platform. Every tool. Smarter, faster game development with AI.
 
-// In most cases there is no need in specifying Generic Parameter <T>
-Messenger.Default.Publish(new Payload{ /* payload params */ });
+---
 
-// Generic Parameter <T> - here is a <IPayload> that will be published to subscribers of this type
-Messenger.Default.Publish<IPayload>(new Payload{ /* payload params */ });
-
-class Payload : IPayload
-{
+## 🌍 Vision
 
-}
-```
-
-### Subscribe
+DevKit empowers game creators of all sizes — from solo devs to large studios — with an AI-native platform to **build, scale, and manage games** faster than ever.  
+We merge **world generation, backend infrastructure, AI/ML**, and **low-code tools** into one modular GaaS engine.
 
-```csharp
-// Payload – the type of Callback parameter
-// Callback – delegate (Action<T>) that will receive the payload
-Messenger.Default.Subscribe<Payload>(Callback);
+---
 
-private static void Callback(Payload payload)
-{
-  // Callback logic
-}
-```
-
-### Subscribe with Predicate
-
-```csharp
-// Predicate – delegate (Predicate<T>) that will receive payload to filter
-Messenger.Default.Subscribe<Payload>(Callback, Predicate);
-
-private static bool Predicate(Payload payload)
-{
-  // Predicate filter logic
-  // if function will return ‘false’ value, the Callback will not be invoked
-  return accepted;
-}
-```
+## 🚀 Why Now?
 
-### Unsubscribe - Variant #1
-
-```csharp
-// Payload – the type of Callback parameter that was subscribed
-// Callback – delegate (Action<Payload>) that was subscribed
-Messenger.Default.Unsubscribe<Payload>(Callback);
+- ⚙️ Game development is still expensive, manual, and fragmented  
+- 🔥 Studios want AI for worldbuilding, economy tuning, QA, NPCs — but it's hard to integrate  
+- 🚀 DevKit unlocks **creativity, speed, and automation** for the next generation of games
 
-private static void Callback(Payload payload)
-{
-  // Callback logic
-}
-```
+---
 
-### Unsubscribe - Variant #2
+## 🧩 Core Modules (MVP)
 
-```csharp
-// IPayload – the type of Callback parameter that was subscribed
-// Callback – delegate (Action<Payload>) that was subscribed
-Messenger.Default.Unsubscribe<IPayload>(Callback);
+| Module               | Description                                               |
+|----------------------|-----------------------------------------------------------|
+| 🌎 **WorldGen AI**       | Generate open-world terrain, biomes, cities, and structures |
+| 🧠 **NPC Intelligence**  | LLM-powered dynamic behaviors, dialogue, and quests       |
+| ⚙️ **GameOps Core**      | Player data, remote config, live telemetry               |
+| 💬 **Chat & Streaming**  | Multiplayer comms, overlays, and social integrations     |
+| 🛒 **Store & Economy**   | AI-enhanced economy designer, UGC monetization tools     |
+| 🧪 **CI/CD + Testing**   | Simulated balancing, AI-driven QA and live updates       |
 
-// Payload class implements IPayload interface
-private static void Callback(Payload payload)
-{
-  // Callback logic
-}
-```
+> DevKit is API-first, modular, and ready for Unity, Unreal, Web, and mobile development.
 
-***
+---
 
-## Use Cases
+## 🔮 Why DevKit Wins
 
-* **Pass Payload** between disconnected parts of code.
-* **Thread Safe** invocation of callbacks between disconnected parts of code.
-* **Asynchronous** invocation of callbacks between disconnected parts of code.
-* **Filtered** invocation of callbacks between disconnected parts of code.
-* **Obfuscated** invocation of callbacks between disconnected parts of code.
+- 🔌 **Modular** — Use only what you need: from WorldGen to CI/CD  
+- 🧠 **AI-First** — Not just integrated, AI is baked into the platform  
+- 🧰 **Dev-Friendly** — CLI tools, SDKs, visual config, cloud-ready  
+- 🌍 **Scalable** — Works offline or with cloud-native scale across players and platforms
 
-***
+---
 
-## Correct Usage
+## 👾 Who It's For
 
-* **DON’T** use Messenger if you have a direct access to shared code parts to invoke events/methods in the same module/class.
-* **ALWAYS** ensure that you unsubscribe when you’re done with the consuming of payloads.
-* **DON’T** publish payloads in endless or in a long running loops.
-* **PREFER** using Filtered subscriptions.
+- Indie game developers & small studios  
+- Mid-size studios building open-world, sandbox, or UGC titles  
+- Visual/citizen developers using no-code world tools  
+- Educators, AI prototypers, XR pioneers  
 
-***
+---
 
-## MainThreadDispatcher API
+## 🎯 Traction & Roadmap
 
-Main Thread dispatcher is responsible for the synchronisation of callbacks between Main and other threads.
+| Timeline      | Milestone                                           |
+|---------------|-----------------------------------------------------|
+| Q1–Q2 2025    | Unity MVP (GenRpg), AI world demo, deck + alpha prep|
+| Q3 2025       | Early studio pilots + closed alpha access           |
+| Q4 2025       | Add AI economy + multiplayer, open dashboard beta   |
+| 2026+         | XR, UGC tools, AI composers, GDKs for Web & C++     |
 
-### MainThreadDispatcher implements this interface:
+---
 
-```csharp
-public interface IThreadDispatcher
-{
-    // managed Thread ID
-    int ThreadId { get; }
+## 🧠 Founding Team
+  
+🎮 Engineers from top studios  
+🎓 Advisors in AI/ML + Games  
+🌐 Cloud architects + creative tech folks
 
-    // dispatch - adds callback delegate into dispatcher’s queue
-    // action - delegate reference to method that should be invoked on main thread
-    // payload - the data that should be passed to the method/callback
-    void Dispatch(Delegate action, object[] payload);
-}
-```
+---
 
-### Dispatch Method - example
+## 📬 Contact
 
-```csharp
-MainThreadDispatcher.Default.Dispatch(Callback, new object[] { payload, state });
-```
+- 📧 **Email**: [contact@devkit.games](mailto:contact@devkit.games)  
+- 🌐 **Website**: [devkit.games](https://devkit.games) 
+- 💬 **Discord**: [Discord Chat](https://discord.gg/aQpx8a) 
 
-***
+---
 
-## Package Structure
+## 🧙 Join the Quest
 
-### Package Folders
-![folders](Images/pack_struct1.png)
-> Folders with name “Core” contain base classes and scripts that are shared across different modules.
-> Folders with name “Messaging” contain classes and scripts that are specific for the Messenger.
-### Plugins / Core
-![core](Images/pack_struct2.png)
-> Extensions – extensions classes
-> Objects – core base classes
-> Threading – multithreading related classes/scripts
-> WeakRef – weak reference handling classes
-### Plugins / Messaging
-![messaging](Images/pack_struct3.png)
-> Components – useful unity components
-> Monitor – debugging and monitoring tools
+We're looking for:
+- 👩🏽‍💻 Talented engineers
+- 🎮 Pilot studios & creators
+- 🧠 Early access AI testers
 
-***
-
-## Unit Tests
-
-### Coverage:
-
-**Messenger Tests**
-* Functional
-* Load
-* Multithreading
-
-**Weak Reference Tests**
-* Functional
-
-**Tests Folder**
-
-![tests_folder](Images/tests_folder.png)
-
-**Playmode Tests**
-
-![playmode_tests](Images/playmode_tests.png)
-
-***
-
-## DEMO Project
-
-### Goals:
-* Show how to use Messenger
-* Use real world example – Chat between players
-* Include examples of message filtering and multithreading
-* Show “Best Practices” approach in implementation
-
-### [[WebGL Demo]](PubSub/index.html)
-
-### Demo Structure
-**Folders / Files**
-![demo_folders](Images/demo_struct.png)
-
-**Sample Scene**
-![demo_UI](Images/demo_UI.png)
-
-***
-
-[Project License](https://github.com/supermax/pubsub/wiki/LICENSE)  |  [Discord](https://discord.gg/aQpx8a)  |  [Asset Store](http://u3d.as/1HKn)
+---
+## _Let's build the future of games — together!_

@@ -1,3 +1,4 @@
+using DevKit.Core.Observables;
 using DevKit.Nexus.Binding;
 using DevKit.Nexus.Binding.API;
 using DevKit.Nexus.Tests.Editor.Binding.Models;
@@ -14,10 +15,10 @@ namespace DevKit.Nexus.Tests.Editor.Binding
             var targetModel = new SimpleModel();
             const string targetPath = nameof(targetModel.List);
 
-            var sourceModel = new ObservableViewModel
-                {
-                    List = { "a", "b", "c" }
-                };
+            var go = new GameObject();
+            var sourceModel = go.AddComponent<ObservableViewModelTestFixture>();
+            sourceModel.List = new ObservableCollection<string>{ "a", "b", "c" }; // initial values
+            
             sourceModel.Init();
             const string sourcePath = nameof(sourceModel.List);
 

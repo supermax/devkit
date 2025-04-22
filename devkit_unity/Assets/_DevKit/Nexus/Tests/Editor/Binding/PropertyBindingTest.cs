@@ -13,8 +13,10 @@ namespace DevKit.Nexus.Tests.Editor.Binding
         {
             var targetModel = new SimpleModel();
             const string targetPath = nameof(targetModel.Name);
-
-            var sourceModel = new ObservableViewModel{ Name = Application.productName };
+            
+            var go = new GameObject();
+            var sourceModel = go.AddComponent<ObservableViewModelTestFixture>();
+            sourceModel.Name = Application.productName;
             sourceModel.Init();
             const string sourcePath = nameof(sourceModel.Name);
 
@@ -35,11 +37,13 @@ namespace DevKit.Nexus.Tests.Editor.Binding
         [Test]
         public void BindingManager_TwoWayBinding_SimplePath_Test()
         {
-            var targetModel = new ObservableViewModel();
+            var go = new GameObject();
+            var targetModel = go.AddComponent<ObservableViewModelTestFixture>();
             targetModel.Init();
             const string targetPath = nameof(targetModel.Name);
 
-            var sourceModel = new ObservableViewModel{ Name = Application.productName };
+            var sourceModel = go.AddComponent<ObservableViewModelTestFixture>();
+            sourceModel.Name = Application.productName;
             sourceModel.Init();
             const string sourcePath = nameof(sourceModel.Name);
 
@@ -69,7 +73,8 @@ namespace DevKit.Nexus.Tests.Editor.Binding
             var targetModel = new SimpleModel();
             const string targetPath = nameof(targetModel.Name);
 
-            var sourceModel = new ObservableViewModel();
+            var go = new GameObject();
+            var sourceModel = go.AddComponent<ObservableViewModelTestFixture>();
             sourceModel.ChildModel.Name = Application.companyName;
             sourceModel.Init();
             const string sourcePath = nameof(sourceModel.ChildModel) + "." + nameof(sourceModel.ChildModel.Name);
@@ -91,11 +96,12 @@ namespace DevKit.Nexus.Tests.Editor.Binding
         [Test]
         public void BindingManager_TwoWayBinding_ComplexPath_Test()
         {
-            var targetModel = new ObservableViewModel();
+            var go = new GameObject();
+            var targetModel = go.AddComponent<ObservableViewModelTestFixture>();
             targetModel.Init();
             const string targetPath = nameof(targetModel.Name);
 
-            var sourceModel = new ObservableViewModel();
+            var sourceModel = go.AddComponent<ObservableViewModelTestFixture>();
             sourceModel.ChildModel.Name = Application.companyName;
             sourceModel.Init();
             const string sourcePath = nameof(sourceModel.ChildModel) + "." + nameof(sourceModel.ChildModel.Name);
