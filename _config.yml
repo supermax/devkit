@@ -1,0 +1,23 @@
+title: DevKit – The AI-Powered Game-as-a-Service Platform
+description: Build smarter, scalable games with AI. DevKit brings AI-native tools, modular infrastructure, and next-gen world generation to developers of every size.
+baseurl: "" # Leave blank for root
+url: "https://devkit.games" # Custom domain
+
+theme: jekyll-theme-hacker
+
+markdown: kramdown
+highlighter: rouge
+
+plugins:
+  - jekyll-seo-tag
+  - jekyll-feed
+  - jekyll-sitemap
+
+google_analytics: "" # You can add your GA ID here when ready
+
+author:
+  name: DevKit
+  email: contact@devkit.games
+
+github:
+  is_project_page: false

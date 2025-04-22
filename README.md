@@ -1,9 +1,3 @@
----
-title: DevKit – The AI-Powered Gaming Platform
-description: Build smarter, scalable games with AI. DevKit brings AI-native tools, modular infrastructure, and next-gen world generation to developers of every size.
-theme: jekyll-theme-hacker
----
-
 # 🎮 DevKit — The AI-Powered Game-as-a-Service Platform
 
 > One platform. Every tool. Smarter, faster game development with AI.
